@@ -1,0 +1,172 @@
+{
+  "Behavioral": [
+    {
+      "id": "b1",
+      "category": "Behavioral",
+      "text": "Tell me about a time you had a conflict with a coworker. How did you handle it and what was the outcome?"
+    },
+    {
+      "id": "b2",
+      "category": "Behavioral",
+      "text": "Describe a situation where you had to meet a tight deadline. What steps did you take to ensure you delivered on time?"
+    },
+    {
+      "id": "b3",
+      "category": "Behavioral",
+      "text": "Give me an example of a time you failed at something. What did you learn from that experience?"
+    },
+    {
+      "id": "b4",
+      "category": "Behavioral",
+      "text": "Tell me about a time you had to adapt quickly to a significant change at work. How did you manage the transition?"
+    },
+    {
+      "id": "b5",
+      "category": "Behavioral",
+      "text": "Describe a time when you went above and beyond what was expected of you in a role. What motivated you to do so?"
+    },
+    {
+      "id": "b6",
+      "category": "Behavioral",
+      "text": "Tell me about a time you had to persuade someone to see things your way. What approach did you take?"
+    },
+    {
+      "id": "b7",
+      "category": "Behavioral",
+      "text": "Describe a situation where you had to manage multiple competing priorities. How did you decide what to focus on first?"
+    }
+  ],
+  "Technical": [
+    {
+      "id": "t1",
+      "category": "Technical",
+      "text": "Walk me through how you would design a scalable REST API for a high-traffic e-commerce platform."
+    },
+    {
+      "id": "t2",
+      "category": "Technical",
+      "text": "Explain the difference between SQL and NoSQL databases. When would you choose one over the other?"
+    },
+    {
+      "id": "t3",
+      "category": "Technical",
+      "text": "How do you approach debugging a production issue that is intermittently causing errors but is difficult to reproduce locally?"
+    },
+    {
+      "id": "t4",
+      "category": "Technical",
+      "text": "Describe your experience with CI/CD pipelines. How have you used them to improve software delivery in a previous role?"
+    },
+    {
+      "id": "t5",
+      "category": "Technical",
+      "text": "What strategies do you use to ensure code quality and maintainability in a large codebase?"
+    },
+    {
+      "id": "t6",
+      "category": "Technical",
+      "text": "Explain how you would optimize a slow database query. Walk me through your diagnostic and resolution process."
+    },
+    {
+      "id": "t7",
+      "category": "Technical",
+      "text": "How do you stay current with new technologies and programming languages? Can you give an example of a skill you recently learned and applied?"
+    }
+  ],
+  "Cultural Fit": [
+    {
+      "id": "c1",
+      "category": "Cultural Fit",
+      "text": "What type of work environment do you thrive in, and how does that align with what you know about our company culture?"
+    },
+    {
+      "id": "c2",
+      "category": "Cultural Fit",
+      "text": "How do you handle situations where you disagree with a decision made by your manager or leadership team?"
+    },
+    {
+      "id": "c3",
+      "category": "Cultural Fit",
+      "text": "Describe how you typically collaborate with cross-functional teams. What do you do to build strong working relationships?"
+    },
+    {
+      "id": "c4",
+      "category": "Cultural Fit",
+      "text": "What does work-life balance mean to you, and how do you maintain it during periods of high workload?"
+    },
+    {
+      "id": "c5",
+      "category": "Cultural Fit",
+      "text": "How do you approach giving and receiving constructive feedback? Can you share an example of each?"
+    },
+    {
+      "id": "c6",
+      "category": "Cultural Fit",
+      "text": "What values are most important to you in a workplace, and how do you demonstrate those values in your day-to-day work?"
+    }
+  ],
+  "Situational": [
+    {
+      "id": "s1",
+      "category": "Situational",
+      "text": "Imagine you are assigned to lead a project but quickly realize the timeline is unrealistic. What would you do?"
+    },
+    {
+      "id": "s2",
+      "category": "Situational",
+      "text": "If a key team member unexpectedly left in the middle of a critical project, how would you handle the situation to keep things on track?"
+    },
+    {
+      "id": "s3",
+      "category": "Situational",
+      "text": "Suppose a client is unhappy with a deliverable and is threatening to escalate. How would you approach the conversation and resolve the issue?"
+    },
+    {
+      "id": "s4",
+      "category": "Situational",
+      "text": "You discover that a colleague has been cutting corners in a way that could create compliance or quality issues. What steps would you take?"
+    },
+    {
+      "id": "s5",
+      "category": "Situational",
+      "text": "If you were given two high-priority tasks by two different managers with conflicting deadlines, how would you handle it?"
+    },
+    {
+      "id": "s6",
+      "category": "Situational",
+      "text": "Imagine you are onboarding to a new role and notice that the team has a process that seems inefficient. How would you approach suggesting improvements without overstepping?"
+    }
+  ],
+  "Communication & Presence": [
+    {
+      "id": "p1",
+      "category": "Communication & Presence",
+      "text": "Describe a time when you had to present a complex technical concept to a non-technical audience. How did you make it accessible?"
+    },
+    {
+      "id": "p2",
+      "category": "Communication & Presence",
+      "text": "Tell me about a time when a miscommunication caused a problem at work. What happened and how did you resolve it?"
+    },
+    {
+      "id": "p3",
+      "category": "Communication & Presence",
+      "text": "How do you tailor your communication style when working with different stakeholders, such as executives versus engineers?"
+    },
+    {
+      "id": "p4",
+      "category": "Communication & Presence",
+      "text": "Describe your approach to written communication in a remote or hybrid work environment. How do you ensure clarity and avoid misunderstandings?"
+    },
+    {
+      "id": "p5",
+      "category": "Communication & Presence",
+      "text": "Tell me about a time you had to deliver difficult news to a team or stakeholder. How did you prepare and what was the reaction?"
+    },
+    {
+      "id": "p6",
+      "category": "Communication & Presence",
+      "text": "How do you ensure your voice is heard in meetings, especially when working with more dominant personalities or in large group settings?"
+    }
+  ]
+}
