@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import type { SessionEntry } from "@/types";
+import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
 
 interface SessionSummaryCardProps {
   /** The session entry containing question, answer, and feedback. */
@@ -13,19 +15,22 @@ interface SessionSummaryCardProps {
  * SessionSummaryCard — displays a single answered question's summary row.
  *
  * Renders: question text, answer text, score, strengths, areas-for-improvement,
- * and the overall summary for the given SessionEntry.
- *
- * Accessibility:
- *   - Uses semantic heading hierarchy (h3 for question, h4 for sub-sections)
- *   - Score is visually prominent (≥1.5× body font size) per Req 6.1
- *   - All sections have visible labels (Req 8.3)
- *   - Sufficient color contrast throughout (Req 8.2)
- *
- * Requirements: 7.1
+ * delivery & speech pacing metrics (WPM and filler words), and the overall summary.
  */
 export default function SessionSummaryCard({ entry, index }: SessionSummaryCardProps) {
-  const { question, answer, feedback } = entry;
+  const { question, answer, feedback, durationSeconds } = entry;
   const { score, strengths, areasForImprovement, summary } = feedback;
+  const [highlightFillers, setHighlightFillers] = useState(false);
+
+  // Compute speech metrics for delivery feedback
+  const deliveryMetrics = useMemo(() => {
+    if (!answer.trim()) return null;
+    const duration =
+      durationSeconds && durationSeconds > 0
+        ? durationSeconds
+        : Math.max(10, Math.round(answer.split(/\s+/).length / 2.3));
+    return analyzeSpeechDelivery(answer, duration);
+  }, [answer, durationSeconds]);
 
   /** Derive a color class for the score badge based on its value. */
   const scoreBadgeClass =
@@ -62,14 +67,17 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
 
         {/* Score badge — rendered at ≥1.5× body font size per Req 6.1 */}
         <div
-          className={`flex-shrink-0 flex flex-col items-center justify-center rounded-xl px-4 py-2 border ring-2 shadow-xs ${scoreBadgeClass}`}
+          className={`flex-shrink-0 flex flex-col items-center justify-center rounded-xl px-3 sm:px-4 py-2 border ring-2 shadow-xs text-center min-w-[80px] ${scoreBadgeClass}`}
           aria-label={`Score: ${score} out of 10`}
         >
           <span className="text-2xl sm:text-3xl font-extrabold leading-none tracking-tight" aria-hidden="true">
             {score}
           </span>
-          <span className="text-[11px] font-bold uppercase tracking-wider mt-0.5 opacity-80" aria-hidden="true">
+          <span className="text-[10px] font-bold uppercase tracking-wider mt-0.5 opacity-80" aria-hidden="true">
             / 10
+          </span>
+          <span className="text-[9px] font-black uppercase tracking-tight mt-1 px-1.5 py-0.5 rounded-full bg-black/5">
+            {score >= 8 ? "Strong Hire" : score >= 6 ? "Borderline" : score >= 4 ? "Below Bar" : "No Hire"}
           </span>
         </div>
       </div>
@@ -77,20 +85,85 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
       {/* ── Body ── */}
       <div className="px-6 py-6 space-y-6">
 
-        {/* Answer */}
-        <section aria-labelledby={`answer-label-${index}`} className="rounded-xl bg-[#DCE7DF] border border-sage-300/70 p-4">
-          <h4
-            id={`answer-label-${index}`}
-            className="text-xs font-bold uppercase tracking-wider text-darkslate-600 mb-1.5 flex items-center gap-1.5"
-          >
-            <svg className="h-3.5 w-3.5 text-darkslate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-            </svg>
-            <span>Candidate Response</span>
-          </h4>
-          <p className="text-sm text-darkslate-900 leading-relaxed whitespace-pre-wrap">
-            {answer}
-          </p>
+        {/* Answer with Speech Delivery Intelligence */}
+        <section aria-labelledby={`answer-label-${index}`} className="rounded-xl bg-[#DCE7DF] border border-sage-300/70 p-4 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-sage-300/60 pb-2.5">
+            <h4
+              id={`answer-label-${index}`}
+              className="text-xs font-bold uppercase tracking-wider text-darkslate-600 flex items-center gap-1.5"
+            >
+              <svg className="h-3.5 w-3.5 text-darkslate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <span>Candidate Response</span>
+            </h4>
+
+            {deliveryMetrics && deliveryMetrics.fillerCount > 0 && (
+              <button
+                type="button"
+                onClick={() => setHighlightFillers(!highlightFillers)}
+                className="text-[11px] font-semibold text-forest-850 hover:text-forest-950 underline underline-offset-2 transition-colors"
+              >
+                {highlightFillers ? "Hide Highlights" : `Highlight ${deliveryMetrics.fillerCount} Filler Words`}
+              </button>
+            )}
+          </div>
+
+          {/* Transcript text */}
+          {highlightFillers && deliveryMetrics ? (
+            <p className="text-sm text-darkslate-900 leading-relaxed">
+              {deliveryMetrics.annotatedWords.map((item, idx) =>
+                item.isFiller ? (
+                  <mark
+                    key={idx}
+                    className="bg-amber-200 text-amber-950 font-bold px-1 py-0.5 rounded mx-0.5 border border-amber-300"
+                    title="Filler word"
+                  >
+                    {item.text}{" "}
+                  </mark>
+                ) : (
+                  <span key={idx}>{item.text} </span>
+                )
+              )}
+            </p>
+          ) : (
+            <p className="text-sm text-darkslate-900 leading-relaxed whitespace-pre-wrap">
+              {answer}
+            </p>
+          )}
+
+          {/* Delivery & Pacing Pills */}
+          {deliveryMetrics && (
+            <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-sage-300/60">
+              <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-100/90 border border-emerald-300/80 px-2 py-0.5 text-[11px] font-bold text-emerald-950">
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{deliveryMetrics.wpm} WPM ({deliveryMetrics.paceLabel.split(" ")[0]})</span>
+              </span>
+
+              <span
+                className={`inline-flex items-center gap-1 rounded-lg border px-2 py-0.5 text-[11px] font-bold ${
+                  deliveryMetrics.fillerCount > 0
+                    ? "bg-amber-100/90 border-amber-300/80 text-amber-950"
+                    : "bg-emerald-100/90 border-emerald-300/80 text-emerald-950"
+                }`}
+              >
+                <span>
+                  {deliveryMetrics.fillerCount > 0
+                    ? `${deliveryMetrics.fillerCount} Fillers (${deliveryMetrics.fillerMatches
+                        .slice(0, 2)
+                        .map((f) => `${f.word}:${f.count}`)
+                        .join(", ")})`
+                    : "0 Fillers (Clean Delivery)"}
+                </span>
+              </span>
+
+              <span className="text-[11px] text-darkslate-600 italic">
+                {deliveryMetrics.coachTip}
+              </span>
+            </div>
+          )}
         </section>
 
         {/* Strengths + Areas for Improvement — side-by-side on wider screens */}

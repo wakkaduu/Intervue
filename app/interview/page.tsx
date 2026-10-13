@@ -17,6 +17,7 @@ import TranscriptArea from "@/components/TranscriptArea";
 import RecordingControls from "@/components/RecordingControls";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import QueueLoadingAnimation from "@/components/QueueLoadingAnimation";
+import LiveDeliveryHUD from "@/components/LiveDeliveryHUD";
 
 // ---------------------------------------------------------------------------
 // Inner component — uses useSearchParams (must be inside <Suspense>)
@@ -58,6 +59,12 @@ function InterviewPageInner() {
 
   // Answers map storing all answered questions by question index: { [index]: answerText }
   const [answers, setAnswers] = useState<Record<number, string>>({});
+
+  // Recorded durations map by question index: { [index]: durationSeconds }
+  const [durations, setDurations] = useState<Record<number, number>>({});
+
+  // Toggle for real-time delivery HUD (WPM & Filler words)
+  const [isHudEnabled, setIsHudEnabled] = useState(false);
 
   // Review-all loading and progress state
   const [isReviewingAll, setIsReviewingAll] = useState(false);
@@ -102,7 +109,10 @@ function InterviewPageInner() {
   // Review all answers once all questions are answered
   // ---------------------------------------------------------------------------
   const executeReviewAll = useCallback(
-    async (finalAnswers: Record<number, string>) => {
+    async (
+      finalAnswers: Record<number, string>,
+      finalDurations: Record<number, number> = durations
+    ) => {
       setIsReviewingAll(true);
       setReviewError(null);
 
@@ -143,6 +153,7 @@ function InterviewPageInner() {
             question: q,
             answer: ans,
             feedback: data.feedback as Feedback,
+            durationSeconds: finalDurations[i] || 0,
           });
         }
 
@@ -161,7 +172,7 @@ function InterviewPageInner() {
         setReviewError(msg);
       }
     },
-    [questions, mode, router]
+    [questions, mode, router, durations]
   );
 
   // ---------------------------------------------------------------------------
@@ -181,12 +192,18 @@ function InterviewPageInner() {
 
     setAnswerValidationError(null);
 
-    // Save answer for current question
+    // Save answer and duration for current question
     const updatedAnswers = {
       ...answers,
       [questionIndex]: answer,
     };
     setAnswers(updatedAnswers);
+
+    const updatedDurations = {
+      ...durations,
+      [questionIndex]: recordingDuration || 0,
+    };
+    setDurations(updatedDurations);
 
     if (!isLastQuestion) {
       // Advance to next question
@@ -202,12 +219,14 @@ function InterviewPageInner() {
       }
     } else {
       // Last question answered! Proceed to AI review
-      await executeReviewAll(updatedAnswers);
+      await executeReviewAll(updatedAnswers, updatedDurations);
     }
   }, [
     effectiveAnswer,
     mode,
     answers,
+    durations,
+    recordingDuration,
     questionIndex,
     isLastQuestion,
     dispatch,
@@ -393,6 +412,15 @@ function InterviewPageInner() {
                   isRecording={isRecording}
                   isTranscribing={isTranscribing}
                   fallbackMode={false}
+                />
+
+                {/* Real-time speech pacing and filler-word coaching HUD */}
+                <LiveDeliveryHUD
+                  transcript={audioTranscript}
+                  durationSeconds={recordingDuration}
+                  isRecording={isRecording}
+                  enabled={isHudEnabled}
+                  onToggleEnabled={() => setIsHudEnabled(!isHudEnabled)}
                 />
 
                 {/* Validation error */}

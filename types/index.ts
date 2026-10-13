@@ -88,6 +88,7 @@ export interface SessionEntry {
   question: Question;
   answer: string;
   feedback: Feedback;
+  durationSeconds?: number;
 }
 
 export interface Session {

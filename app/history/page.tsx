@@ -11,6 +11,7 @@ import {
   syncGuestSessionsToAccount,
 } from "@/lib/guest-storage";
 import AuthModal from "@/components/AuthModal";
+import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
 
 export default function HistoryPage() {
   const { data: session, status } = useSession();
@@ -407,6 +408,34 @@ export default function HistoryPage() {
                               <p className="text-xs text-darkslate-700 bg-[#E2ECE5] p-2.5 rounded-lg whitespace-pre-wrap leading-relaxed">
                                 {entry.answer}
                               </p>
+
+                              {/* Speech delivery pacing & filler micro-badge */}
+                              {(() => {
+                                const dur =
+                                  entry.durationSeconds && entry.durationSeconds > 0
+                                    ? entry.durationSeconds
+                                    : Math.max(10, Math.round(entry.answer.split(/\s+/).length / 2.3));
+                                const dm = analyzeSpeechDelivery(entry.answer, dur);
+                                return (
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100/90 border border-emerald-300/80 px-2 py-0.5 text-[10px] font-bold text-emerald-950">
+                                      {dm.wpm} WPM ({dm.paceLabel.split(" ")[0]})
+                                    </span>
+                                    <span
+                                      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[10px] font-bold ${
+                                        dm.fillerCount > 0
+                                          ? "bg-amber-100/90 border-amber-300/80 text-amber-950"
+                                          : "bg-emerald-100/90 border-emerald-300/80 text-emerald-950"
+                                      }`}
+                                    >
+                                      {dm.fillerCount > 0
+                                        ? `${dm.fillerCount} Fillers`
+                                        : "0 Fillers"}
+                                    </span>
+                                  </div>
+                                );
+                              })()}
+
                               <p className="text-xs text-darkslate-700">
                                 <span className="font-semibold text-forest-900">Recommendation:</span> {entry.feedback.summary}
                               </p>

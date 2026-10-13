@@ -3,7 +3,7 @@
 // Session Summary screen
 // Requirements: 7.1, 7.2, 7.3, 7.4
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import SessionSummaryCard from "@/components/SessionSummaryCard";
 import AuthModal from "@/components/AuthModal";
 import { calculateAverageScore } from "@/hooks/useInterviewSession";
 import { saveGuestSession, syncGuestSessionsToAccount } from "@/lib/guest-storage";
+import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
 import type { SessionEntry } from "@/types";
 
 /**
@@ -95,6 +96,33 @@ export default function SummaryPage() {
       ? { badge: "bg-[#E2ECE5] border-sage-300/90 text-gold-950", ring: "text-gold-600" }
       : { badge: "bg-[#E2ECE5] border-sage-300/90 text-rose-950", ring: "text-rose-600" };
 
+  // Aggregate session speech delivery metrics (when spoken answers exist)
+  const sessionDelivery = useMemo(() => {
+    if (!entries || entries.length === 0) return null;
+    let totalWords = 0;
+    let totalFillers = 0;
+    let totalDuration = 0;
+
+    for (const e of entries) {
+      const dur = e.durationSeconds && e.durationSeconds > 0 ? e.durationSeconds : 0;
+      if (dur > 0) {
+        totalDuration += dur;
+        const metrics = analyzeSpeechDelivery(e.answer, dur);
+        totalWords += metrics.totalWords;
+        totalFillers += metrics.fillerCount;
+      }
+    }
+
+    if (totalDuration < 3) return null;
+    const avgWpm = Math.round(totalWords / (totalDuration / 60));
+    return {
+      avgWpm,
+      totalWords,
+      totalFillers,
+      totalDuration: Math.round(totalDuration),
+    };
+  }, [entries]);
+
   return (
     <div className="py-8">
       <div className="mx-auto w-full max-w-3xl space-y-8">
@@ -116,7 +144,7 @@ export default function SummaryPage() {
         {/* ── Average score banner (Req 7.2) or no-answers message (Req 7.3) ── */}
         {hasEntries ? (
           <div
-            className={`rounded-3xl border p-8 text-center shadow-md relative overflow-hidden ${avgTheme.badge}`}
+            className={`rounded-3xl border p-6 sm:p-8 text-center shadow-md relative overflow-hidden ${avgTheme.badge}`}
             aria-label={`Session average score: ${averageScore} out of 10`}
           >
             {/* Ambient decorative glow */}
@@ -143,13 +171,45 @@ export default function SummaryPage() {
             {/* Performance status tag */}
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#D4E3D8] px-3.5 py-1 text-xs font-bold shadow-xs border border-sage-300">
               {averageScore !== null && averageScore >= 8 ? (
-                <span className="text-forest-850">Advanced Readiness</span>
-              ) : averageScore !== null && averageScore >= 5 ? (
-                <span className="text-gold-900">Proficient — Refinements Recommended</span>
+                <span className="text-forest-850">Strong Hire — Advanced Readiness</span>
+              ) : averageScore !== null && averageScore >= 6.5 ? (
+                <span className="text-gold-900">Borderline / Lean Hire — Polishing Required</span>
+              ) : averageScore !== null && averageScore >= 4.5 ? (
+                <span className="text-rose-900 font-extrabold">Below Hiring Bar — Substantial Gaps</span>
               ) : (
-                <span className="text-rose-800">Needs Development — Review Breakdown</span>
+                <span className="text-rose-950 font-black">Strong No Hire — Fundamental Deficits</span>
               )}
             </div>
+
+            {/* Delivery Cadence & Filler Word Summary */}
+            {sessionDelivery && (
+              <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-5 border-t border-sage-300/70 text-center">
+                <div className="rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
+                  <span className="block text-lg font-black text-forest-900">
+                    {sessionDelivery.avgWpm} WPM
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
+                    Average Pacing
+                  </span>
+                </div>
+                <div className="rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
+                  <span className="block text-lg font-black text-forest-900">
+                    {sessionDelivery.totalFillers}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
+                    Filler Words
+                  </span>
+                </div>
+                <div className="col-span-2 sm:col-span-1 rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
+                  <span className="block text-lg font-black text-forest-900">
+                    {sessionDelivery.totalDuration}s
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
+                    Speaking Time
+                  </span>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           /* Req 7.3 — no answers submitted */

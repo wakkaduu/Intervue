@@ -2,6 +2,7 @@
 
 import type { Question } from "@/types";
 import { getCategoryIcon } from "@/lib/questions";
+import InterviewerVoiceControls from "@/components/InterviewerVoiceControls";
 
 interface QuestionDisplayProps {
   question: Question;
@@ -35,6 +36,9 @@ export default function QuestionDisplay({
           <span>{question.category}</span>
         </span>
       </div>
+
+      {/* Spoken AI Interviewer Voice Player & Quick Controls */}
+      <InterviewerVoiceControls text={question.text} />
 
       {/* Main Question Text */}
       <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-forest-950 leading-snug">

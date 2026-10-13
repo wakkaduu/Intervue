@@ -39,15 +39,49 @@ export default function FeedbackPanel({
   return (
     <div className="w-full space-y-6">
       {/* ── 1. Score — Req 6.1: first element, font size ≥1.5× body (text-3xl = 1.875rem vs 1rem body) ── */}
-      <div className="flex items-center gap-3">
-        <h3
-          className="text-3xl font-bold text-forest-800"
-          aria-label={`Score: ${score} out of 10`}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <h3
+            className="text-3xl font-bold text-forest-800"
+            aria-label={`Score: ${score} out of 10`}
+          >
+            {score}
+            <span className="text-xl font-medium text-darkslate-400">/10</span>
+          </h3>
+          <span className="text-sm font-medium text-darkslate-500">Evaluation Score</span>
+        </div>
+
+        {/* Candid Hiring Bar Verdict Badge */}
+        <div
+          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold border ${
+            score >= 8
+              ? "bg-emerald-50 text-emerald-950 border-emerald-300"
+              : score >= 6
+              ? "bg-amber-50 text-amber-950 border-amber-300"
+              : score >= 4
+              ? "bg-rose-50 text-rose-950 border-rose-300"
+              : "bg-rose-100 text-rose-950 border-rose-300"
+          }`}
         >
-          {score}
-          <span className="text-xl font-medium text-darkslate-400">/10</span>
-        </h3>
-        <span className="text-sm font-medium text-darkslate-500">Score</span>
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              score >= 8
+                ? "bg-emerald-600"
+                : score >= 6
+                ? "bg-amber-600"
+                : "bg-rose-600"
+            }`}
+          />
+          <span>
+            {score >= 8
+              ? "Strong Hire — Meets Bar"
+              : score >= 6
+              ? "Borderline — Refinement Needed"
+              : score >= 4
+              ? "Below Hiring Bar — Substandard"
+              : "Strong No Hire — Critical Gaps"}
+          </span>
+        </div>
       </div>
 
       {/* ── 2 & 3. Question and Answer — Req 6.2 ── */}
