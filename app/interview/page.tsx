@@ -1,10 +1,11 @@
 "use client";
 
-// Interview session screen with sequential answering flow followed by comprehensive AI Review
+// Interview session screen on Intervue Platform
 // Requirements: 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 3.4, 5.1, 5.3, 5.4, 5.5, 5.8
 
 import { Suspense, useEffect, useCallback, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { useInterviewSession } from "@/hooks/useInterviewSession";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
@@ -15,7 +16,6 @@ import QuestionDisplay from "@/components/QuestionDisplay";
 import TranscriptArea from "@/components/TranscriptArea";
 import RecordingControls from "@/components/RecordingControls";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ApiKeyModal from "@/components/ApiKeyModal";
 
 // ---------------------------------------------------------------------------
 // Inner component — uses useSearchParams (must be inside <Suspense>)
@@ -38,7 +38,7 @@ function InterviewPageInner() {
     dispatch,
   } = useInterviewSession();
 
-  // Audio recording & Whisper transcription hook (used in Voice Mode)
+  // Audio recording & Whisper transcription hook
   const {
     isSupported: isAudioSupported,
     isRecording,
@@ -66,9 +66,6 @@ function InterviewPageInner() {
     currentQuestionText: string;
   }>({ current: 0, total: 0, currentQuestionText: "" });
   const [reviewError, setReviewError] = useState<string | null>(null);
-
-  // API Key modal state
-  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
 
   // Validation error for empty-answer submission
   const [answerValidationError, setAnswerValidationError] = useState<string | null>(null);
@@ -250,8 +247,9 @@ function InterviewPageInner() {
   // While session hasn't started yet
   if (phase === "IDLE") {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center p-4">
+      <div className="flex min-h-[50vh] flex-col items-center justify-center p-4 space-y-3">
         <LoadingSpinner />
+        <p className="text-xs font-medium text-slate-500">Preparing your interview session...</p>
       </div>
     );
   }
@@ -259,41 +257,51 @@ function InterviewPageInner() {
   const typedWordCount = typedText.trim() ? typedText.trim().split(/\s+/).length : 0;
 
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      {/* ── Mode indicator & Category badge ── */}
-      <div className="flex items-center justify-between text-xs text-gray-500 border-b border-gray-100 pb-2">
-        <div className="flex items-center gap-1.5">
-          <span aria-hidden="true">{mode === "mic" ? "🎙️" : "✍️"}</span>
-          <span className="font-semibold text-gray-700">
-            {mode === "mic" ? "Voice Mode (Whisper Speech-to-Text)" : "Written Mode (Typed Only)"}
+    <div className="mx-auto max-w-3xl space-y-6">
+      {/* ── Top Bar: Category, Mode & Exit ── */}
+      <div className="flex items-center justify-between text-xs text-slate-600 border-b border-slate-200/80 pb-3">
+        <div className="flex items-center gap-2">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 text-sm">
+            {mode === "mic" ? "🎙️" : "✍️"}
+          </span>
+          <span className="font-semibold text-slate-900">
+            {currentQuestion?.category || "Practice Track"}
+          </span>
+          <span className="text-slate-300">•</span>
+          <span className="text-slate-500">
+            {mode === "mic" ? "Voice Mode" : "Written Mode"}
           </span>
         </div>
-        <button
-          type="button"
-          onClick={() => router.push("/")}
-          className="hover:text-indigo-600 transition-colors"
+        <Link
+          href="/"
+          className="font-medium text-slate-500 hover:text-indigo-600 transition-colors"
         >
-          Change category or mode
-        </button>
+          Change Track
+        </Link>
       </div>
 
       {/* ── Visual Question Stepper ── */}
       {!isReviewingAll && totalQuestions > 0 && (
-        <div className="space-y-1.5">
-          <div className="flex items-center justify-between text-xs font-medium text-gray-500">
+        <div className="space-y-2 rounded-xl bg-white p-4 border border-slate-200/80 shadow-xs">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
             <span>Question {questionIndex + 1} of {totalQuestions}</span>
-            <span>{Math.round(((questionIndex + 1) / totalQuestions) * 100)}% Completed</span>
+            <span className="text-indigo-600">{Math.round(((questionIndex + 1) / totalQuestions) * 100)}% Completed</span>
           </div>
-          <div className="grid grid-cols-5 gap-1.5 w-full">
+          <div
+            className="grid gap-1.5 w-full"
+            style={{
+              gridTemplateColumns: `repeat(${totalQuestions || 1}, minmax(0, 1fr))`,
+            }}
+          >
             {questions.map((_, idx) => (
               <div
                 key={idx}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
+                className={`h-2 rounded-full transition-all duration-300 ${
                   idx < questionIndex || answers[idx]
                     ? "bg-indigo-600"
                     : idx === questionIndex
-                    ? "bg-indigo-400"
-                    : "bg-gray-200"
+                    ? "bg-indigo-400 ring-2 ring-indigo-300/50"
+                    : "bg-slate-100"
                 }`}
               />
             ))}
@@ -306,34 +314,27 @@ function InterviewPageInner() {
         <div
           role="alert"
           aria-live="polite"
-          className="rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 space-y-3"
+          className="rounded-xl border border-red-200 bg-red-50/80 p-4 text-sm text-red-900 space-y-3"
         >
           <div className="flex items-start gap-2.5">
-            <span className="text-xl" aria-hidden="true">🔑</span>
+            <span className="text-lg" aria-hidden="true">⚠️</span>
             <div>
-              <p className="font-semibold text-amber-950">{audioError}</p>
-              <p className="mt-0.5 text-xs text-amber-800">
-                Audio transcription via Whisper or Gemini requires an API key. You can get a free key from Google AI Studio or Groq Console.
+              <p className="font-semibold text-red-950">{audioError}</p>
+              <p className="mt-0.5 text-xs text-red-700">
+                Please verify your microphone permission and ensure clear sound. You can also switch to Written Mode.
               </p>
             </div>
           </div>
-          <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/60">
-            <button
-              type="button"
-              onClick={() => setIsKeyModalOpen(true)}
-              className="rounded bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 shadow-sm transition-colors"
-            >
-              Configure API Key
-            </button>
+          <div className="flex items-center gap-2 pt-1 border-t border-red-200/60">
             <button
               type="button"
               onClick={() => {
                 setAnswerValidationError(null);
                 startRecording();
               }}
-              className="rounded bg-white px-3 py-1.5 text-xs font-semibold text-gray-700 border border-gray-300 hover:bg-gray-100 transition-colors"
+              className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors shadow-xs"
             >
-              Try Again
+              Try Recording Again
             </button>
             <button
               type="button"
@@ -344,7 +345,7 @@ function InterviewPageInner() {
                   )}&mode=typed`
                 )
               }
-              className="rounded bg-transparent px-3 py-1.5 text-xs font-semibold text-amber-800 hover:underline"
+              className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 hover:bg-red-50 transition-colors"
             >
               Switch to Written Mode
             </button>
@@ -354,17 +355,28 @@ function InterviewPageInner() {
 
       {/* ── Question Answering View ── */}
       {!isReviewingAll && currentQuestion && (
-        <>
-          <QuestionDisplay
-            question={currentQuestion}
-            questionNumber={questionIndex + 1}
-            totalQuestions={totalQuestions}
-          />
+        <div className="space-y-6">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm">
+            <QuestionDisplay
+              question={currentQuestion}
+              questionNumber={questionIndex + 1}
+              totalQuestions={totalQuestions}
+            />
+          </div>
 
           <section aria-label="Answer section" className="space-y-4">
             {/* Mode 1: VOICE MODE (Whisper-powered speech-to-text) */}
             {mode === "mic" && (
-              <div className="space-y-4">
+              <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Spoken Answer
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    Press Start Recording, speak your response, then click Stop
+                  </span>
+                </div>
+
                 <TranscriptArea
                   finalTranscript={audioTranscript}
                   isRecording={isRecording}
@@ -374,38 +386,47 @@ function InterviewPageInner() {
 
                 {/* Validation error */}
                 {answerValidationError && (
-                  <p role="alert" className="text-sm text-red-600" aria-live="assertive">
+                  <p role="alert" className="text-sm font-medium text-red-600" aria-live="assertive">
                     {answerValidationError}
                   </p>
                 )}
 
                 {/* Voice controls with duration & Whisper transcribing states */}
-                <RecordingControls
-                  isRecording={isRecording}
-                  isSupported={isAudioSupported}
-                  isTranscribing={isTranscribing}
-                  recordingDuration={recordingDuration}
-                  onStart={() => {
-                    setAnswerValidationError(null);
-                    startRecording();
-                  }}
-                  onStop={handleStopRecording}
-                  onSubmit={handleNextOrFinish}
-                  hasTranscript={audioTranscript.trim().length > 0}
-                  submitLabel={isLastQuestion ? "Finish & Review with AI ✨" : "Next Question →"}
-                  isLastQuestion={isLastQuestion}
-                  onPrevious={handlePreviousQuestion}
-                  canPrevious={canPrevious}
-                />
+                <div className="pt-2">
+                  <RecordingControls
+                    isRecording={isRecording}
+                    isSupported={isAudioSupported}
+                    isTranscribing={isTranscribing}
+                    recordingDuration={recordingDuration}
+                    onStart={() => {
+                      setAnswerValidationError(null);
+                      startRecording();
+                    }}
+                    onStop={handleStopRecording}
+                    onSubmit={handleNextOrFinish}
+                    hasTranscript={audioTranscript.trim().length > 0}
+                    submitLabel={isLastQuestion ? "Finish & Review with AI ✨" : "Next Question →"}
+                    isLastQuestion={isLastQuestion}
+                    onPrevious={handlePreviousQuestion}
+                    canPrevious={canPrevious}
+                  />
+                </div>
               </div>
             )}
 
             {/* Mode 2: WRITTEN MODE (Typed only) */}
             {mode === "typed" && (
-              <div className="space-y-3">
-                <label htmlFor="typed-answer" className="block text-sm font-semibold text-gray-700">
-                  Your Written Answer
-                </label>
+              <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <label htmlFor="typed-answer" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                    Written Answer
+                  </label>
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
+                    <span className="font-semibold text-indigo-600">STAR Tip:</span>
+                    <span>Situation • Task • Action • Result</span>
+                  </div>
+                </div>
+
                 <textarea
                   id="typed-answer"
                   value={typedText}
@@ -413,19 +434,19 @@ function InterviewPageInner() {
                     setTypedText(e.target.value);
                     if (e.target.value.trim()) setAnswerValidationError(null);
                   }}
-                  placeholder="Type your response here... Tip: Structure your thoughts with the STAR method (Situation, Task, Action, Result) and explain your reasoning clearly."
-                  rows={7}
-                  className="w-full rounded-lg border border-gray-300 p-3.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 shadow-sm"
+                  placeholder="Structure your answer here... Example: At my previous company, we faced a major bottleneck (Situation). My task was to streamline the workflow (Task). I implemented a continuous integration protocol (Action), which reduced cycle time by 40% (Result)."
+                  rows={8}
+                  className="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-xs transition-all leading-relaxed"
                 />
 
-                <div className="flex items-center justify-between text-xs text-gray-400">
+                <div className="flex items-center justify-between text-xs text-slate-400">
                   <span>{typedWordCount} {typedWordCount === 1 ? "word" : "words"}</span>
                   <span>{typedText.length} characters</span>
                 </div>
 
                 {/* Validation error */}
                 {answerValidationError && (
-                  <p role="alert" className="text-sm text-red-600" aria-live="assertive">
+                  <p role="alert" className="text-sm font-medium text-red-600" aria-live="assertive">
                     {answerValidationError}
                   </p>
                 )}
@@ -436,9 +457,9 @@ function InterviewPageInner() {
                     <button
                       type="button"
                       onClick={handlePreviousQuestion}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 active:bg-gray-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50 active:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors"
                     >
-                      ← Previous
+                      ← Previous Question
                     </button>
                   ) : (
                     <div />
@@ -448,10 +469,10 @@ function InterviewPageInner() {
                     type="button"
                     onClick={handleNextOrFinish}
                     disabled={!typedText.trim()}
-                    className={`inline-flex items-center gap-1.5 rounded-md px-5 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-colors ${
+                    className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all ${
                       isLastQuestion
-                        ? "bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 focus-visible:ring-indigo-600"
-                        : "bg-green-600 hover:bg-green-700 active:bg-green-800 focus-visible:ring-green-600"
+                        ? "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-500/25"
+                        : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
                     }`}
                   >
                     <span>{isLastQuestion ? "Finish & Review with AI ✨" : "Next Question →"}</span>
@@ -460,7 +481,7 @@ function InterviewPageInner() {
               </div>
             )}
           </section>
-        </>
+        </div>
       )}
 
       {/* ── Reviewing All Questions Progress View ── */}
@@ -468,33 +489,34 @@ function InterviewPageInner() {
         <div
           role="status"
           aria-live="polite"
-          className="rounded-2xl border border-indigo-100 bg-white p-8 shadow-md text-center space-y-6 animate-fade-in"
+          className="rounded-3xl border border-indigo-100 bg-white p-10 shadow-xl text-center space-y-8 animate-fade-in"
         >
-          <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-600 to-violet-500 shadow-lg shadow-indigo-200">
-            <span className="text-3xl animate-bounce" aria-hidden="true">
+          {/* Animated AI Brain Icon */}
+          <div className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-600 shadow-xl shadow-indigo-500/30">
+            <span className="text-4xl animate-bounce" aria-hidden="true">
               🤖
             </span>
-            <div className="absolute inset-0 rounded-full border-4 border-indigo-200 border-t-transparent animate-spin" />
+            <div className="absolute inset-0 rounded-3xl border-4 border-indigo-200 border-t-transparent animate-spin" />
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              AI Coach is Evaluating Your Interview
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+              Intervue AI Coach is Evaluating Your Session
             </h2>
-            <p className="text-sm text-gray-500 max-w-md mx-auto">
-              Analyzing your answers across the 3 key pillars: Structure & Depth, Tone & Delivery, and Connection to the Question.
+            <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+              Evaluating your answers across the 3 key pillars: Structure & Depth, Tone & Delivery, and Connection to the Question.
             </p>
           </div>
 
           {/* Progress Bar */}
-          <div className="max-w-md mx-auto space-y-2">
-            <div className="flex justify-between text-xs font-semibold text-gray-600">
+          <div className="max-w-md mx-auto space-y-3">
+            <div className="flex justify-between text-xs font-bold text-slate-700">
               <span>Evaluating Question {reviewProgress.current} of {reviewProgress.total}</span>
-              <span>{Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%</span>
+              <span className="text-indigo-600">{Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%</span>
             </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-gray-100 shadow-inner">
+            <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100 shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 to-violet-600 transition-all duration-500 ease-out"
+                className="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 transition-all duration-500 ease-out shadow-xs"
                 style={{
                   width: `${Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%`,
                 }}
@@ -503,18 +525,18 @@ function InterviewPageInner() {
           </div>
 
           {reviewProgress.currentQuestionText && (
-            <div className="rounded-lg bg-gray-50 border border-gray-200/80 p-3 text-xs text-gray-600 max-w-lg mx-auto italic truncate">
+            <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-4 text-xs text-slate-600 max-w-lg mx-auto italic truncate">
               &quot;{reviewProgress.currentQuestionText}&quot;
             </div>
           )}
 
           {reviewError && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200 max-w-md mx-auto space-y-2">
+            <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700 border border-red-200 max-w-md mx-auto space-y-3">
               <p className="font-semibold">{reviewError}</p>
               <button
                 type="button"
                 onClick={() => executeReviewAll(answers)}
-                className="rounded bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-sm"
+                className="rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
               >
                 Retry AI Review
               </button>
@@ -522,12 +544,6 @@ function InterviewPageInner() {
           )}
         </div>
       )}
-
-      {/* ── API Key Configuration Modal ── */}
-      <ApiKeyModal
-        isOpen={isKeyModalOpen}
-        onClose={() => setIsKeyModalOpen(false)}
-      />
     </div>
   );
 }
@@ -540,8 +556,9 @@ export default function InterviewPage() {
   return (
     <Suspense
       fallback={
-        <div className="flex min-h-[50vh] items-center justify-center p-4">
+        <div className="flex min-h-[50vh] flex-col items-center justify-center p-4 space-y-3">
           <LoadingSpinner />
+          <p className="text-xs font-medium text-slate-500">Loading interview session...</p>
         </div>
       }
     >

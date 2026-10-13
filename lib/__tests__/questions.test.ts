@@ -1,22 +1,14 @@
 // Unit tests for the question bank loader
 // Requirements: 1.1
-
 import { describe, it, expect } from "vitest";
 import { getQuestionsByCategory, getCategories } from "@/lib/questions";
-import type { Category } from "@/types/index";
 
-const ALL_CATEGORIES: Category[] = [
-  "Behavioral",
-  "Technical",
-  "Cultural Fit",
-  "Situational",
-  "Communication & Presence",
-];
+const ALL_CATEGORIES = getCategories();
 
 describe("getCategories", () => {
-  it("returns all five categories", () => {
+  it("returns all 32 categories", () => {
     const categories = getCategories();
-    expect(categories).toHaveLength(5);
+    expect(categories).toHaveLength(32);
     expect(categories).toEqual(expect.arrayContaining(ALL_CATEGORIES));
   });
 

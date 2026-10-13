@@ -1,6 +1,7 @@
 "use client";
 
 import type { Category } from "@/types";
+import { getCategoryIcon } from "@/lib/questions";
 
 interface CategoryCardProps {
   /** The interview category this card represents. */
@@ -12,47 +13,56 @@ interface CategoryCardProps {
 }
 
 /**
- * CategoryCard — selectable category tile rendered as a <button>.
- *
- * Accessibility:
- *   - Rendered as a native <button> so it is keyboard-focusable by default (Req 8.3, 8.4)
- *   - aria-pressed reflects the selected state for screen readers (design §CategoryCard)
- *   - Visible label is the category name text (Req 8.3)
- *   - focus-visible ring: 2px outline with ≥3:1 contrast against adjacent colors (Req 8.4)
- *
- * Visual states:
- *   - Default:  white background, gray border, dark text
- *   - Selected: indigo background, indigo border, white text — visually distinct (Req 1.1)
- *   - Hover:    subtle background lift on unselected cards
+ * CategoryCard — selectable category tile with domain icon and question count.
  */
 export default function CategoryCard({ category, selected, onSelect }: CategoryCardProps) {
+  const icon = getCategoryIcon(category);
+
   return (
     <button
       type="button"
       aria-pressed={selected}
       onClick={() => onSelect(category)}
       className={[
-        // Base layout & typography
-        "w-full rounded-lg border-2 px-4 py-5 text-left text-sm font-semibold transition-colors duration-150",
-        // Focus-visible ring — 2px outline, indigo ring with offset for ≥3:1 contrast (Req 8.4)
+        "group relative flex flex-col justify-between w-full rounded-xl border-2 p-4 text-left transition-all duration-150 min-h-[110px]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2",
-        // Selected vs. unselected visual states
         selected
-          ? "border-indigo-600 bg-indigo-600 text-white shadow-md"
-          : "border-gray-300 bg-white text-gray-800 hover:border-indigo-400 hover:bg-indigo-50",
+          ? "border-indigo-600 bg-indigo-600 text-white shadow-md ring-2 ring-indigo-500/30"
+          : "border-gray-200 bg-white text-gray-900 hover:border-indigo-300 hover:bg-indigo-50/40 hover:shadow-sm",
       ].join(" ")}
     >
-      {/* Category icon indicator — filled dot when selected, hollow when not */}
-      <span
-        aria-hidden="true"
-        className={[
-          "mb-2 block h-3 w-3 rounded-full",
-          selected ? "bg-white" : "bg-indigo-200",
-        ].join(" ")}
-      />
+      <div className="flex items-center justify-between w-full mb-2">
+        <span
+          className={[
+            "flex h-8 w-8 items-center justify-center rounded-lg text-lg transition-colors",
+            selected ? "bg-white/20 text-white" : "bg-gray-100 text-gray-700 group-hover:bg-indigo-100",
+          ].join(" ")}
+          aria-hidden="true"
+        >
+          {icon}
+        </span>
+        <span
+          className={[
+            "h-2 w-2 rounded-full transition-colors",
+            selected ? "bg-white" : "bg-gray-300 group-hover:bg-indigo-400",
+          ].join(" ")}
+          aria-hidden="true"
+        />
+      </div>
 
-      {/* Visible label — serves as the accessible name (Req 8.3) */}
-      <span className="block leading-snug">{category}</span>
+      <div>
+        <span className="block font-semibold text-sm leading-snug">
+          {category}
+        </span>
+        <span
+          className={[
+            "block mt-1 text-xs font-normal",
+            selected ? "text-indigo-100" : "text-gray-400",
+          ].join(" ")}
+        >
+          12 practice questions
+        </span>
+      </div>
     </button>
   );
 }

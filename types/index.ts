@@ -1,4 +1,4 @@
-// Shared TypeScript types for the Mock Interview Helper
+// Shared TypeScript types for Intervue
 // Requirements: 1.1, 5.1, 5.2, 7.1
 
 export type Category =
@@ -6,7 +6,34 @@ export type Category =
   | "Technical"
   | "Cultural Fit"
   | "Situational"
-  | "Communication & Presence";
+  | "Communication & Presence"
+  | "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)"
+  | "Multiple Mini Interviews (MMI)"
+  | "Law Degree Programs (Juris Doctor, LLB)"
+  | "MBA & Graduate Business School Admissions"
+  | "PhD & Master’s Thesis/Research Proposal Defenses"
+  | "Undergraduate Competitive University Programs (Oxbridge, Ivy League)"
+  | "Academic Scholarship & Grant Applications"
+  | "Study Abroad & Student Exchange Programs"
+  | "Medical Residency & Fellowship Matching"
+  | "Software Engineering Roles (Algorithmic, System Design, Whiteboard)"
+  | "Data Science & Machine Learning Positions"
+  | "DevOps, Cloud & Cybersecurity Engineering"
+  | "Management Consulting (Case Interviews)"
+  | "Investment Banking & Financial Analyst Positions"
+  | "Product Management Roles"
+  | "Sales & Business Development Positions"
+  | "Human Resources & Talent Acquisition Roles"
+  | "Customer Support & Success Management"
+  | "Executive & C-Suite Leadership Positions"
+  | "Visa & Immigration Clearances (Student, Work, Permanent Residency)"
+  | "Civil Service & Government Agency Appointments"
+  | "Military & Defense Officer Selection Boards"
+  | "Law Enforcement & Emergency Services Screening"
+  | "Beauty & Personality Pageants"
+  | "Competitive Debate & Model UN Selection"
+  | "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)"
+  | "Media, Journalism & Broadcast Screen Tests";
 
 export interface Question {
   id: string;

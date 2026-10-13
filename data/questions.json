@@ -34,6 +34,31 @@
       "id": "b7",
       "category": "Behavioral",
       "text": "Describe a situation where you had to manage multiple competing priorities. How did you decide what to focus on first?"
+    },
+    {
+      "id": "b8",
+      "category": "Behavioral",
+      "text": "Tell me about a time you received difficult or critical feedback. How did you react and what changes did you make?"
+    },
+    {
+      "id": "b9",
+      "category": "Behavioral",
+      "text": "Describe a time you had to collaborate with a cross-functional team member who had very different working styles."
+    },
+    {
+      "id": "b10",
+      "category": "Behavioral",
+      "text": "Give an example of a decision you made that was unpopular with your team. How did you communicate and implement it?"
+    },
+    {
+      "id": "b11",
+      "category": "Behavioral",
+      "text": "Tell me about a time you took initiative to solve a systemic problem before anyone asked you to."
+    },
+    {
+      "id": "b12",
+      "category": "Behavioral",
+      "text": "Describe a situation where you felt burned out or overwhelmed. How did you maintain quality and regain balance?"
     }
   ],
   "Technical": [
@@ -60,113 +85,1902 @@
     {
       "id": "t5",
       "category": "Technical",
-      "text": "What strategies do you use to ensure code quality and maintainability in a large codebase?"
+      "text": "What are the key trade-offs between monolithic architecture and microservices? When is each appropriate?"
     },
     {
       "id": "t6",
       "category": "Technical",
-      "text": "Explain how you would optimize a slow database query. Walk me through your diagnostic and resolution process."
+      "text": "How do you ensure application security and prevent vulnerabilities such as SQL injection, CSRF, and XSS?"
     },
     {
       "id": "t7",
       "category": "Technical",
-      "text": "How do you stay current with new technologies and programming languages? Can you give an example of a skill you recently learned and applied?"
+      "text": "Explain how caching strategies (e.g., Redis, CDNs, HTTP headers) can be applied to optimize system throughput."
+    },
+    {
+      "id": "t8",
+      "category": "Technical",
+      "text": "What is the CAP theorem, and how does it influence database selection and architecture in distributed systems?"
+    },
+    {
+      "id": "t9",
+      "category": "Technical",
+      "text": "How do you handle database migrations with zero downtime in continuous deployment environments?"
+    },
+    {
+      "id": "t10",
+      "category": "Technical",
+      "text": "Explain how asynchronous message queues (e.g., Kafka, RabbitMQ, SQS) help decouple services and handle traffic spikes."
+    },
+    {
+      "id": "t11",
+      "category": "Technical",
+      "text": "How do you profile and optimize memory leaks and CPU bottlenecks in web applications?"
+    },
+    {
+      "id": "t12",
+      "category": "Technical",
+      "text": "What strategies do you use for automated testing (unit, integration, end-to-end) to maintain high code confidence?"
     }
   ],
   "Cultural Fit": [
     {
       "id": "c1",
       "category": "Cultural Fit",
-      "text": "What type of work environment do you thrive in, and how does that align with what you know about our company culture?"
+      "text": "What type of work environment brings out your best performance, and what kind hinders it?"
     },
     {
       "id": "c2",
       "category": "Cultural Fit",
-      "text": "How do you handle situations where you disagree with a decision made by your manager or leadership team?"
+      "text": "How do you handle situations where your personal values conflict with a company decision or policy?"
     },
     {
       "id": "c3",
       "category": "Cultural Fit",
-      "text": "Describe how you typically collaborate with cross-functional teams. What do you do to build strong working relationships?"
+      "text": "What does a successful day at work look like for you, beyond just completing tasks?"
     },
     {
       "id": "c4",
       "category": "Cultural Fit",
-      "text": "What does work-life balance mean to you, and how do you maintain it during periods of high workload?"
+      "text": "How do you prefer to receive feedback from peers and managers, and how do you give it?"
     },
     {
       "id": "c5",
       "category": "Cultural Fit",
-      "text": "How do you approach giving and receiving constructive feedback? Can you share an example of each?"
+      "text": "Tell me about a time you contributed to fostering an inclusive, supportive environment within your team."
     },
     {
       "id": "c6",
       "category": "Cultural Fit",
-      "text": "What values are most important to you in a workplace, and how do you demonstrate those values in your day-to-day work?"
+      "text": "What motivated you to apply to our company specifically, rather than other organizations in this industry?"
+    },
+    {
+      "id": "c7",
+      "category": "Cultural Fit",
+      "text": "How do you navigate ambiguity when goals are loosely defined and rapid autonomy is required?"
+    },
+    {
+      "id": "c8",
+      "category": "Cultural Fit",
+      "text": "Describe a time when you celebrated a teammate's success or helped uplift someone who was struggling."
+    },
+    {
+      "id": "c9",
+      "category": "Cultural Fit",
+      "text": "How do you balance high ambition and speed with empathy and respectful collaboration?"
+    },
+    {
+      "id": "c10",
+      "category": "Cultural Fit",
+      "text": "What role does transparency play in your daily communication with leadership and teammates?"
+    },
+    {
+      "id": "c11",
+      "category": "Cultural Fit",
+      "text": "How do you approach continuous learning when your daily project workload is already heavy?"
+    },
+    {
+      "id": "c12",
+      "category": "Cultural Fit",
+      "text": "If you could change one common corporate practice to improve workplace culture, what would it be?"
     }
   ],
   "Situational": [
     {
       "id": "s1",
       "category": "Situational",
-      "text": "Imagine you are assigned to lead a project but quickly realize the timeline is unrealistic. What would you do?"
+      "text": "You are halfway through a critical sprint when a key stakeholder suddenly requests a major scope change. How do you respond?"
     },
     {
       "id": "s2",
       "category": "Situational",
-      "text": "If a key team member unexpectedly left in the middle of a critical project, how would you handle the situation to keep things on track?"
+      "text": "You discover a critical bug in production on a Friday afternoon right before release. What steps do you take?"
     },
     {
       "id": "s3",
       "category": "Situational",
-      "text": "Suppose a client is unhappy with a deliverable and is threatening to escalate. How would you approach the conversation and resolve the issue?"
+      "text": "A team member is consistently missing deliverables, jeopardizing the team's project commitments. How do you address it?"
     },
     {
       "id": "s4",
       "category": "Situational",
-      "text": "You discover that a colleague has been cutting corners in a way that could create compliance or quality issues. What steps would you take?"
+      "text": "You disagree strongly with a technical or strategic direction chosen by your team lead. How do you voice your concern?"
     },
     {
       "id": "s5",
       "category": "Situational",
-      "text": "If you were given two high-priority tasks by two different managers with conflicting deadlines, how would you handle it?"
+      "text": "You are assigned to lead a project where requirements are vague and stakeholders have conflicting expectations. What is your first move?"
     },
     {
       "id": "s6",
       "category": "Situational",
-      "text": "Imagine you are onboarding to a new role and notice that the team has a process that seems inefficient. How would you approach suggesting improvements without overstepping?"
+      "text": "A client or partner is extremely dissatisfied with your deliverable and threatens escalation. How do you handle the conversation?"
+    },
+    {
+      "id": "s7",
+      "category": "Situational",
+      "text": "You are given two high-priority projects from two different executives with conflicting deadlines. How do you negotiate?"
+    },
+    {
+      "id": "s8",
+      "category": "Situational",
+      "text": "An external API or third-party service your application relies on goes down unexpectedly during peak hours. What is your response protocol?"
+    },
+    {
+      "id": "s9",
+      "category": "Situational",
+      "text": "You notice that a colleague is taking credit for work that was primarily completed by an intern or junior peer. What do you do?"
+    },
+    {
+      "id": "s10",
+      "category": "Situational",
+      "text": "A security audit reveals that credentials were accidentally committed to a public repository. What immediate and preventive actions do you take?"
+    },
+    {
+      "id": "s11",
+      "category": "Situational",
+      "text": "Your team is pressured to cut corners on code quality or compliance to meet a marketing launch deadline. How do you guide the decision?"
+    },
+    {
+      "id": "s12",
+      "category": "Situational",
+      "text": "You join a project with massive legacy technical debt and no documentation. How do you build momentum without causing regressions?"
     }
   ],
   "Communication & Presence": [
     {
-      "id": "p1",
+      "id": "cp1",
       "category": "Communication & Presence",
-      "text": "Describe a time when you had to present a complex technical concept to a non-technical audience. How did you make it accessible?"
+      "text": "How would you explain a highly technical concept or system architecture to a non-technical executive or client?"
     },
     {
-      "id": "p2",
+      "id": "cp2",
       "category": "Communication & Presence",
-      "text": "Tell me about a time when a miscommunication caused a problem at work. What happened and how did you resolve it?"
+      "text": "Describe how you prepare for and deliver high-stakes presentations to senior leadership or large audiences."
     },
     {
-      "id": "p3",
+      "id": "cp3",
       "category": "Communication & Presence",
-      "text": "How do you tailor your communication style when working with different stakeholders, such as executives versus engineers?"
+      "text": "Tell me about a time you had to deliver difficult or disappointing news to a team or client. How did you structure the message?"
     },
     {
-      "id": "p4",
+      "id": "cp4",
       "category": "Communication & Presence",
-      "text": "Describe your approach to written communication in a remote or hybrid work environment. How do you ensure clarity and avoid misunderstandings?"
+      "text": "How do you ensure active listening during meetings where there are strong conflicting opinions?"
     },
     {
-      "id": "p5",
+      "id": "cp5",
       "category": "Communication & Presence",
-      "text": "Tell me about a time you had to deliver difficult news to a team or stakeholder. How did you prepare and what was the reaction?"
+      "text": "How do you adapt your tone and communication style when writing async messages vs. speaking live in 1-on-1s?"
     },
     {
-      "id": "p6",
+      "id": "cp6",
       "category": "Communication & Presence",
-      "text": "How do you ensure your voice is heard in meetings, especially when working with more dominant personalities or in large group settings?"
+      "text": "Describe a situation where a miscommunication caused a problem in a project. How did you resolve it and prevent repetition?"
+    },
+    {
+      "id": "cp7",
+      "category": "Communication & Presence",
+      "text": "How do you project confidence and composure when put on the spot with questions you don't immediately know the answer to?"
+    },
+    {
+      "id": "cp8",
+      "category": "Communication & Presence",
+      "text": "How do you handle interrupting colleagues or dominant voices in group discussions to ensure all perspectives are heard?"
+    },
+    {
+      "id": "cp9",
+      "category": "Communication & Presence",
+      "text": "What techniques do you use to persuade skeptical stakeholders when presenting data-driven recommendations?"
+    },
+    {
+      "id": "cp10",
+      "category": "Communication & Presence",
+      "text": "How do you communicate effectively across global teams with varying cultural backgrounds and primary languages?"
+    },
+    {
+      "id": "cp11",
+      "category": "Communication & Presence",
+      "text": "Describe how you keep stakeholders informed throughout a long-term project without overwhelming them with unnecessary detail."
+    },
+    {
+      "id": "cp12",
+      "category": "Communication & Presence",
+      "text": "When facilitating a brainstorm or retro, how do you steer off-topic conversations back toward productive outcomes?"
+    }
+  ],
+  "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)": [
+    {
+      "id": "med1",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "What specific experiences crystallized your decision to pursue medicine/nursing/dentistry rather than other scientific or clinical fields?"
+    },
+    {
+      "id": "med2",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "How do you balance maintaining deep empathy for patients while preserving the professional and emotional boundaries required for clinical objectivity?"
+    },
+    {
+      "id": "med3",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "Describe a situation where you had to care for or support an individual in acute distress. What did you learn about your bedside manner?"
+    },
+    {
+      "id": "med4",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "A patient refuses a life-saving blood transfusion or procedure due to deeply held personal or religious beliefs. How do you approach this?"
+    },
+    {
+      "id": "med5",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "How will you manage the rigorous academic workload, long clinical shifts, and high stress levels inherent in medical school?"
+    },
+    {
+      "id": "med6",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "Discuss an issue currently facing the public healthcare system (e.g., healthcare disparities, physician burnout) and potential remedies."
+    },
+    {
+      "id": "med7",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "Describe a time you observed a clinical error or unethical behavior. How did you react or how would you handle it as a student clinician?"
+    },
+    {
+      "id": "med8",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "What role does interprofessional collaboration (between doctors, nurses, pharmacists, and allied health staff) play in minimizing patient morbidity?"
+    },
+    {
+      "id": "med9",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "How do you explain a complex diagnosis and complex treatment plan to a patient with low health literacy and high anxiety?"
+    },
+    {
+      "id": "med10",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "Tell me about a time you failed or faced rejection. How did it shape your resilience as a future healthcare provider?"
+    },
+    {
+      "id": "med11",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "How has your understanding of healthcare ethics evolved through your clinical volunteering or shadowing experiences?"
+    },
+    {
+      "id": "med12",
+      "category": "Medical & Health Sciences Programs (MBBS, MD, Nursing, Dentistry)",
+      "text": "Why did you choose to apply to our specific medical/health sciences faculty and curriculum format (e.g., PBL, integrated clinicals)?"
+    }
+  ],
+  "Multiple Mini Interviews (MMI)": [
+    {
+      "id": "mmi1",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 1: Ethical Dilemma] You are an ER physician with only one ICU bed left. You have a 78-year-old patient with pneumonia and a 24-year-old trauma victim from a drunk driving accident. How do you decide who receives the bed?"
+    },
+    {
+      "id": "mmi2",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 2: Breaking Bad News] Enter the room and roleplay: A patient's routine biopsy results indicate malignant cancer. How do you structure the initial disclosure conversation with the patient?"
+    },
+    {
+      "id": "mmi3",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 3: Professionalism & Whistleblowing] You smell alcohol on the breath of your resident supervisor right before surgery. What immediate and confidential steps do you take?"
+    },
+    {
+      "id": "mmi4",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 4: Public Health Policy] Should the government mandate a sugar tax or calorie labeling on all restaurant menus to combat childhood obesity? Argue both sides and present your recommendation."
+    },
+    {
+      "id": "mmi5",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 5: Patient Autonomy] A 16-year-old patient requests confidential birth control prescriptions, but their parents explicitly demand full access to medical records. How do you resolve this under Gillick competence principles?"
+    },
+    {
+      "id": "mmi6",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 6: De-escalation Roleplay] An anxious family member in the waiting room is screaming at the triage receptionist after waiting 4 hours. How do you intervene to de-escalate the situation safely?"
+    },
+    {
+      "id": "mmi7",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 7: Resource Allocation] Should expensive experimental gene therapies with low survival odds be covered by taxpayer-funded universal healthcare? Justify your ethical stance."
+    },
+    {
+      "id": "mmi8",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 8: Critical Thinking] A scientific paper published in a renowned journal claims a miracle herbal cure for diabetes. How would you critically evaluate the study methodology before advising a patient?"
+    },
+    {
+      "id": "mmi9",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 9: Cultural Competency] A patient's family refuses a male doctor examining their female relative due to cultural and religious beliefs. How do you accommodate patient comfort while ensuring prompt clinical care?"
+    },
+    {
+      "id": "mmi10",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 10: Academic Integrity] You witness your close friend in medical school opening an unauthorized cheat sheet during a high-stakes anatomy exam. What do you do?"
+    },
+    {
+      "id": "mmi11",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 11: Empathy & Active Listening] A patient who was just diagnosed with early-stage Alzheimer's breaks down crying in your clinic, terrified of losing their independence. What do you say?"
+    },
+    {
+      "id": "mmi12",
+      "category": "Multiple Mini Interviews (MMI)",
+      "text": "[Station 12: Self-Reflection] Describe a personal mistake you made that caused harm or inconvenience to someone else. How did you take accountability and make amends?"
+    }
+  ],
+  "Law Degree Programs (Juris Doctor, LLB)": [
+    {
+      "id": "law1",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "What foundational legal dilemma or societal injustice motivated your ambition to study law and enter the legal profession?"
+    },
+    {
+      "id": "law2",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "How do you distinguish between what is legally permissible and what is morally just? Give a concrete legal example."
+    },
+    {
+      "id": "law3",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "As an advocate, how would you zealously defend a criminal client accused of a heinous crime whose personal actions you personally abhor?"
+    },
+    {
+      "id": "law4",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "Discuss a landmark Supreme Court or constitutional ruling that you believe was either profoundly decided or fundamentally flawed."
+    },
+    {
+      "id": "law5",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "How do you navigate the tension between judicial originalism/textualism and the doctrine of a living, evolving constitution?"
+    },
+    {
+      "id": "law6",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "How do you handle intense adversarial debate without letting personal animosity compromise objective legal analysis?"
+    },
+    {
+      "id": "law7",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "How should the legal system balance individual free speech rights against the proliferation of hate speech and disinformation?"
+    },
+    {
+      "id": "law8",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "What area of law (e.g., corporate, public interest, intellectual property, human rights) interests you most, and why?"
+    },
+    {
+      "id": "law9",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "Describe a complex analytical text or argument you dissected recently. How did you identify its logical fallacies?"
+    },
+    {
+      "id": "law10",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "How can the legal profession expand access to justice for marginalized populations who cannot afford private legal counsel?"
+    },
+    {
+      "id": "law11",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "Explain how emerging technologies such as generative AI challenge existing copyright, liability, and privacy laws."
+    },
+    {
+      "id": "law12",
+      "category": "Law Degree Programs (Juris Doctor, LLB)",
+      "text": "Why is our law school's clinical program and pedagogical approach the right environment for your legal career aspirations?"
+    }
+  ],
+  "MBA & Graduate Business School Admissions": [
+    {
+      "id": "mba1",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "Walk me through your career progression and explain why an MBA is essential to achieve your immediate post-graduation career goals."
+    },
+    {
+      "id": "mba2",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "What are your short-term and long-term career aspirations, and how specifically will our MBA curriculum bridge your skill gaps?"
+    },
+    {
+      "id": "mba3",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "Describe a time when you led a team through ambiguity or organizational crisis without formal executive authority."
+    },
+    {
+      "id": "mba4",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "Tell me about a high-stakes business risk you calculated and executed that failed. What key insights did you gain?"
+    },
+    {
+      "id": "mba5",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "What unique perspective, industry expertise, or cultural background will you contribute to our diverse case-study cohort?"
+    },
+    {
+      "id": "mba6",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "How do you handle a peer in a study group or project team who is not pulling their weight or contributing poor quality work?"
+    },
+    {
+      "id": "mba7",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "Describe a strategic problem your previous organization faced and what recommendation you proposed to senior leadership."
+    },
+    {
+      "id": "mba8",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "How will you leverage our business school's alumni network, student clubs, and global immersion programs during your degree?"
+    },
+    {
+      "id": "mba9",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "What does ethical leadership mean to you in an era of corporate governance scandals and aggressive financial targets?"
+    },
+    {
+      "id": "mba10",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "Tell me about a time you had to persuade cross-functional partners with conflicting incentives to align behind a unified business initiative."
+    },
+    {
+      "id": "mba11",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "If your primary post-MBA plan does not materialize due to macroeconomic headwinds, what is your contingency Plan B?"
+    },
+    {
+      "id": "mba12",
+      "category": "MBA & Graduate Business School Admissions",
+      "text": "What is one constructive feedback area from your recent performance review that you plan to address during business school?"
+    }
+  ],
+  "PhD & Master’s Thesis/Research Proposal Defenses": [
+    {
+      "id": "phd1",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "What is the core novel contribution of your research, and how does it advance the existing theoretical canon in your discipline?"
+    },
+    {
+      "id": "phd2",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "What methodological limitations exist in your experimental design, and how did you control for confounding variables?"
+    },
+    {
+      "id": "phd3",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "How do you justify your choice of qualitative/quantitative methodology over alternative, well-established research frameworks?"
+    },
+    {
+      "id": "phd4",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "If a prominent peer researcher claims your sample size lacks statistical power or generalizability, how do you defend your conclusions?"
+    },
+    {
+      "id": "phd5",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "Walk the committee through the theoretical lineage connecting your hypotheses to foundational literature."
+    },
+    {
+      "id": "phd6",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "What unexpected anomalies or contradictory data emerged during your analysis, and how do you interpret them?"
+    },
+    {
+      "id": "phd7",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "What are the practical or real-world policy implications of your thesis findings for industry practitioners?"
+    },
+    {
+      "id": "phd8",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "How did you ensure reproducibility, data integrity, and strict adherence to academic ethics throughout your research?"
+    },
+    {
+      "id": "phd9",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "If you had an additional year and double the grant funding, what secondary research questions would you pursue?"
+    },
+    {
+      "id": "phd10",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "How did you manage significant roadblocks or negative experimental results that threatened your project timeline?"
+    },
+    {
+      "id": "phd11",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "How does your interdisciplinary approach integrate findings from adjacent scientific fields into your conceptual model?"
+    },
+    {
+      "id": "phd12",
+      "category": "PhD & Master’s Thesis/Research Proposal Defenses",
+      "text": "Where do you plan to publish your thesis findings, and how will this research propel your postdoctoral or academic career?"
+    }
+  ],
+  "Undergraduate Competitive University Programs (Oxbridge, Ivy League)": [
+    {
+      "id": "ivy1",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "Beyond high grades and school curricula, what intellectual questions genuinely obsess your curiosity and independent reading?"
+    },
+    {
+      "id": "ivy2",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "[Thought Experiment] A ship has all its wooden planks replaced one by one over ten years. Is it still the same ship? Defend your reasoning."
+    },
+    {
+      "id": "ivy3",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "Discuss a scholarly book or paper you read recently that fundamentally altered how you interpret a major historical or scientific event."
+    },
+    {
+      "id": "ivy4",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "How do you respond in a tutorial or seminar when a world-class professor critiques your foundational thesis and proves you wrong?"
+    },
+    {
+      "id": "ivy5",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "What interdisciplinary connections can you draw between your proposed major and an entirely unrelated subject like philosophy or art?"
+    },
+    {
+      "id": "ivy6",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "Why do you believe you will thrive in our rigorous collegiate tutorial/seminar system rather than a lecture-based university?"
+    },
+    {
+      "id": "ivy7",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "Describe an extracurricular project or initiative where you pushed yourself intellectually far outside your comfort zone."
+    },
+    {
+      "id": "ivy8",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "If you could conduct a year-long investigation into any unsolved dilemma in human knowledge, what would you investigate and why?"
+    },
+    {
+      "id": "ivy9",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "How do you distinguish between genuine intellectual debate and ideological conformity on university campuses?"
+    },
+    {
+      "id": "ivy10",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "Tell me about a personal passion or quirky interest that reveals something authentic about your character not listed on your resume."
+    },
+    {
+      "id": "ivy11",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "What would you do if you were placed in an academic cohort where everyone is significantly more knowledgeable than you?"
+    },
+    {
+      "id": "ivy12",
+      "category": "Undergraduate Competitive University Programs (Oxbridge, Ivy League)",
+      "text": "How will your presence enrich our residential college community outside of academic classrooms?"
+    }
+  ],
+  "Academic Scholarship & Grant Applications": [
+    {
+      "id": "grant1",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "How will receiving this prestigious scholarship accelerate your long-term vision to create tangible societal or scientific impact?"
+    },
+    {
+      "id": "grant2",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "Why should the selection committee invest these financial resources in your journey over hundreds of other equally qualified scholars?"
+    },
+    {
+      "id": "grant3",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "Describe a significant economic, geographic, or personal adversity you overcame to reach this stage of your academic career."
+    },
+    {
+      "id": "grant4",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "Walk us through your budget breakdown and demonstrate how grant funds will be responsibly and measurably utilized."
+    },
+    {
+      "id": "grant5",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "What measurable milestones and key performance indicators will demonstrate that your funded project has succeeded?"
+    },
+    {
+      "id": "grant6",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "How do your research or career goals directly align with the founding mission and values of this trust or foundation?"
+    },
+    {
+      "id": "grant7",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "Describe a grassroots community leadership initiative where you mobilized resources to solve a local crisis."
+    },
+    {
+      "id": "grant8",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "How will you serve as a global ambassador and active contributor to this scholarship's esteemed alumni community?"
+    },
+    {
+      "id": "grant9",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "What contingencies are in place if your initial project hypothesis is invalidated during the grant funding period?"
+    },
+    {
+      "id": "grant10",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "How do you plan to mentor and open doors for future underrepresented scholars following in your footsteps?"
+    },
+    {
+      "id": "grant11",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "What is the biggest risk your proposed research or academic endeavor faces, and what mitigation strategies have you prepared?"
+    },
+    {
+      "id": "grant12",
+      "category": "Academic Scholarship & Grant Applications",
+      "text": "If this grant covers only 60% of your requested budget, how would you prioritize allocations to ensure project viability?"
+    }
+  ],
+  "Study Abroad & Student Exchange Programs": [
+    {
+      "id": "abroad1",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "Why did you choose this specific host country and university institution for your international exchange semester?"
+    },
+    {
+      "id": "abroad2",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How will you navigate acute culture shock, language barriers, and homesickness while maintaining academic excellence?"
+    },
+    {
+      "id": "abroad3",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "Describe a time you were placed in an unfamiliar cultural environment. How did you adapt your behaviors and communication?"
+    },
+    {
+      "id": "abroad4",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How do you plan to represent your home university and country with maturity, cultural sensitivity, and diplomacy?"
+    },
+    {
+      "id": "abroad5",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "If you experience an emergency abroad—such as lost travel documents, illness, or housing fraud—how will you take independent action?"
+    },
+    {
+      "id": "abroad6",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How will the academic coursework available at your host institution complement your major in ways not possible domestically?"
+    },
+    {
+      "id": "abroad7",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "What strategies will you use to make local friends and immerse yourself in the culture rather than staying within an expat bubble?"
+    },
+    {
+      "id": "abroad8",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How do you handle cultural misunderstandings or micro-conflicts with local host families or international roommates?"
+    },
+    {
+      "id": "abroad9",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How do you anticipate this global immersion experience will shape your future international career trajectory?"
+    },
+    {
+      "id": "abroad10",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "What steps have you taken to prepare financially and mentally for the cost of living and logistical independence abroad?"
+    },
+    {
+      "id": "abroad11",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "How will you bring back your learnings and international perspective to benefit students at your home university campus?"
+    },
+    {
+      "id": "abroad12",
+      "category": "Study Abroad & Student Exchange Programs",
+      "text": "Describe your language learning plan if your host destination has a primary language other than your native tongue."
+    }
+  ],
+  "Medical Residency & Fellowship Matching": [
+    {
+      "id": "res1",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Why is our residency training program the optimal clinical and surgical match for your long-term career in this specialty?"
+    },
+    {
+      "id": "res2",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Walk me through a memorable clinical case where your rapid diagnostic acumen directly impacted patient outcomes."
+    },
+    {
+      "id": "res3",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Describe a clinical mistake or near-miss you made during your medical clerkship. How did you report and learn from it?"
+    },
+    {
+      "id": "res4",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Residency demands relentless 80-hour workweeks, night calls, and severe emotional exhaustion. What is your proven resilience system?"
+    },
+    {
+      "id": "res5",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Tell me about a high-stress confrontation with a senior attending physician or nurse and how you handled it professionally."
+    },
+    {
+      "id": "res6",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "How do you see your balance between clinical duties, subspecialty fellowship training, and clinical research developing?"
+    },
+    {
+      "id": "res7",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "A patient's family demands an unindicated test or medication and accuses you of negligence. How do you manage the encounter?"
+    },
+    {
+      "id": "res8",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "What qualities do you look for in senior residents and program leadership when seeking mentorship and clinical autonomy?"
+    },
+    {
+      "id": "res9",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "How will you contribute to bedside teaching and mentoring for incoming 3rd and 4th-year medical students rotating through your service?"
+    },
+    {
+      "id": "res10",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Describe your experience with clinical quality improvement (QI) projects or hospital safety protocols."
+    },
+    {
+      "id": "res11",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "Where do you see yourself practicing five years after graduating from our residency program?"
+    },
+    {
+      "id": "res12",
+      "category": "Medical Residency & Fellowship Matching",
+      "text": "What unique clinical strengths will you bring to our incoming resident cohort on day one of intern year?"
+    }
+  ],
+  "Software Engineering Roles (Algorithmic, System Design, Whiteboard)": [
+    {
+      "id": "swe1",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Walk me through how you would architect a global distributed rate limiter handling 100,000 requests per second."
+    },
+    {
+      "id": "swe2",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Design a real-time collaborative document editor (like Google Docs) with conflict-free replicated data types (CRDTs) or operational transformation."
+    },
+    {
+      "id": "swe3",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "How would you optimize a graph traversal algorithm encountering performance bottlenecks on large social networks?"
+    },
+    {
+      "id": "swe4",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Explain the mechanics of distributed locks in Redis or ZooKeeper and how you avoid split-brain scenarios and deadlock."
+    },
+    {
+      "id": "swe5",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Design a high-volume notification service that guarantees at-least-once delivery with deduplication across SMS, email, and push."
+    },
+    {
+      "id": "swe6",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "How do you approach database sharding, consistent hashing, and rebalancing data across nodes without downtime?"
+    },
+    {
+      "id": "swe7",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Describe how you debug a production thread pool starvation or event loop lag under sudden traffic spikes."
+    },
+    {
+      "id": "swe8",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "What are the trade-offs between REST, GraphQL, and gRPC for client-to-service and internal service-to-service communication?"
+    },
+    {
+      "id": "swe9",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "How do you design a search autocomplete system that returns low-latency suggestions across millions of query terms?"
+    },
+    {
+      "id": "swe10",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Explain how garbage collection works in your primary runtime (e.g., V8, JVM) and how you minimize stop-the-world pauses."
+    },
+    {
+      "id": "swe11",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "How do you enforce idempotent API behavior in financial transactions and payment processing webhooks?"
+    },
+    {
+      "id": "swe12",
+      "category": "Software Engineering Roles (Algorithmic, System Design, Whiteboard)",
+      "text": "Describe a difficult technical disagreement you had regarding software architecture. How was consensus reached?"
+    }
+  ],
+  "Data Science & Machine Learning Positions": [
+    {
+      "id": "ds1",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "How do you detect, monitor, and mitigate feature drift and concept drift in machine learning models deployed in production?"
+    },
+    {
+      "id": "ds2",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "Explain the trade-offs between precision and recall in a fraud detection model where false negatives carry severe monetary penalties."
+    },
+    {
+      "id": "ds3",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "How would you design an end-to-end recommendation system for a streaming service with millions of users and cold-start items?"
+    },
+    {
+      "id": "ds4",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "What strategies do you use to handle severe class imbalance (e.g., 99.9% negative vs 0.1% positive) in tabular datasets?"
+    },
+    {
+      "id": "ds5",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "Explain how transformers utilize self-attention mechanisms compared to traditional recurrent neural networks (RNNs)."
+    },
+    {
+      "id": "ds6",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "When building an enterprise LLM solution, how do you decide between Prompt Engineering, RAG (Retrieval-Augmented Generation), and Fine-Tuning?"
+    },
+    {
+      "id": "ds7",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "How do you explain model explainability and feature importance (e.g., SHAP, LIME) to non-technical business stakeholders?"
+    },
+    {
+      "id": "ds8",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "Describe how you design A/B testing experiments to establish causality when sample interference or network effects exist."
+    },
+    {
+      "id": "ds9",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "What techniques do you employ to prevent overfitting in deep neural networks beyond standard L1/L2 regularization and dropout?"
+    },
+    {
+      "id": "ds10",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "How do you build a vector search pipeline using embeddings and vector databases (e.g., Pinecone, Milvus, pgvector) with low latency?"
+    },
+    {
+      "id": "ds11",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "Walk me through how you clean, impute, and preprocess real-world dirty data with high rates of missing values."
+    },
+    {
+      "id": "ds12",
+      "category": "Data Science & Machine Learning Positions",
+      "text": "What metrics (e.g., ROC-AUC, PR-AUC, F1, RMSE, MAP@K) would you select to evaluate a ranking and search model?"
+    }
+  ],
+  "DevOps, Cloud & Cybersecurity Engineering": [
+    {
+      "id": "devops1",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you design a Zero Trust architecture across multi-cloud environments (AWS, Azure, GCP) with strict IAM policies?"
+    },
+    {
+      "id": "devops2",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "Walk through your incident response protocol during an active ransomware attack or zero-day remote code execution breach."
+    },
+    {
+      "id": "devops3",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you architect a Kubernetes cluster for maximum high availability, auto-scaling, and multi-region disaster recovery?"
+    },
+    {
+      "id": "devops4",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "Explain how you implement GitOps workflows using tools like ArgoCD or Flux to prevent configuration drift."
+    },
+    {
+      "id": "devops5",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you manage secret rotation, encryption at rest/transit, and privileged access using HashiCorp Vault or Cloud KMS?"
+    },
+    {
+      "id": "devops6",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "Describe your strategy for cost optimization (FinOps) in cloud infrastructure without sacrificing performance or redundancy."
+    },
+    {
+      "id": "devops7",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you establish observability, tracing, and SLI/SLO alerting using Prometheus, Grafana, OpenTelemetry, and Datadog?"
+    },
+    {
+      "id": "devops8",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "What steps do you take to integrate Shift-Left security and automated SAST/DAST scanning into CI/CD pipelines?"
+    },
+    {
+      "id": "devops9",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "Explain how blue-green and canary deployment strategies minimize customer downtime during database schema evolutions."
+    },
+    {
+      "id": "devops10",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you mitigate sophisticated volumetric DDoS attacks and application-layer API abuses using WAFs and Cloudflare?"
+    },
+    {
+      "id": "devops11",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "Describe a major infrastructure outage you investigated. What was the root cause and blameless post-mortem remediation?"
+    },
+    {
+      "id": "devops12",
+      "category": "DevOps, Cloud & Cybersecurity Engineering",
+      "text": "How do you maintain compliance standards (SOC 2, ISO 27001, HIPAA) in fast-moving engineering environments?"
+    }
+  ],
+  "Management Consulting (Case Interviews)": [
+    {
+      "id": "cons1",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Market Sizing] Estimate the annual market size for commercial drone delivery services in the United States over the next 5 years."
+    },
+    {
+      "id": "cons2",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Profitability Case] A premium airline has experienced a 25% drop in profitability despite record passenger numbers. Structure your diagnostic framework."
+    },
+    {
+      "id": "cons3",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Market Entry] A European electric vehicle manufacturer wants to enter Southeast Asia. How would you evaluate market viability and entry mode?"
+    },
+    {
+      "id": "cons4",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[M&A Due Diligence] A private equity firm is evaluating the acquisition of a regional hospital chain. What critical revenue and regulatory risks would you assess?"
+    },
+    {
+      "id": "cons5",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Pricing Strategy] A biotech company developed an effective cure for a rare genetic disease. How should they price the drug considering R&D recovery and public scrutiny?"
+    },
+    {
+      "id": "cons6",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Operational Turnaround] A retail giant is suffering from supply chain delays and warehouse congestion during peak holiday seasons. How do you identify bottlenecks?"
+    },
+    {
+      "id": "cons7",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "How do you structure an executive presentation using the Pyramid Principle (starting with the answer first) to convince a skeptical C-suite?"
+    },
+    {
+      "id": "cons8",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Growth Strategy] A SaaS company has plateaued at $50M ARR. What levers would you evaluate to reignite 40% year-over-year revenue expansion?"
+    },
+    {
+      "id": "cons9",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "How do you synthesize massive, messy client datasets when 30% of the numbers are contradictory and qualitative opinions conflict?"
+    },
+    {
+      "id": "cons10",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "[Digital Transformation] A traditional 100-year-old bank is losing millennial customers to neo-banks. What omnichannel transformation strategy would you propose?"
+    },
+    {
+      "id": "cons11",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "Tell me about a time you had to change your hypothesis in the middle of a case analysis after unexpected benchmark data emerged."
+    },
+    {
+      "id": "cons12",
+      "category": "Management Consulting (Case Interviews)",
+      "text": "How do you manage demanding client expectations and brutal travel schedules while sustaining peak analytical output?"
+    }
+  ],
+  "Investment Banking & Financial Analyst Positions": [
+    {
+      "id": "ib1",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Walk me through how a $10 increase in depreciation flows through the Income Statement, Cash Flow Statement, and Balance Sheet."
+    },
+    {
+      "id": "ib2",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Explain how you build an unlevered Discounted Cash Flow (DCF) model and how you calculate the Weighted Average Cost of Capital (WACC)."
+    },
+    {
+      "id": "ib3",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "What are the primary valuation methodologies (Comps, Precedent Transactions, DCF, LBO), and in what order do they typically yield highest valuation?"
+    },
+    {
+      "id": "ib4",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Why would an investment banker use Enterprise Value / EBITDA instead of P/E ratio when comparing capital-intensive companies?"
+    },
+    {
+      "id": "ib5",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Walk me through the mechanics of a Leveraged Buyout (LBO) model and the primary drivers of internal rate of return (IRR)."
+    },
+    {
+      "id": "ib6",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "If a company with a P/E of 20x acquires a company with a P/E of 12x in an all-stock transaction, is the deal accretive or dilutive to EPS?"
+    },
+    {
+      "id": "ib7",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "How do rising central bank interest rates impact cost of equity, debt capacity, and corporate M&A transaction volumes?"
+    },
+    {
+      "id": "ib8",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Tell me about a recent M&A deal or IPO in the headlines that caught your attention. What was the strategic rationale and valuation multiples?"
+    },
+    {
+      "id": "ib9",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Explain the difference between working capital investment, capital expenditures, and free cash flow to firm (FCFF)."
+    },
+    {
+      "id": "ib10",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "How would you value a high-growth tech startup with negative EBITDA and negative net income?"
+    },
+    {
+      "id": "ib11",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "How do you maintain meticulous financial modeling precision under tight 3:00 AM pitchbook deadlines?"
+    },
+    {
+      "id": "ib12",
+      "category": "Investment Banking & Financial Analyst Positions",
+      "text": "Why investment banking over corporate development, equity research, or private wealth management?"
+    }
+  ],
+  "Product Management Roles": [
+    {
+      "id": "pm1",
+      "category": "Product Management Roles",
+      "text": "How do you evaluate and prioritize features when engineering, sales, executive leadership, and customer support all demand conflicting roadmaps?"
+    },
+    {
+      "id": "pm2",
+      "category": "Product Management Roles",
+      "text": "Our flagship consumer mobile app experienced an unexpected 15% drop in 30-day retention over the last quarter. How do you diagnose the cause?"
+    },
+    {
+      "id": "pm3",
+      "category": "Product Management Roles",
+      "text": "Design an MVP for an autonomous delivery robot service tailored specifically for dense university campuses."
+    },
+    {
+      "id": "pm4",
+      "category": "Product Management Roles",
+      "text": "How do you determine the North Star metric and supporting counter-metrics for a two-sided marketplace platform?"
+    },
+    {
+      "id": "pm5",
+      "category": "Product Management Roles",
+      "text": "Tell me about a product or feature you championed that failed to gain customer adoption. What did you learn?"
+    },
+    {
+      "id": "pm6",
+      "category": "Product Management Roles",
+      "text": "How do you manage disagreements with your Lead Software Architect when an architectural refactor delays your product launch timeline?"
+    },
+    {
+      "id": "pm7",
+      "category": "Product Management Roles",
+      "text": "Walk me through how you conduct user research and customer discovery calls to validate unmet problems before writing a PRD."
+    },
+    {
+      "id": "pm8",
+      "category": "Product Management Roles",
+      "text": "How do you make product decisions when quantitative analytics data is sparse, unreliable, or contradictory?"
+    },
+    {
+      "id": "pm9",
+      "category": "Product Management Roles",
+      "text": "Pick your favorite mobile app. What is one critical feature you would build next to expand its revenue or user engagement?"
+    },
+    {
+      "id": "pm10",
+      "category": "Product Management Roles",
+      "text": "How do you balance introducing monetization (ads, paywalls) without degrading the core user experience?"
+    },
+    {
+      "id": "pm11",
+      "category": "Product Management Roles",
+      "text": "Describe your framework for deprecating/sunsetting a legacy product feature that 5% of passionate power users still rely on."
+    },
+    {
+      "id": "pm12",
+      "category": "Product Management Roles",
+      "text": "How do you communicate product vision and strategic milestones effectively across cross-functional teams without direct managerial authority?"
+    }
+  ],
+  "Sales & Business Development Positions": [
+    {
+      "id": "sales1",
+      "category": "Sales & Business Development Positions",
+      "text": "Walk me through your end-to-end enterprise sales qualification framework (e.g., MEDDIC, BANT) and how you identify true economic buyers."
+    },
+    {
+      "id": "sales2",
+      "category": "Sales & Business Development Positions",
+      "text": "A prospect says: 'We already use your competitor, we love them, and our multi-year agreement has 18 months left.' How do you respond?"
+    },
+    {
+      "id": "sales3",
+      "category": "Sales & Business Development Positions",
+      "text": "Describe a six-figure or seven-figure deal that was stalling in procurement or legal. What creative steps did you take to close it?"
+    },
+    {
+      "id": "sales4",
+      "category": "Sales & Business Development Positions",
+      "text": "How do you structure an effective cold outreach email or outbound prospecting sequence that consistently earns discovery calls?"
+    },
+    {
+      "id": "sales5",
+      "category": "Sales & Business Development Positions",
+      "text": "Tell me about a quarter when you were at 60% of quota with 3 weeks left. How did you execute to bridge the pipeline gap?"
+    },
+    {
+      "id": "sales6",
+      "category": "Sales & Business Development Positions",
+      "text": "How do you sell value and business ROI rather than competing on price discounts against aggressive low-cost competitors?"
+    },
+    {
+      "id": "sales7",
+      "category": "Sales & Business Development Positions",
+      "text": "How do you manage multi-threaded relationships across enterprise stakeholders (IT, CFO, End-Users) to prevent single-point champion risk?"
+    },
+    {
+      "id": "sales8",
+      "category": "Sales & Business Development Positions",
+      "text": "Walk me through how you run an initial 30-minute discovery call to uncover high-impact client pain points."
+    },
+    {
+      "id": "sales9",
+      "category": "Sales & Business Development Positions",
+      "text": "Describe a high-value strategic partnership you initiated and negotiated. How did you ensure mutually beneficial incentives?"
+    },
+    {
+      "id": "sales10",
+      "category": "Sales & Business Development Positions",
+      "text": "How do you handle customer rejection without losing motivation, enthusiasm, and consistent prospecting discipline?"
+    },
+    {
+      "id": "sales11",
+      "category": "Sales & Business Development Positions",
+      "text": "What CRM hygiene and pipeline inspection habits enable you to forecast quarterly revenue with precision?"
+    },
+    {
+      "id": "sales12",
+      "category": "Sales & Business Development Positions",
+      "text": "Roleplay: Sell me our software product in two minutes as if I were a skeptical Chief Technology Officer."
+    }
+  ],
+  "Human Resources & Talent Acquisition Roles": [
+    {
+      "id": "hr1",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you investigate a confidential, sensitive workplace harassment or discrimination allegation involving a high-performing senior executive?"
+    },
+    {
+      "id": "hr2",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "What proactive sourcing and pipeline strategies do you implement to hire top-tier talent in hyper-competitive markets?"
+    },
+    {
+      "id": "hr3",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you balance being an employee advocate with upholding organizational risk mitigation and business priorities?"
+    },
+    {
+      "id": "hr4",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "Describe how you design a competitive compensation, equity, and benefits philosophy that attracts talent while maintaining budget discipline."
+    },
+    {
+      "id": "hr5",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you guide a defensive department head who wants to terminate an employee without documented performance improvement plans?"
+    },
+    {
+      "id": "hr6",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "What metrics (e.g., eNPS, turnover rate, time-to-hire, offer acceptance rate) do you track to measure HR business impact?"
+    },
+    {
+      "id": "hr7",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you plan, execute, and communicate a company-wide restructuring or reduction in force (layoff) with dignity and compliance?"
+    },
+    {
+      "id": "hr8",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you evaluate and improve 90-day onboarding workflows to accelerate new hire time-to-productivity?"
+    },
+    {
+      "id": "hr9",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "Describe a time you resolved a bitter compensation equity dispute or title promotion conflict between team managers."
+    },
+    {
+      "id": "hr10",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you foster a genuinely inclusive workplace culture beyond superficial diversity slogans?"
+    },
+    {
+      "id": "hr11",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "What strategies do you recommend for combating remote work disengagement and employee burnout across distributed teams?"
+    },
+    {
+      "id": "hr12",
+      "category": "Human Resources & Talent Acquisition Roles",
+      "text": "How do you coach emerging leaders and first-time managers who struggle with delegation and constructive feedback?"
+    }
+  ],
+  "Customer Support & Success Management": [
+    {
+      "id": "cs1",
+      "category": "Customer Support & Success Management",
+      "text": "An enterprise client who pays $150k annually calls furious after a major service outage corrupted their client records. How do you lead the conversation?"
+    },
+    {
+      "id": "cs2",
+      "category": "Customer Support & Success Management",
+      "text": "How do you manage customer churn risk proactively before accounts enter their 90-day renewal notification window?"
+    },
+    {
+      "id": "cs3",
+      "category": "Customer Support & Success Management",
+      "text": "What framework do you use to conduct Quarterly Business Reviews (QBRs) that demonstrate concrete ROI and drive expansion revenue?"
+    },
+    {
+      "id": "cs4",
+      "category": "Customer Support & Success Management",
+      "text": "How do you say 'no' to an unreasonable customer feature request while maintaining a positive, consultative relationship?"
+    },
+    {
+      "id": "cs5",
+      "category": "Customer Support & Success Management",
+      "text": "Describe a time you transformed an angry, frustrated customer into a vocal brand advocate and case study participant."
+    },
+    {
+      "id": "cs6",
+      "category": "Customer Support & Success Management",
+      "text": "How do you prioritize your time when managing a portfolio of 40 accounts with competing emergencies?"
+    },
+    {
+      "id": "cs7",
+      "category": "Customer Support & Success Management",
+      "text": "What customer health score metrics (product usage, support ticket volume, executive engagement) do you monitor daily?"
+    },
+    {
+      "id": "cs8",
+      "category": "Customer Support & Success Management",
+      "text": "How do you collaborate with Product and Engineering teams to ensure recurring customer bugs receive proper development priority?"
+    },
+    {
+      "id": "cs9",
+      "category": "Customer Support & Success Management",
+      "text": "Walk me through how you onboard a new enterprise account to accelerate time-to-first-value."
+    },
+    {
+      "id": "cs10",
+      "category": "Customer Support & Success Management",
+      "text": "How do you handle repetitive tier-1 support inquiries with automation and AI while preserving human empathy?"
+    },
+    {
+      "id": "cs11",
+      "category": "Customer Support & Success Management",
+      "text": "Describe a situation where a client champion left the customer company. How did you protect the relationship from executive churn?"
+    },
+    {
+      "id": "cs12",
+      "category": "Customer Support & Success Management",
+      "text": "How do you identify upselling and cross-selling opportunities without coming across as pushy or opportunistic?"
+    }
+  ],
+  "Executive & C-Suite Leadership Positions": [
+    {
+      "id": "exec1",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you articulate a compelling 3-year strategic vision that unites disparate business divisions and energizes frontline employees?"
+    },
+    {
+      "id": "exec2",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "Describe a time you navigated an existential company turnaround or disruptive technological threat. What decisive actions did you take?"
+    },
+    {
+      "id": "exec3",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you manage board of directors relations when institutional investors pressure short-term margins over long-term strategic R&D?"
+    },
+    {
+      "id": "exec4",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "What is your philosophy on executive hiring, building high-performing leadership teams, and replacing underperforming executives quickly?"
+    },
+    {
+      "id": "exec5",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you preserve company core values and cultural cohesion during rapid scaling from 100 to 1,000 employees?"
+    },
+    {
+      "id": "exec6",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "Walk through your capital allocation framework: How do you balance organic growth, M&A acquisitions, debt servicing, and shareholder returns?"
+    },
+    {
+      "id": "exec7",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you manage internal crises and public relations when your brand faces reputational scrutiny in the media?"
+    },
+    {
+      "id": "exec8",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "Tell me about a high-stakes decision where 80% of your executive committee disagreed with you. How did you proceed and what were the outcomes?"
+    },
+    {
+      "id": "exec9",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you foster an organizational appetite for calculated risk-taking where intelligent failures are embraced as learning?"
+    },
+    {
+      "id": "exec10",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "How do you sustain personal stamina, clear strategic focus, and emotional equilibrium amidst relentless executive pressures?"
+    },
+    {
+      "id": "exec11",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "What is your approach to modern ESG (Environmental, Social, Governance) obligations and ethical stakeholder stewardship?"
+    },
+    {
+      "id": "exec12",
+      "category": "Executive & C-Suite Leadership Positions",
+      "text": "Why are you the right chief executive to lead our company into its next phase of market expansion?"
+    }
+  ],
+  "Visa & Immigration Clearances (Student, Work, Permanent Residency)": [
+    {
+      "id": "visa1",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "What is the primary purpose of your travel to this country, and what specific program or employer will you be affiliated with?"
+    },
+    {
+      "id": "visa2",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "How can you demonstrate strong economic, familial, and social ties to your home country that guarantee your departure upon visa expiry?"
+    },
+    {
+      "id": "visa3",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "How will you financially support tuition, accommodation, and living expenses without unauthorized local employment?"
+    },
+    {
+      "id": "visa4",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Why did you choose this specific university degree or job role, and why could you not pursue equivalent opportunities in your home country?"
+    },
+    {
+      "id": "visa5",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "There is a 2-year gap between your graduation and your current application. Can you explain your activities during that period?"
+    },
+    {
+      "id": "visa6",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "What are your concrete post-graduation or post-contract employment plans once you return to your country of citizenship?"
+    },
+    {
+      "id": "visa7",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Who is your primary financial sponsor, what is their exact occupation and verified annual income, and why are they funding you?"
+    },
+    {
+      "id": "visa8",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Have you ever been refused a visa or entry clearance to any country previously? If yes, what were the circumstances?"
+    },
+    {
+      "id": "visa9",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Where will you reside during your stay, and do you have relatives or dependents currently living in the host country?"
+    },
+    {
+      "id": "visa10",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "If offered permanent employment or career incentives abroad, how will you fulfill your legal obligation to maintain non-immigrant intent?"
+    },
+    {
+      "id": "visa11",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Can you summarize your academic background and demonstrate English/language fluency required for your course of study?"
+    },
+    {
+      "id": "visa12",
+      "category": "Visa & Immigration Clearances (Student, Work, Permanent Residency)",
+      "text": "Do you understand the legal restrictions of your visa category regarding maximum work hours and tax obligations?"
+    }
+  ],
+  "Civil Service & Government Agency Appointments": [
+    {
+      "id": "gov1",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "What does public service impartiality and political neutrality mean to you when administering government programs?"
+    },
+    {
+      "id": "gov2",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you balance strict compliance with bureaucratic regulations against the need for efficient, compassionate citizen service?"
+    },
+    {
+      "id": "gov3",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "A newly elected government minister orders a policy direction that conflicts with technical evidence or previous statutory guidelines. How do you advise them?"
+    },
+    {
+      "id": "gov4",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you manage high-stakes public budget allocations when taxpayer resources are restricted and community needs are vast?"
+    },
+    {
+      "id": "gov5",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "Describe a time you identified government waste, inefficiency, or procedural bottlenecks and implemented a transparent solution."
+    },
+    {
+      "id": "gov6",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "What steps would you take if you suspected procurement fraud or conflict of interest involving a senior civil service colleague?"
+    },
+    {
+      "id": "gov7",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you engage with marginalized citizen groups who harbor historic distrust toward government authorities?"
+    },
+    {
+      "id": "gov8",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you communicate complex public health or regulatory mandates to the public amidst widespread media scrutiny and misinformation?"
+    },
+    {
+      "id": "gov9",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "Describe your experience managing public sector stakeholder consultations involving industry lobbying groups and community activists."
+    },
+    {
+      "id": "gov10",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you uphold the Nolan Principles of Public Life (Selflessness, Integrity, Objectivity, Accountability, Openness, Honesty, Leadership)?"
+    },
+    {
+      "id": "gov11",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "How do you handle public criticism and media attacks regarding policy decisions outside your direct personal control?"
+    },
+    {
+      "id": "gov12",
+      "category": "Civil Service & Government Agency Appointments",
+      "text": "Why do you seek a career in civil service governance over significantly more lucrative private sector alternatives?"
+    }
+  ],
+  "Military & Defense Officer Selection Boards": [
+    {
+      "id": "mil1",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "Why do you seek a commission as an officer in the armed forces, and what does it mean to bear the responsibility of commanding lives?"
+    },
+    {
+      "id": "mil2",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "You are commanding a platoon in a hostile, chaotic operational zone with severed communications. How do you make rapid tactical decisions under fire?"
+    },
+    {
+      "id": "mil3",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "How do you maintain high unit discipline, mental toughness, and morale when troops are facing freezing conditions, sleep deprivation, and danger?"
+    },
+    {
+      "id": "mil4",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "What is the difference between commanding soldiers through fear of punishment versus inspiring loyalty through moral leadership and competence?"
+    },
+    {
+      "id": "mil5",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "A direct order from your commanding officer violates international humanitarian law or the rules of engagement. What is your legal and moral duty?"
+    },
+    {
+      "id": "mil6",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "Tell me about a time you experienced severe physical and mental exhaustion. How did you push through and motivate others to finish?"
+    },
+    {
+      "id": "mil7",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "How do you handle a subordinate soldier who consistently questions your authority or displays rebellious behavior in front of peers?"
+    },
+    {
+      "id": "mil8",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "Discuss a current geopolitical defense threat or modernization priority currently confronting national armed forces."
+    },
+    {
+      "id": "mil9",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "How will you support the mental health, PTSD awareness, and post-deployment reintegration of soldiers under your command?"
+    },
+    {
+      "id": "mil10",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "How do you balance mission accomplishment with force protection when risks to your team's survival are extremely elevated?"
+    },
+    {
+      "id": "mil11",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "Describe a personal ethical dilemma where doing the right thing carried severe personal consequences or unpopularity."
+    },
+    {
+      "id": "mil12",
+      "category": "Military & Defense Officer Selection Boards",
+      "text": "Why should this selection board award you a coveted slot at the military officer training academy over other candidates?"
+    }
+  ],
+  "Law Enforcement & Emergency Services Screening": [
+    {
+      "id": "cop1",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "Why do you want to serve as a police officer / emergency first responder, and what qualities make an officer trustworthy to the public?"
+    },
+    {
+      "id": "cop2",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "You arrive at a volatile domestic dispute where an agitated individual is holding a weapon. How do you use verbal de-escalation before using force?"
+    },
+    {
+      "id": "cop3",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "Integrity Scenario: You catch your senior field training officer pocketing cash seized during a narcotics raid. What do you do?"
+    },
+    {
+      "id": "cop4",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "How do you manage the chronic psychological stress, trauma exposure, and physical dangers inherent in frontline emergency dispatch?"
+    },
+    {
+      "id": "cop5",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "A crowd gathers and begins filming you while shouting insults during a routine traffic stop. How do you maintain composure and safety?"
+    },
+    {
+      "id": "cop6",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "Describe your approach to community policing and building proactive trust in neighborhoods with historical law enforcement tension."
+    },
+    {
+      "id": "cop7",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "How do you determine the appropriate level on the use-of-force continuum when dealing with a combative suspect under the influence of substances?"
+    },
+    {
+      "id": "cop8",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "Tell me about a time in your life when someone provoked you physically or verbally. How did you react?"
+    },
+    {
+      "id": "cop9",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "How will you manage shift work, sleep disruptions, and the impact of emergency service careers on your family life?"
+    },
+    {
+      "id": "cop10",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "How do you recognize unconscious bias and ensure fair, equitable treatment of all citizens regardless of race, gender, or status?"
+    },
+    {
+      "id": "cop11",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "Describe how you prioritize actions during a multi-vehicle highway crash with multiple casualties and fire hazards."
+    },
+    {
+      "id": "cop12",
+      "category": "Law Enforcement & Emergency Services Screening",
+      "text": "What does accountability mean to you when an officer makes an honest tactical error in the line of duty?"
+    }
+  ],
+  "Beauty & Personality Pageants": [
+    {
+      "id": "pageant1",
+      "category": "Beauty & Personality Pageants",
+      "text": "What is your core social impact initiative or advocacy platform, and how will you use the title to create measurable global change?"
+    },
+    {
+      "id": "pageant2",
+      "category": "Beauty & Personality Pageants",
+      "text": "Critics argue that beauty pageants are outdated and objectify women. How do you redefine the relevance of pageantry in the modern era?"
+    },
+    {
+      "id": "pageant3",
+      "category": "Beauty & Personality Pageants",
+      "text": "If you could deliver one urgent message to world leaders gathered at the United Nations General Assembly, what would you say?"
+    },
+    {
+      "id": "pageant4",
+      "category": "Beauty & Personality Pageants",
+      "text": "How do you balance modern feminist empowerment with celebrating femininity, grace, and cultural heritage on stage?"
+    },
+    {
+      "id": "pageant5",
+      "category": "Beauty & Personality Pageants",
+      "text": "How will you handle intense public scrutiny, online trolling, and body-shaming on social media if crowned tonight?"
+    },
+    {
+      "id": "pageant6",
+      "category": "Beauty & Personality Pageants",
+      "text": "What has been the most transformative failure or heartbreak in your life, and how did it shape the resilient woman standing before us?"
+    },
+    {
+      "id": "pageant7",
+      "category": "Beauty & Personality Pageants",
+      "text": "In a world increasingly driven by AI and digital screens, how can humanity preserve authentic empathy, connection, and kindness?"
+    },
+    {
+      "id": "pageant8",
+      "category": "Beauty & Personality Pageants",
+      "text": "What makes you uniquely prepared to serve as a tireless global ambassador across dozens of international diplomatic engagements?"
+    },
+    {
+      "id": "pageant9",
+      "category": "Beauty & Personality Pageants",
+      "text": "If you could enact one universal law to protect vulnerable children or youth worldwide, what would it be?"
+    },
+    {
+      "id": "pageant10",
+      "category": "Beauty & Personality Pageants",
+      "text": "How do you define genuine beauty beyond physical aesthetics, couture gowns, and cosmetic perfection?"
+    },
+    {
+      "id": "pageant11",
+      "category": "Beauty & Personality Pageants",
+      "text": "What cultural tradition from your hometown or country are you most proud of introducing to the global stage?"
+    },
+    {
+      "id": "pageant12",
+      "category": "Beauty & Personality Pageants",
+      "text": "Why should the judges select you as the winner tonight among all the extraordinary contestants in this competition?"
+    }
+  ],
+  "Competitive Debate & Model UN Selection": [
+    {
+      "id": "mun1",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Defend the affirmative case for the motion: 'This House would implement mandatory global carbon taxation on international shipping and aviation.'"
+    },
+    {
+      "id": "mun2",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "How do you defend and advocate for a geopolitical policy you personally despise when assigned to represent that country's delegation in a Model UN committee?"
+    },
+    {
+      "id": "mun3",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "In British Parliamentary (BP) debate, how do you deliver an effective 7-minute Extension speech from Opening Half to Closing Half that brings novel analysis?"
+    },
+    {
+      "id": "mun4",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Deliver a 60-second Point of Information (POI) refuting an opponent's argument that universal basic income causes labor market collapse."
+    },
+    {
+      "id": "mun5",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "How do you negotiate and build voting bloc consensus during unmoderated caucus in a divided UN Security Council resolution?"
+    },
+    {
+      "id": "mun6",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Analyze the legal and diplomatic legitimacy of unilateral humanitarian military intervention versus state sovereignty under the UN Charter."
+    },
+    {
+      "id": "mun7",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "What rhetorical techniques and framing mechanisms do you use to persuade lay judges who know nothing about specialized policy jargon?"
+    },
+    {
+      "id": "mun8",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "How do you manage 15 minutes of limited preparation time with your debate partner to structure arguments, characterizations, and clash points?"
+    },
+    {
+      "id": "mun9",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Defend the negative stance on the motion: 'This House believes sovereign states should possess an absolute right to restrict cross-border data flows.'"
+    },
+    {
+      "id": "mun10",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "How do you handle aggressive, bad-faith opponents who use personal ad hominem remarks or interrupt during floor debate?"
+    },
+    {
+      "id": "mun11",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Explain the diplomatic mechanics of resolving conflicting bilateral maritime territorial claims under UNCLOS (Law of the Sea)."
+    },
+    {
+      "id": "mun12",
+      "category": "Competitive Debate & Model UN Selection",
+      "text": "Why are you seeking selection for our national collegiate debate / Model UN traveling delegation this season?"
+    }
+  ],
+  "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)": [
+    {
+      "id": "startup1",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "In 60 seconds: What does your company do, who is the customer with acute hair-on-fire pain, and why does this problem matter?"
+    },
+    {
+      "id": "startup2",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "What is your secret insight or non-consensus truth about your market that nobody else in the industry understands?"
+    },
+    {
+      "id": "startup3",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "What is your unfair structural moat or defensibility when Google, Microsoft, or a funded copycat launches the exact same feature?"
+    },
+    {
+      "id": "startup4",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "Walk me through your traction metrics: MRR/ARR, month-over-month growth rate, churn, and organic customer acquisition channels."
+    },
+    {
+      "id": "startup5",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "What are your unit economics: Customer Acquisition Cost (CAC), Lifetime Value (LTV), and cash payback period?"
+    },
+    {
+      "id": "startup6",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "Why are you and your co-founders uniquely qualified to build this venture over every other team on the planet?"
+    },
+    {
+      "id": "startup7",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "How did the founders meet, how is equity split, and how have you navigated brutal product setbacks without destroying founder chemistry?"
+    },
+    {
+      "id": "startup8",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "How does your company reach $100M in annual recurring revenue (ARR), and what does the addressable market look like at scale?"
+    },
+    {
+      "id": "startup9",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "What is the single biggest existential risk that could kill your startup in the next 12 months, and how are you mitigating it?"
+    },
+    {
+      "id": "startup10",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "How will you allocate the seed capital investment, and what concrete milestones will you achieve before raising Series A?"
+    },
+    {
+      "id": "startup11",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "Tell me about a time you launched an imperfect product quickly, received brutal customer feedback, and iterated in 48 hours."
+    },
+    {
+      "id": "startup12",
+      "category": "Startup Pitch Competitions & Accelerator Entry (e.g., Y Combinator)",
+      "text": "Why do you want to join our accelerator cohort right now rather than continuing to bootstrap independently?"
+    }
+  ],
+  "Media, Journalism & Broadcast Screen Tests": [
+    {
+      "id": "media1",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "[Breaking News Screen Test] The teleprompter suddenly cuts out during a live broadcast of a breaking international crisis. Deliver 60 seconds of unscripted anchoring."
+    },
+    {
+      "id": "media2",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "How do you verify high-velocity breaking news tips circulating on social media to prevent broadcasting dangerous unconfirmed reports?"
+    },
+    {
+      "id": "media3",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "You are interviewing an evasive politician who continually pivots away from answering a corruption allegation. How do you hold them accountable live on air?"
+    },
+    {
+      "id": "media4",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "How do you cultivate and protect confidential investigative sources when facing legal subpoena threats or political pressure?"
+    },
+    {
+      "id": "media5",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "Describe how you approach reporting on a traumatic mass casualty event with ethical sensitivity, dignity, and journalistic balance."
+    },
+    {
+      "id": "media6",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "How do you distinguish between objective, fair-minded investigative journalism and editorial activism in modern media?"
+    },
+    {
+      "id": "media7",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "What vocal projection, posture, pacing, and camera-gaze techniques do you employ to command authority and warmth through the lens?"
+    },
+    {
+      "id": "media8",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "How do you pitch investigative long-form stories to executive producers when competing against click-driven sensationalism?"
+    },
+    {
+      "id": "media9",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "Walk me through how you handle a live on-air gaffe, technical microphone malfunction, or misspoken statistic gracefully."
+    },
+    {
+      "id": "media10",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "What role does digital multimedia storytelling (podcasts, video reels, interactive data visualizations) play in your journalism toolkit?"
+    },
+    {
+      "id": "media11",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "Describe an investigative story you uncovered that led to concrete policy reform or corporate accountability."
+    },
+    {
+      "id": "media12",
+      "category": "Media, Journalism & Broadcast Screen Tests",
+      "text": "Why are you the right broadcast journalist or anchor to represent our network's editorial standard and audience trust?"
     }
   ]
 }

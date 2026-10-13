@@ -1,6 +1,7 @@
 "use client";
 
-import { Question } from "@/types";
+import type { Question } from "@/types";
+import { getCategoryIcon } from "@/lib/questions";
 
 interface QuestionDisplayProps {
   question: Question;
@@ -13,28 +14,41 @@ export default function QuestionDisplay({
   questionNumber,
   totalQuestions,
 }: QuestionDisplayProps) {
-  return (
-    <div className="w-full">
-      {/* Progress indicator — Req 2.1, 2.2 */}
-      <p
-        className="text-sm font-medium text-gray-500 mb-3"
-        aria-label={`Question ${questionNumber} of ${totalQuestions}`}
-      >
-        Question{" "}
-        <span className="text-gray-800 font-semibold">{questionNumber}</span>
-        {" / "}
-        <span className="text-gray-800 font-semibold">{totalQuestions}</span>
-      </p>
+  const icon = getCategoryIcon(question.category);
 
-      {/* Question text — Req 2.1 */}
-      <h2 className="text-xl font-semibold text-gray-900 leading-snug">
+  return (
+    <div className="w-full space-y-4">
+      {/* Top Meta: Question tracker + Category Tag */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 border border-indigo-200/80"
+          aria-label={`Question ${questionNumber} of ${totalQuestions}`}
+        >
+          <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 animate-pulse" />
+          <span>
+            Question {questionNumber} <span className="text-indigo-400">/</span> {totalQuestions}
+          </span>
+        </span>
+
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 border border-slate-200/80">
+          <span aria-hidden="true">{icon}</span>
+          <span>{question.category}</span>
+        </span>
+      </div>
+
+      {/* Main Question Text */}
+      <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 leading-snug">
         {question.text}
       </h2>
 
-      {/* Category badge */}
-      <span className="inline-block mt-3 px-3 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-700">
-        {question.category}
-      </span>
+      {/* Strategic Interview Tip Banner */}
+      <div className="flex items-start gap-2.5 rounded-xl bg-slate-50/90 border border-slate-200/70 p-3.5 text-xs text-slate-600">
+        <span className="text-base flex-shrink-0" aria-hidden="true">💡</span>
+        <p className="leading-relaxed">
+          <strong className="text-slate-800 font-semibold">Coach Tip:</strong> Lead with your core takeaway, ground your reasoning with a real-world scenario, and emphasize the measurable outcome.
+        </p>
+      </div>
     </div>
   );
 }
+

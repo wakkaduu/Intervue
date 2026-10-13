@@ -1,4 +1,4 @@
-// Session state machine for the Mock Interview Helper
+// Session state machine for Intervue
 // Requirements: 2.1, 2.2, 2.4, 2.5, 2.6, 5.3, 7.2
 
 "use client";
