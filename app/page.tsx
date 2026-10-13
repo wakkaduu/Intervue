@@ -63,17 +63,23 @@ export default function Home() {
         {/* Feature Highlights Pills */}
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-1 text-xs font-medium text-sage-300">
           <div className="flex items-center gap-1.5">
-            <span className="text-emerald-400 font-bold">🎙️</span>
+            <svg className="h-4 w-4 text-emerald-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
             <span>Real-time Voice Transcription</span>
           </div>
           <span className="text-forest-600">•</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-gold-400 font-bold">📊</span>
+            <svg className="h-4 w-4 text-gold-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
             <span>Delivery & STAR Method Rubrics</span>
           </div>
           <span className="text-forest-600">•</span>
           <div className="flex items-center gap-1.5">
-            <span className="text-emerald-400 font-bold">📚</span>
+            <svg className="h-4 w-4 text-emerald-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
             <span>624 Curated Scenarios</span>
           </div>
         </div>
@@ -168,14 +174,16 @@ export default function Home() {
             }`}
           >
             <div
-              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-xl transition-all ${
+              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all ${
                 answerMode === "mic"
                   ? "bg-forest-700 text-white shadow-sm shadow-forest-900/20"
                   : "bg-sage-200 text-darkslate-700 group-hover:bg-sage-300"
               }`}
               aria-hidden="true"
             >
-              🎙️
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
@@ -209,14 +217,16 @@ export default function Home() {
             }`}
           >
             <div
-              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-xl transition-all ${
+              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl transition-all ${
                 answerMode === "typed"
                   ? "bg-forest-700 text-white shadow-sm shadow-forest-900/20"
                   : "bg-sage-200 text-darkslate-700 group-hover:bg-sage-300"
               }`}
               aria-hidden="true"
             >
-              ✍️
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
@@ -283,8 +293,16 @@ export default function Home() {
           onClick={handleStartSession}
           className="w-full group relative flex items-center justify-center gap-3 rounded-2xl bg-forest-700 hover:bg-forest-600 p-4 text-base font-bold text-white shadow-lg shadow-forest-950/40 transition-all duration-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]"
         >
-          <span className="text-xl" aria-hidden="true">
-            {answerMode === "mic" ? "🎙️" : "✍️"}
+          <span aria-hidden="true">
+            {answerMode === "mic" ? (
+              <svg className="h-5 w-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            ) : (
+              <svg className="h-5 w-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            )}
           </span>
           <span>
             Start {answerMode === "mic" ? "Voice" : "Written"} Practice Session (12 Questions)

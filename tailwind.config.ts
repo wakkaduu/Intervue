@@ -31,6 +31,7 @@ const config: Config = {
           500: "#496B58",
           600: "#3D5A4A",
           700: "#344E41", // Major buttons, badges, highlights
+          750: "#2D4438", // Deep contrast green for primary actions
           800: "#283C32",
           850: "#23382B", // Darker calmer green webpage canvas
           900: "#1D2D25",

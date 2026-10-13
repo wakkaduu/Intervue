@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import AppHeader from "@/components/AppHeader";
 import CategorySidebar from "@/components/CategorySidebar";
+import AuthProvider from "@/components/AuthProvider";
 import { SidebarProvider } from "@/context/SidebarContext";
 import "./globals.css";
 
@@ -10,6 +11,14 @@ const inter = Inter({
   variable: "--font-inter",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  viewportFit: "cover",
+  themeColor: "#1C2E23",
+};
 
 export const metadata: Metadata = {
   title: "Intervue — Mock Interview Preparation Platform",
@@ -34,7 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full scroll-smooth bg-[#23382B]">
       <body
-        className={`${inter.variable} font-sans antialiased min-h-screen flex flex-col bg-[#23382B] text-darkslate-900 selection:bg-forest-600 selection:text-white`}
+        className={`${inter.variable} font-sans antialiased min-h-screen min-h-dvh flex flex-col bg-[#23382B] text-darkslate-900 selection:bg-forest-600 selection:text-white`}
       >
         {/* Skip to main content for accessibility */}
         <a
@@ -52,17 +61,19 @@ export default function RootLayout({
           className="sr-only"
         />
 
-        <SidebarProvider>
-          <CategorySidebar />
-          <AppHeader />
+        <AuthProvider>
+          <SidebarProvider>
+            <CategorySidebar />
+            <AppHeader />
 
-          <main
-            id="main-content"
-            className="flex-1 mx-auto w-full max-w-5xl px-4 py-6 sm:px-6 lg:px-8"
-          >
-            {children}
-          </main>
-        </SidebarProvider>
+            <main
+              id="main-content"
+              className="flex-1 mx-auto w-full max-w-5xl px-3 sm:px-6 lg:px-8 py-4 sm:py-6"
+            >
+              {children}
+            </main>
+          </SidebarProvider>
+        </AuthProvider>
 
         {/* Sleek minimal footer */}
         <footer className="w-full border-t border-forest-700/60 bg-[#1C2E23]/95 backdrop-blur-sm py-6 text-center text-xs text-sage-300">

@@ -43,9 +43,11 @@ export default function QuestionDisplay({
 
       {/* Strategic Interview Tip Banner (10% Warm Gold Accent) */}
       <div className="flex items-start gap-2.5 rounded-xl bg-gold-50/90 border border-gold-200/80 p-3.5 text-xs text-gold-950">
-        <span className="text-base flex-shrink-0" aria-hidden="true">💡</span>
+        <svg className="w-4 h-4 text-gold-800 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
         <p className="leading-relaxed">
-          <strong className="text-gold-900 font-bold">Coach Tip:</strong> Lead with your core takeaway, ground your reasoning with a real-world scenario, and emphasize the measurable outcome.
+          <strong className="text-gold-900 font-bold">Guidance:</strong> Lead with your core takeaway, ground your reasoning with a real-world scenario, and emphasize the measurable outcome.
         </p>
       </div>
     </div>

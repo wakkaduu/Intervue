@@ -1,27 +1,45 @@
 "use client";
 
-/**
- * LoadingSpinner — generic animated loading indicator.
- *
- * Accessibility:
- *   - role="status" so assistive technologies treat it as a live region
- *   - aria-label provides a descriptive name (Req 8.3)
- *   - The visible spinner is aria-hidden so screen readers only read the label
- */
-export default function LoadingSpinner() {
+interface LoadingSpinnerProps {
+  label?: string;
+  subtext?: string;
+  size?: "sm" | "md" | "lg";
+}
+
+export default function LoadingSpinner({
+  label = "Loading feedback…",
+  subtext,
+  size = "md",
+}: LoadingSpinnerProps = {}) {
+  const sizeClasses =
+    size === "sm"
+      ? "h-6 w-6 border-2"
+      : size === "lg"
+      ? "h-14 w-14 border-4"
+      : "h-10 w-10 border-4";
+
   return (
     <div
       role="status"
-      aria-label="Loading feedback…"
-      className="flex items-center justify-center p-4"
+      aria-label={label}
+      className="flex flex-col items-center justify-center p-4 space-y-2.5"
     >
-      {/* Visible animated ring */}
-      <div
-        aria-hidden="true"
-        className="h-10 w-10 animate-spin rounded-full border-4 border-sage-300 border-t-forest-700"
-      />
-      {/* Visually-hidden text for extra context in older AT */}
-      <span className="sr-only">Loading feedback…</span>
+      <div className="relative flex items-center justify-center">
+        <div
+          aria-hidden="true"
+          className={`${sizeClasses} animate-spin rounded-full border-sage-300 border-t-forest-700 shadow-xs`}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full bg-emerald-400/20 blur-xs animate-pulse pointer-events-none"
+        />
+      </div>
+      {subtext && (
+        <p className="text-xs font-semibold text-darkslate-600 animate-pulse">
+          {subtext}
+        </p>
+      )}
+      <span className="sr-only">{label}</span>
     </div>
   );
 }

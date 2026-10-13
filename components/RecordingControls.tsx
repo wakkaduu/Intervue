@@ -51,7 +51,7 @@ export default function RecordingControls({
   canPrevious = false,
 }: RecordingControlsProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3">
       {/* Microphone controls */}
       {isSupported && (
         <>
@@ -60,7 +60,7 @@ export default function RecordingControls({
             <div
               role="status"
               aria-live="polite"
-              className="inline-flex items-center gap-2 rounded-xl bg-forest-50 border border-forest-200 px-4 py-2.5 text-xs font-semibold text-forest-800"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-forest-50 border border-forest-200 px-4 py-2.5 text-xs font-semibold text-forest-800 w-full sm:w-auto"
             >
               <span
                 className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-forest-700 border-t-transparent"
@@ -76,11 +76,11 @@ export default function RecordingControls({
               type="button"
               onClick={onStart}
               aria-label={hasTranscript ? "Record answer again" : "Start recording your answer"}
-              className="inline-flex items-center gap-2 rounded-xl bg-forest-700 px-5 py-2.5
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 px-5 py-2.5
                          text-sm font-semibold text-white shadow-sm hover:bg-forest-800 active:bg-forest-900
                          focus-visible:outline-none focus-visible:ring-2
                          focus-visible:ring-forest-600 focus-visible:ring-offset-2
-                         disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:shadow-md"
+                         disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:shadow-md w-full sm:w-auto"
             >
               {/* Microphone icon */}
               <svg
@@ -103,10 +103,10 @@ export default function RecordingControls({
               type="button"
               onClick={onStop}
               aria-label="Stop recording your answer"
-              className="inline-flex items-center gap-2.5 rounded-xl bg-red-600 px-5 py-2.5
+              className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-red-600 px-5 py-2.5
                          text-sm font-semibold text-white shadow-sm hover:bg-red-700 active:bg-red-800
                          focus-visible:outline-none focus-visible:ring-2
-                         focus-visible:ring-red-600 focus-visible:ring-offset-2 transition-all shadow-red-600/25"
+                         focus-visible:ring-red-600 focus-visible:ring-offset-2 transition-all shadow-red-600/25 w-full sm:w-auto"
             >
               <span className="relative flex h-2.5 w-2.5" aria-hidden="true">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-200 opacity-75"></span>
@@ -124,11 +124,11 @@ export default function RecordingControls({
           type="button"
           onClick={onPrevious}
           aria-label="Go back to previous question"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-sage-300 bg-[#F0F5F1] px-4 py-2.5
+          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-sage-300 bg-[#F0F5F1] px-4 py-2.5
                      text-sm font-semibold text-darkslate-700 shadow-xs
                      hover:bg-[#D4E3D8] active:bg-sage-200
                      focus-visible:outline-none focus-visible:ring-2
-                     focus-visible:ring-forest-600 focus-visible:ring-offset-2 transition-colors"
+                     focus-visible:ring-forest-600 focus-visible:ring-offset-2 transition-colors w-full sm:w-auto"
         >
           ← Previous
         </button>
@@ -144,17 +144,17 @@ export default function RecordingControls({
           (isLastQuestion ? "Finish interview and view results" : "Go to next question")
         }
         aria-disabled={!hasTranscript || isRecording || isTranscribing}
-        className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5
+        className={`inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5
                    text-sm font-semibold text-white shadow-sm
                    focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2
-                   disabled:cursor-not-allowed disabled:opacity-50 transition-all ${
+                   disabled:cursor-not-allowed disabled:opacity-50 transition-all w-full sm:w-auto ${
                      isLastQuestion
                        ? "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20 ring-2 ring-gold-400/50"
                        : "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20"
                    }`}
       >
         <span>
-          {submitLabel || (isLastQuestion ? "Finish & View Results ✨" : "Next Question →")}
+          {submitLabel || (isLastQuestion ? "Finish & View Results" : "Next Question →")}
         </span>
       </button>
     </div>

@@ -81,10 +81,12 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
         <section aria-labelledby={`answer-label-${index}`} className="rounded-xl bg-[#DCE7DF] border border-sage-300/70 p-4">
           <h4
             id={`answer-label-${index}`}
-            className="text-xs font-bold uppercase tracking-wider text-darkslate-500 mb-1.5 flex items-center gap-1.5"
+            className="text-xs font-bold uppercase tracking-wider text-darkslate-600 mb-1.5 flex items-center gap-1.5"
           >
-            <span>💬</span>
-            <span>Your Response</span>
+            <svg className="h-3.5 w-3.5 text-darkslate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span>Candidate Response</span>
           </h4>
           <p className="text-sm text-darkslate-900 leading-relaxed whitespace-pre-wrap">
             {answer}
@@ -164,19 +166,19 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
           <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-3 pt-1">
             {feedback.howTheyAnswered && (
               <div className="rounded-xl bg-sage-100/70 border border-sage-200 p-4">
-                <span className="text-xs font-bold text-forest-800 block mb-1">📋 Structure & Depth</span>
+                <span className="text-xs font-bold text-forest-800 block mb-1">Structure & Depth</span>
                 <p className="text-xs text-darkslate-800 leading-relaxed">{feedback.howTheyAnswered}</p>
               </div>
             )}
             {feedback.toneAnalysis && (
               <div className="rounded-xl bg-forest-50/70 border border-forest-200 p-4">
-                <span className="text-xs font-bold text-forest-800 block mb-1">🎙️ Tone & Delivery</span>
+                <span className="text-xs font-bold text-forest-800 block mb-1">Tone & Delivery</span>
                 <p className="text-xs text-darkslate-800 leading-relaxed">{feedback.toneAnalysis}</p>
               </div>
             )}
             {feedback.questionConnection && (
               <div className="rounded-xl bg-gold-50/70 border border-gold-200 p-4">
-                <span className="text-xs font-bold text-gold-800 block mb-1">🎯 Question Connection</span>
+                <span className="text-xs font-bold text-gold-800 block mb-1">Question Alignment</span>
                 <p className="text-xs text-darkslate-800 leading-relaxed">{feedback.questionConnection}</p>
               </div>
             )}
@@ -192,8 +194,10 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
             id={`summary-label-${index}`}
             className="text-xs font-bold uppercase tracking-wider text-gold-300 mb-1 flex items-center gap-1.5"
           >
-            <span>💡</span>
-            <span>Intervue Coach Recommendation</span>
+            <svg className="h-4 w-4 text-gold-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <span>Evaluation Recommendation</span>
           </h4>
           <p className="text-xs sm:text-sm text-sage-100 leading-relaxed font-normal">{summary}</p>
         </section>

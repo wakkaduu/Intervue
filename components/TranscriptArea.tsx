@@ -51,7 +51,9 @@ export default function TranscriptArea({
         <div className="flex items-center justify-between border-b border-sage-300/70 pb-3 mb-4">
           <div className="flex items-center gap-2">
             <span className="flex h-6 w-6 items-center justify-center rounded-md bg-forest-100 text-forest-800 text-xs font-bold">
-              🎙️
+              <svg className="h-3.5 w-3.5 text-forest-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              </svg>
             </span>
             <span className="text-xs font-bold uppercase tracking-wider text-forest-900">
               Spoken Voice Transcription
@@ -73,16 +75,27 @@ export default function TranscriptArea({
             </p>
           </div>
         ) : isTranscribing ? (
-          <div className="flex flex-col items-center justify-center py-8 text-center space-y-3">
-            <div className="flex items-center gap-1.5">
-              <span className="h-3 w-1.5 rounded-full bg-forest-700 animate-pulse" />
-              <span className="h-6 w-1.5 rounded-full bg-forest-700 animate-pulse delay-75" />
-              <span className="h-4 w-1.5 rounded-full bg-forest-700 animate-pulse delay-150" />
-              <span className="h-8 w-1.5 rounded-full bg-forest-700 animate-pulse delay-100" />
-              <span className="h-5 w-1.5 rounded-full bg-forest-700 animate-pulse delay-200" />
+          <div className="flex flex-col items-center justify-center py-8 text-center space-y-3 animate-fade-in">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#D4E3D8] border border-sage-300 px-3 py-1 text-[11px] font-bold text-forest-900 shadow-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-forest-600 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-forest-700" />
+              </span>
+              <span>Whisper Audio Queue Processing</span>
             </div>
-            <p className="text-xs font-semibold text-forest-800">
-              Transcribing your voice audio into high-accuracy text...
+
+            <div className="flex items-center gap-1.5 h-8">
+              <span className="h-3 w-1.5 rounded-full bg-forest-700 animate-pulse" />
+              <span className="h-6 w-1.5 rounded-full bg-forest-600 animate-pulse delay-75" />
+              <span className="h-4 w-1.5 rounded-full bg-emerald-600 animate-pulse delay-150" />
+              <span className="h-8 w-1.5 rounded-full bg-forest-800 animate-pulse delay-100" />
+              <span className="h-5 w-1.5 rounded-full bg-forest-700 animate-pulse delay-200" />
+              <span className="h-7 w-1.5 rounded-full bg-emerald-700 animate-pulse delay-300" />
+              <span className="h-3 w-1.5 rounded-full bg-forest-600 animate-pulse delay-150" />
+            </div>
+
+            <p className="text-xs font-semibold text-forest-900">
+              Transcribing spoken voice audio into high-accuracy text...
             </p>
           </div>
         ) : isRecording ? (
@@ -102,8 +115,10 @@ export default function TranscriptArea({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-8 text-center space-y-2 text-darkslate-400">
-            <div className="h-10 w-10 rounded-full bg-sage-100 flex items-center justify-center text-darkslate-400 text-lg">
-              🎙️
+            <div className="h-10 w-10 rounded-full bg-sage-100 flex items-center justify-center text-darkslate-500">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 100-6 3 3 0 000 6z" />
+              </svg>
             </div>
             <p className="text-xs font-medium text-darkslate-500 max-w-sm">
               Press <span className="font-bold text-darkslate-700">&quot;Start Recording&quot;</span> below, articulate your response, and click <span className="font-bold text-darkslate-700">&quot;Stop Recording&quot;</span> when done.

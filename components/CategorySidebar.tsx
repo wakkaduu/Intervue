@@ -143,15 +143,17 @@ export default function CategorySidebar() {
       <aside
         id="category-sidebar"
         aria-label="Interview tracks sidebar navigation"
-        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-80 sm:w-96 bg-[#E2ECE5] border-r border-forest-700/60 shadow-2xl transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col w-[min(24rem,90vw)] sm:w-96 bg-[#E2ECE5] border-r border-forest-700/60 shadow-2xl transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-sage-300/80 bg-[#D4E3D8]">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest-700 text-white shadow-xs text-sm">
-              📁
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-forest-700 text-white shadow-xs">
+              <svg className="h-4 w-4 text-emerald-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+              </svg>
             </span>
             <div>
               <h2 className="text-sm font-bold text-forest-900 leading-tight">
@@ -166,8 +168,9 @@ export default function CategorySidebar() {
           <button
             type="button"
             onClick={closeSidebar}
-            aria-label="Close sidebar"
-            className="rounded-lg p-2 text-darkslate-400 hover:bg-sage-200/60 hover:text-darkslate-700 transition-colors"
+            aria-label="Close tracks sidebar"
+            title="Close sidebar (Esc)"
+            className="rounded-xl p-2 text-darkslate-600 hover:bg-sage-200 hover:text-darkslate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
           >
             <svg
               className="h-5 w-5"
@@ -193,8 +196,10 @@ export default function CategorySidebar() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] pl-8 pr-7 py-2 text-xs text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition-all"
             />
-            <span className="absolute left-2.5 top-2.5 text-darkslate-400 text-xs" aria-hidden="true">
-              🔍
+            <span className="absolute left-2.5 top-2.5 text-darkslate-500" aria-hidden="true">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </span>
             {searchQuery && (
               <button
@@ -364,9 +369,13 @@ export default function CategorySidebar() {
               })}
             </div>
           ) : (
-            <div className="py-12 text-center text-darkslate-400 space-y-2">
-              <span className="text-2xl block" aria-hidden="true">🔍</span>
-              <p className="text-xs font-semibold text-darkslate-600">
+            <div className="py-12 text-center text-darkslate-500 space-y-2.5">
+              <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-xl bg-sage-200/80 text-darkslate-600">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <p className="text-xs font-semibold text-darkslate-700">
                 No tracks match &quot;{searchQuery}&quot;
               </p>
               <button
@@ -423,29 +432,22 @@ export default function CategorySidebar() {
         )}
 
         {/* Sidebar Footer */}
-        <div className="p-4 border-t border-sage-300/80 bg-[#D4E3D8] flex items-center justify-between">
-          <span className="text-xs text-darkslate-600 font-medium">
-            {filteredCategories.length} tracks available
+        <div className="px-5 py-3.5 border-t border-sage-300/80 bg-[#D4E3D8] flex items-center justify-between text-xs text-darkslate-700">
+          <span className="font-semibold">
+            {filteredCategories.length} {filteredCategories.length === 1 ? "track" : "tracks"} available
           </span>
-          <button
-            type="button"
-            onClick={() => {
-              setHoveredTrack(null);
-              closeSidebar();
-            }}
-            className="rounded-xl border border-sage-300 bg-[#F0F5F1] px-3 py-1.5 text-xs font-semibold text-darkslate-700 hover:bg-[#D4E3D8] transition-colors shadow-xs"
-          >
-            Close Sidebar
-          </button>
+          <span className="text-[11px] text-darkslate-500 font-mono">
+            ESC to close
+          </span>
         </div>
       </aside>
 
-      {/* ── Floating Hover Card (Desktop & Tablet) ── */}
+      {/* ── Floating Hover Card (Desktop Only) ── */}
       {isSidebarOpen && hoveredTrack && (
         <aside
           role="tooltip"
           aria-live="polite"
-          className="pointer-events-none fixed z-[70] hidden sm:block animate-in fade-in zoom-in-95 duration-150 ease-out"
+          className="pointer-events-none fixed z-[70] hidden lg:block animate-in fade-in zoom-in-95 duration-150 ease-out"
           style={{
             top: Math.max(
               16,

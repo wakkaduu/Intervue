@@ -65,11 +65,11 @@ export default function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProp
       <div className="w-full max-w-lg rounded-2xl bg-[#E2ECE5] border border-sage-300 p-6 shadow-2xl">
         <div className="flex items-center justify-between border-b border-sage-300/80 pb-3">
           <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden="true">
-              🔑
-            </span>
+            <svg className="h-5 w-5 text-forest-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+            </svg>
             <h2 id="api-modal-title" className="text-lg font-bold text-gray-900">
-              API Keys Configuration
+              API Configuration
             </h2>
           </div>
           <button

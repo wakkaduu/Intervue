@@ -5,8 +5,12 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 import SessionSummaryCard from "@/components/SessionSummaryCard";
+import AuthModal from "@/components/AuthModal";
 import { calculateAverageScore } from "@/hooks/useInterviewSession";
+import { saveGuestSession, syncGuestSessionsToAccount } from "@/lib/guest-storage";
 import type { SessionEntry } from "@/types";
 
 /**
@@ -27,8 +31,11 @@ function loadSessionResults(): SessionEntry[] | null {
 
 export default function SummaryPage() {
   const router = useRouter();
+  const { data: session } = useSession();
   const [entries, setEntries] = useState<SessionEntry[] | null>(null);
-  const [ready, setReady] = useState(false);
+  const [savedToAccount, setSavedToAccount] = useState(false);
+  const [guestSaved, setGuestSaved] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   useEffect(() => {
     const results = loadSessionResults();
@@ -38,16 +45,45 @@ export default function SummaryPage() {
       return;
     }
     setEntries(results);
-    setReady(true);
   }, [router]);
 
-  // While we're determining whether to redirect or render, show nothing
-  if (!ready || entries === null) {
-    return null;
-  }
-
-  const hasEntries = entries.length > 0;
+  const hasEntries = entries && entries.length > 0;
   const averageScore = hasEntries ? calculateAverageScore(entries) : null;
+
+  // Auto-save to authenticated account or local guest storage
+  useEffect(() => {
+    if (entries && entries.length > 0) {
+      if (session?.user && !savedToAccount) {
+        const category = entries[0]?.question?.category || "General";
+        fetch("/api/history", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            category,
+            mode: "typed",
+            averageScore: averageScore || 0,
+            entries,
+          }),
+        })
+          .then((r) => {
+            if (r.ok) {
+              setSavedToAccount(true);
+              syncGuestSessionsToAccount();
+            }
+          })
+          .catch(() => {});
+      } else if (!session?.user && !guestSaved) {
+        const category = entries[0]?.question?.category || "General";
+        saveGuestSession({
+          category,
+          mode: "typed",
+          averageScore: averageScore || 0,
+          entries,
+        });
+        setGuestSaved(true);
+      }
+    }
+  }, [session, entries, averageScore, savedToAccount, guestSaved]);
 
   /** Derive styling for the average score badge. */
   const avgTheme =
@@ -107,11 +143,11 @@ export default function SummaryPage() {
             {/* Performance status tag */}
             <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#D4E3D8] px-3.5 py-1 text-xs font-bold shadow-xs border border-sage-300">
               {averageScore !== null && averageScore >= 8 ? (
-                <span className="text-forest-800">🌟 Excellent Interview Readiness</span>
+                <span className="text-forest-850">Advanced Readiness</span>
               ) : averageScore !== null && averageScore >= 5 ? (
-                <span className="text-gold-800">📈 Good Foundation — Refine Polish & Specifics</span>
+                <span className="text-gold-900">Proficient — Refinements Recommended</span>
               ) : (
-                <span className="text-rose-700">💪 Needs Practice — Review Areas for Improvement</span>
+                <span className="text-rose-800">Needs Development — Review Breakdown</span>
               )}
             </div>
           </div>
@@ -127,6 +163,57 @@ export default function SummaryPage() {
             <p className="mt-1 text-xs sm:text-sm text-darkslate-600">
               Start a new session and complete at least one question to see your comprehensive performance results here.
             </p>
+          </div>
+        )}
+
+        {/* ── Account Sync & Persistence Status ── */}
+        {hasEntries && (
+          <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+            <div className="flex items-start sm:items-center gap-3.5">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-forest-850 text-white shadow-xs border border-forest-700/60">
+                <svg className="h-5 w-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              <div>
+                <p className="text-sm font-extrabold text-forest-950 flex flex-wrap items-center gap-2">
+                  <span>
+                    {session?.user
+                      ? savedToAccount
+                        ? `Saved to profile (${session.user.name})`
+                        : "Synchronizing session to cloud account..."
+                      : "Guest Practice Session Saved Locally"}
+                  </span>
+                  {!session?.user && (
+                    <span className="rounded-full bg-forest-100 border border-forest-300 px-2 py-0.5 text-[10px] font-bold text-forest-800">
+                      Local Device
+                    </span>
+                  )}
+                </p>
+                <p className="text-xs text-darkslate-600 mt-0.5">
+                  {session?.user
+                    ? "Your score and coach breakdown are permanently linked to your profile in Supabase."
+                    : "You can keep practicing freely without an account. When you decide to create an account, sign in to save your complete history."}
+                </p>
+              </div>
+            </div>
+
+            {session?.user ? (
+              <Link
+                href="/history"
+                className="w-full sm:w-auto text-center shrink-0 rounded-xl bg-forest-700 hover:bg-forest-800 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition-colors"
+              >
+                View History →
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setIsAuthModalOpen(true)}
+                className="w-full sm:w-auto justify-center shrink-0 inline-flex items-center gap-2 rounded-xl bg-forest-750 hover:bg-forest-850 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all active:scale-95"
+              >
+                <span>Save to Account</span>
+              </button>
+            )}
           </div>
         )}
 
@@ -164,6 +251,11 @@ export default function SummaryPage() {
           </button>
         </div>
       </div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </div>
   );
 }

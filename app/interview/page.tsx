@@ -16,6 +16,7 @@ import QuestionDisplay from "@/components/QuestionDisplay";
 import TranscriptArea from "@/components/TranscriptArea";
 import RecordingControls from "@/components/RecordingControls";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import QueueLoadingAnimation from "@/components/QueueLoadingAnimation";
 
 // ---------------------------------------------------------------------------
 // Inner component — uses useSearchParams (must be inside <Suspense>)
@@ -258,8 +259,16 @@ function InterviewPageInner() {
       {/* ── Top Bar: Category, Mode & Exit ── */}
       <div className="flex items-center justify-between text-xs text-sage-300 border-b border-forest-700/60 pb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-forest-800 text-emerald-200 text-sm">
-            {mode === "mic" ? "🎙️" : "✍️"}
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-forest-800 text-emerald-200" aria-hidden="true">
+            {mode === "mic" ? (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            ) : (
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+              </svg>
+            )}
           </span>
           <span
             className="font-semibold text-white truncate max-w-xs sm:max-w-md cursor-default"
@@ -317,7 +326,9 @@ function InterviewPageInner() {
           className="rounded-xl border border-red-200 bg-red-50/80 p-4 text-sm text-red-900 space-y-3"
         >
           <div className="flex items-start gap-2.5">
-            <span className="text-lg" aria-hidden="true">⚠️</span>
+            <svg className="h-5 w-5 text-red-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
             <div>
               <p className="font-semibold text-red-950">{audioError}</p>
               <p className="mt-0.5 text-xs text-red-700">
@@ -405,7 +416,7 @@ function InterviewPageInner() {
                     onStop={handleStopRecording}
                     onSubmit={handleNextOrFinish}
                     hasTranscript={audioTranscript.trim().length > 0}
-                    submitLabel={isLastQuestion ? "Finish & Review Session ✨" : "Next Question →"}
+                    submitLabel={isLastQuestion ? "Finish & Review Session" : "Next Question →"}
                     isLastQuestion={isLastQuestion}
                     onPrevious={handlePreviousQuestion}
                     canPrevious={canPrevious}
@@ -475,7 +486,7 @@ function InterviewPageInner() {
                         : "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20"
                     }`}
                   >
-                    <span>{isLastQuestion ? "Finish & Review Session ✨" : "Next Question →"}</span>
+                    <span>{isLastQuestion ? "Finish & Review Session" : "Next Question →"}</span>
                   </button>
                 </div>
               </div>
@@ -484,59 +495,28 @@ function InterviewPageInner() {
         </div>
       )}
 
-      {/* ── Reviewing All Questions Progress View ── */}
+      {/* ── Reviewing All Questions Progress View with Queue Animation ── */}
       {isReviewingAll && (
-        <div
-          role="status"
-          aria-live="polite"
-          className="rounded-3xl border border-sage-300 bg-[#E2ECE5] p-10 shadow-2xl text-center space-y-8 animate-fade-in"
-        >
-          {/* Animated Evaluation Icon */}
-          <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-forest-700 via-forest-600 to-forest-800 shadow-xl shadow-forest-900/25">
-            <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <div className="absolute inset-0 rounded-2xl border-4 border-sage-200 border-t-gold-500 animate-spin" />
-          </div>
-
-          <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-forest-950">
-              Evaluating Your Interview Session
-            </h2>
-            <p className="text-sm text-darkslate-500 max-w-md mx-auto leading-relaxed">
-              Generating structured evaluation across the 3 key pillars: Structure & Depth, Tone & Delivery, and Connection to the Question.
-            </p>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="max-w-md mx-auto space-y-3">
-            <div className="flex justify-between text-xs font-bold text-darkslate-700">
-              <span>Evaluating Question {reviewProgress.current} of {reviewProgress.total}</span>
-              <span className="text-forest-800 font-extrabold">{Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%</span>
-            </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-sage-100 shadow-inner">
-              <div
-                className="h-full bg-forest-700 transition-all duration-500 ease-out shadow-xs"
-                style={{
-                  width: `${Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%`,
-                }}
-              />
-            </div>
-          </div>
-
-          {reviewProgress.currentQuestionText && (
-            <div className="rounded-xl bg-sage-50 border border-sage-200/80 p-4 text-xs text-darkslate-600 max-w-lg mx-auto italic truncate">
-              &quot;{reviewProgress.currentQuestionText}&quot;
-            </div>
-          )}
+        <div className="space-y-6">
+          <QueueLoadingAnimation
+            currentStep={reviewProgress.current}
+            totalSteps={reviewProgress.total}
+            currentItemText={reviewProgress.currentQuestionText}
+            categoryTitle={currentQuestion?.category}
+          />
 
           {reviewError && (
-            <div className="rounded-xl bg-red-50 p-4 text-sm text-red-700 border border-red-200 max-w-md mx-auto space-y-3">
-              <p className="font-semibold">{reviewError}</p>
+            <div className="rounded-2xl bg-red-50 p-5 text-sm text-red-700 border border-red-200 max-w-md mx-auto space-y-3 text-center shadow-md">
+              <div className="flex items-center justify-center gap-2 font-semibold">
+                <svg className="h-4 w-4 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>{reviewError}</span>
+              </div>
               <button
                 type="button"
                 onClick={() => executeReviewAll(answers)}
-                className="rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
+                className="rounded-xl bg-red-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
               >
                 Retry Evaluation
               </button>
