@@ -6,9 +6,9 @@ import { getQuestionsByCategory, getCategories } from "@/lib/questions";
 const ALL_CATEGORIES = getCategories();
 
 describe("getCategories", () => {
-  it("returns all 32 categories", () => {
+  it("returns all 52 categories", () => {
     const categories = getCategories();
-    expect(categories).toHaveLength(32);
+    expect(categories).toHaveLength(52);
     expect(categories).toEqual(expect.arrayContaining(ALL_CATEGORIES));
   });
 

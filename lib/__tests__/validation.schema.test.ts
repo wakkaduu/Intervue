@@ -243,13 +243,17 @@ describe("validateAnswer", () => {
 // ── validateCategory ──────────────────────────────────────────────────────────
 
 describe("validateCategory", () => {
-  describe("all five valid category values", () => {
+  describe("valid category values", () => {
     it("accepts 'Behavioral'", () => {
       expect(validateCategory("Behavioral")).toBe(true);
     });
 
-    it("accepts 'Technical'", () => {
-      expect(validateCategory("Technical")).toBe(true);
+    it("accepts 'Software Engineer / Backend Developer (Data structures, algorithms, API design, database optimization)'", () => {
+      expect(
+        validateCategory(
+          "Software Engineer / Backend Developer (Data structures, algorithms, API design, database optimization)"
+        )
+      ).toBe(true);
     });
 
     it("accepts 'Cultural Fit'", () => {

@@ -1,43 +1,33 @@
 "use client";
 
-// Home screen — Intervue Platform Category & Mode Selection
+// Home screen — Intervue Platform Track Workspace with Left-Edge Sidebar Navigation
 // Requirements: 1.1, 1.2, 1.4
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import CategoryCard from "@/components/CategoryCard";
+import { useSidebar } from "@/context/SidebarContext";
 import ErrorMessage from "@/components/ErrorMessage";
-import { getCategories, CATEGORY_GROUPS } from "@/lib/questions";
-import type { AnswerMode, Category } from "@/types";
-
-const allCategories = getCategories();
+import {
+  CATEGORY_GROUPS,
+  getCategoryIcon,
+  getQuestionsByCategory,
+} from "@/lib/questions";
+import type { AnswerMode } from "@/types";
 
 export default function Home() {
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const { selectedCategory, openSidebar } = useSidebar();
   const [answerMode, setAnswerMode] = useState<AnswerMode>("mic");
-  const [selectedGroupId, setSelectedGroupId] = useState<string>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [showError, setShowError] = useState(false);
 
-  // Filter categories by selected domain group and instant search query
-  const filteredCategories = useMemo(() => {
-    let list = allCategories;
+  // Active category domain info & questions preview
+  const activeGroup = useMemo(() => {
+    return CATEGORY_GROUPS.find((g) => g.categories.includes(selectedCategory));
+  }, [selectedCategory]);
 
-    if (selectedGroupId !== "all") {
-      const group = CATEGORY_GROUPS.find((g) => g.id === selectedGroupId);
-      if (group) {
-        list = group.categories;
-      }
-    }
-
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase().trim();
-      list = list.filter((cat) => cat.toLowerCase().includes(q));
-    }
-
-    return list;
-  }, [selectedGroupId, searchQuery]);
+  const activeQuestionsPreview = useMemo(() => {
+    return getQuestionsByCategory(selectedCategory).slice(0, 3);
+  }, [selectedCategory]);
 
   function handleStartSession() {
     if (!selectedCategory) {
@@ -50,299 +40,265 @@ export default function Home() {
     );
   }
 
-  function handleSelectCategory(category: Category) {
-    setSelectedCategory(category);
-    if (showError) setShowError(false);
-  }
-
   return (
-    <div className="flex flex-col items-center justify-center py-4 sm:py-8">
-      <div className="w-full max-w-4xl space-y-10">
-        {/* ── Hero Section ── */}
-        <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-indigo-50/80 px-3.5 py-1 text-xs font-semibold text-indigo-700 shadow-xs backdrop-blur-sm animate-pulse-subtle">
-            <span className="flex h-2 w-2 rounded-full bg-indigo-600 animate-ping" />
-            <span>AI-Powered Speech & Written Coaching</span>
-          </div>
-
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-            Master Every Interview with{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600">
-              Intervue
-            </span>
-          </h1>
-
-          <p className="mt-3 text-base text-slate-600 max-w-2xl mx-auto sm:text-lg leading-relaxed">
-            Practice realistic questions across 32 specialized tracks. Answer by voice or written text, then receive expert feedback on your structure, delivery tone, and relevance.
-          </p>
-
-          {/* Feature Highlights Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-2 text-xs font-medium text-slate-500">
-            <div className="flex items-center gap-1.5">
-              <span className="text-indigo-600 font-bold">🎙️</span>
-              <span>Whisper Voice Engine</span>
-            </div>
-            <span className="text-slate-300">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-violet-600 font-bold">🤖</span>
-              <span>Gemini Tone & STAR Analysis</span>
-            </div>
-            <span className="text-slate-300">•</span>
-            <div className="flex items-center gap-1.5">
-              <span className="text-emerald-600 font-bold">📚</span>
-              <span>384+ Curated Scenarios</span>
-            </div>
-          </div>
+    <div className="mx-auto max-w-3xl space-y-8 py-2">
+      {/* ── Elevated Hero Section ── */}
+      <div className="text-center space-y-3 pb-2">
+        <div className="inline-flex items-center gap-2 rounded-full border border-forest-600/80 bg-forest-900/90 px-3.5 py-1 text-xs font-semibold text-emerald-300 shadow-xs backdrop-blur-sm">
+          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+          <span>Professional Speech & Written Interview Preparation</span>
         </div>
 
-        {/* ── Step 1: Answering Mode Selection ── */}
-        <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-white/70 p-6 shadow-xs backdrop-blur-sm">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-[11px] font-bold text-indigo-700">1</span>
-              <span>Choose Your Response Mode</span>
-            </h2>
-            <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full">
-              {answerMode === "mic" ? "Voice Answering (Mic)" : "Written Typing Mode"}
-            </span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
+          Master Every Interview with{" "}
+          <span className="text-emerald-400">
+            Intervue<span className="text-gold-400">.</span>
+          </span>
+        </h1>
+
+        <p className="text-sm text-sage-200 max-w-xl mx-auto sm:text-base leading-relaxed">
+          Prepare for admissions, tech, clinical, and leadership interviews. Choose a specialized track from the sidebar, answer by voice or written text, and receive structured feedback.
+        </p>
+
+        {/* Feature Highlights Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-1 text-xs font-medium text-sage-300">
+          <div className="flex items-center gap-1.5">
+            <span className="text-emerald-400 font-bold">🎙️</span>
+            <span>Real-time Voice Transcription</span>
           </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2" role="radiogroup" aria-label="Answer Mode">
-            {/* Voice Mode */}
-            <button
-              type="button"
-              role="radio"
-              aria-checked={answerMode === "mic"}
-              onClick={() => setAnswerMode("mic")}
-              className={`group relative flex items-start gap-4 rounded-xl border-2 p-5 text-left transition-all duration-200 ${
-                answerMode === "mic"
-                  ? "border-indigo-600 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 shadow-md ring-2 ring-indigo-500/20"
-                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/80"
-              }`}
-            >
-              <div
-                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-2xl transition-all duration-200 ${
-                  answerMode === "mic"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 scale-105"
-                    : "bg-slate-100 text-slate-600 group-hover:bg-indigo-100 group-hover:text-indigo-600"
-                }`}
-                aria-hidden="true"
-              >
-                🎙️
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 text-base">Voice Mode</span>
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                      answerMode === "mic"
-                        ? "bg-indigo-600 text-white shadow-xs"
-                        : "bg-slate-100 text-slate-500"
-                    }`}
-                  >
-                    Recommended
-                  </span>
-                </div>
-                <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                  Speak your answers into the microphone. Whisper transcribes your words while Gemini assesses your vocal tone, composure, and delivery flow.
-                </p>
-              </div>
-            </button>
-
-            {/* Written Mode */}
-            <button
-              type="button"
-              role="radio"
-              aria-checked={answerMode === "typed"}
-              onClick={() => setAnswerMode("typed")}
-              className={`group relative flex items-start gap-4 rounded-xl border-2 p-5 text-left transition-all duration-200 ${
-                answerMode === "typed"
-                  ? "border-indigo-600 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/50 shadow-md ring-2 ring-indigo-500/20"
-                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/80"
-              }`}
-            >
-              <div
-                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl text-2xl transition-all duration-200 ${
-                  answerMode === "typed"
-                    ? "bg-indigo-600 text-white shadow-md shadow-indigo-600/30 scale-105"
-                    : "bg-slate-100 text-slate-600 group-hover:bg-indigo-100 group-hover:text-indigo-600"
-                }`}
-                aria-hidden="true"
-              >
-                ✍️
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900 text-base">Written Mode</span>
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                      answerMode === "typed"
-                        ? "bg-indigo-600 text-white shadow-xs"
-                        : "bg-slate-100 text-slate-500"
-                    }`}
-                  >
-                    Essay & Depth
-                  </span>
-                </div>
-                <p className="mt-1.5 text-xs text-slate-600 leading-relaxed">
-                  Type your answers directly in the structured editor. Ideal for practicing depth, problem breakdown, and concise STAR framework articulation.
-                </p>
-              </div>
-            </button>
+          <span className="text-forest-600">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-gold-400 font-bold">📊</span>
+            <span>Delivery & STAR Method Rubrics</span>
+          </div>
+          <span className="text-forest-600">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-emerald-400 font-bold">📚</span>
+            <span>624 Curated Scenarios</span>
           </div>
         </div>
+      </div>
 
-        {/* ── Step 2: Category Selection ── */}
-        <div className="space-y-5 rounded-2xl border border-slate-200/80 bg-white/70 p-6 shadow-xs backdrop-blur-sm">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      {/* ── Active Track Card with Sidebar Open Control ── */}
+      <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 sm:p-8 shadow-md space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-sage-300/80 pb-5">
+          <div className="flex items-start sm:items-center gap-3">
+            <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-[#D4E3D8] text-2xl border border-sage-300/90 shadow-xs">
+              {getCategoryIcon(selectedCategory)}
+            </span>
             <div>
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-[11px] font-bold text-indigo-700">2</span>
-                <span>Select Your Interview Track ({allCategories.length} Tracks)</span>
-              </h2>
-              {selectedCategory && (
-                <p className="text-xs text-indigo-700 font-semibold mt-1">
-                  Selected track: <span className="underline decoration-indigo-300">{selectedCategory}</span>
-                </p>
-              )}
-            </div>
-
-            {/* Search Input */}
-            <div className="relative w-full sm:w-80">
-              <input
-                type="text"
-                placeholder="Search tracks (e.g. medical, law, YC)..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white/90 pl-9 pr-8 py-2.5 text-xs text-slate-900 shadow-xs placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
-              />
-              <span className="absolute left-3 top-3 text-slate-400 text-xs" aria-hidden="true">
-                🔍
+              <span className="text-[10px] font-bold uppercase tracking-wider text-forest-800 bg-[#D4E3D8] px-2.5 py-0.5 rounded-full border border-sage-300">
+                {activeGroup?.name || "Specialized Field"}
               </span>
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-2.5 top-2.5 rounded-full p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 text-xs"
-                  aria-label="Clear search"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Group Filter Tabs */}
-          <div className="flex flex-wrap gap-2 border-b border-slate-200/70 pb-3">
-            <button
-              type="button"
-              onClick={() => setSelectedGroupId("all")}
-              className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                selectedGroupId === "all"
-                  ? "bg-slate-900 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
-              }`}
-            >
-              All Tracks ({allCategories.length})
-            </button>
-            {CATEGORY_GROUPS.map((group) => (
-              <button
-                type="button"
-                key={group.id}
-                onClick={() => setSelectedGroupId(group.id)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
-                  selectedGroupId === group.id
-                    ? "bg-indigo-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-900"
-                }`}
+              <h2
+                className="text-lg sm:text-2xl font-black text-forest-950 tracking-tight leading-snug mt-1 cursor-default"
+                title={selectedCategory}
               >
-                <span>{group.icon}</span>
-                <span>{group.name}</span>
-                <span className="opacity-70 text-[10px]">({group.categories.length})</span>
-              </button>
-            ))}
+                {selectedCategory}
+              </h2>
+            </div>
           </div>
 
-          {/* Category Cards Grid */}
-          {filteredCategories.length > 0 ? (
-            <div
-              className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3 max-h-[540px] overflow-y-auto p-1 pr-2 scrollbar-thin"
-              role="group"
-              aria-label="Interview categories"
-            >
-              {filteredCategories.map((category) => (
-                <CategoryCard
-                  key={category}
-                  category={category}
-                  selected={selectedCategory === category}
-                  onSelect={handleSelectCategory}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white/50 p-10 text-center space-y-3">
-              <span className="text-3xl" aria-hidden="true">🔍</span>
-              <p className="text-sm font-semibold text-slate-800">
-                No interview tracks found matching &quot;{searchQuery}&quot;
-              </p>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Try searching for a different profession, academic field, or clear your search to browse all categories.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchQuery("");
-                  setSelectedGroupId("all");
-                }}
-                className="mt-2 inline-flex items-center rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 transition-colors"
-              >
-                Reset Search Filters
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Inline error */}
-        {showError && (
-          <div className="animate-shake">
-            <ErrorMessage
-              id="category-error"
-              message="Please select an interview category track before starting your practice session."
-            />
-          </div>
-        )}
-
-        {/* Start Session CTA */}
-        <div className="pt-2 flex flex-col items-center gap-3 text-center">
+          {/* Quick Button to Open Left Sidebar */}
           <button
             type="button"
-            onClick={handleStartSession}
-            aria-describedby={showError ? "category-error" : undefined}
-            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 px-10 py-4 text-base font-bold text-white shadow-xl shadow-indigo-600/25 transition-all duration-200 hover:scale-[1.02] hover:shadow-2xl hover:shadow-indigo-600/35 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+            onClick={openSidebar}
+            aria-label="Open sidebar to browse all 52 tracks"
+            className="self-start sm:self-auto inline-flex items-center gap-2 rounded-xl border border-forest-600/80 bg-forest-800/90 px-3.5 py-2 text-xs font-bold text-emerald-200 shadow-xs hover:bg-forest-700 hover:border-forest-500 hover:text-white transition-all active:scale-95"
           >
-            <span className="text-xl" aria-hidden="true">
-              {answerMode === "mic" ? "🎙️" : "✍️"}
-            </span>
-            <span>
-              Start {answerMode === "mic" ? "Voice" : "Written"} Session
-              {selectedCategory ? ` • ${selectedCategory.split("(")[0].trim()}` : ""}
-            </span>
-            <span className="text-indigo-200 group-hover:translate-x-1 transition-transform" aria-hidden="true">
-              →
-            </span>
+            <svg
+              className="h-4 w-4 text-emerald-300"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              aria-hidden="true"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <line x1="9" y1="3" x2="9" y2="21" />
+            </svg>
+            <span>Change Track (52 Available) ▾</span>
+          </button>
+        </div>
+
+        <p className="text-xs sm:text-sm text-darkslate-700 leading-relaxed">
+          {activeGroup?.description || "Structured mock interview scenarios designed to evaluate responses and readiness."}
+        </p>
+
+        {/* Track Highlights Badges */}
+        <div className="grid grid-cols-3 gap-3 pt-1">
+          <div className="rounded-xl bg-[#D4E3D8] border border-sage-300/80 p-3 text-center">
+            <span className="block text-base sm:text-lg font-extrabold text-forest-900">12</span>
+            <span className="text-[10px] sm:text-xs text-darkslate-600 font-medium">Practice Scenarios</span>
+          </div>
+          <div className="rounded-xl bg-[#D4E3D8] border border-sage-300/80 p-3 text-center">
+            <span className="block text-base sm:text-lg font-extrabold text-forest-900">Dual Mode</span>
+            <span className="text-[10px] sm:text-xs text-darkslate-600 font-medium">Voice & Written Ready</span>
+          </div>
+          <div className="rounded-xl bg-[#D4E3D8] border border-sage-300/80 p-3 text-center">
+            <span className="block text-base sm:text-lg font-extrabold text-forest-900">STAR Rubric</span>
+            <span className="text-[10px] sm:text-xs text-darkslate-600 font-medium">Structured Feedback</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Step 1: Response Mode Selector ── */}
+      <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 sm:p-7 shadow-md space-y-4">
+        <div className="flex items-center justify-between border-b border-sage-300/80 pb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-darkslate-600 flex items-center gap-2">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-forest-700 text-[11px] font-bold text-white">1</span>
+            <span>Select Response Mode</span>
+          </h3>
+          <span className="text-xs font-bold text-forest-800 bg-[#D4E3D8] border border-sage-300 px-2.5 py-0.5 rounded-full">
+            {answerMode === "mic" ? "Voice Answering" : "Written Typing Mode"}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4" role="radiogroup" aria-label="Response Mode">
+          {/* Voice Mode */}
+          <button
+            type="button"
+            role="radio"
+            aria-checked={answerMode === "mic"}
+            onClick={() => setAnswerMode("mic")}
+            className={`group relative flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+              answerMode === "mic"
+                ? "border-forest-700 bg-[#D4E4D9] shadow-sm ring-2 ring-forest-500/20"
+                : "border-sage-300 bg-[#EEF5F0] hover:border-forest-500 hover:bg-[#DCE8E0]"
+            }`}
+          >
+            <div
+              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-xl transition-all ${
+                answerMode === "mic"
+                  ? "bg-forest-700 text-white shadow-sm shadow-forest-900/20"
+                  : "bg-sage-200 text-darkslate-700 group-hover:bg-sage-300"
+              }`}
+              aria-hidden="true"
+            >
+              🎙️
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-forest-950 text-sm">Voice Mode</span>
+                <span
+                  className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    answerMode === "mic"
+                      ? "bg-forest-700 text-white shadow-xs"
+                      : "bg-sage-200 text-darkslate-600"
+                  }`}
+                >
+                  Recommended
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-darkslate-600 leading-relaxed">
+                Speak into your microphone. Speech is transcribed live, assessing vocal flow, tone, and pacing.
+              </p>
+            </div>
           </button>
 
-          {selectedCategory ? (
-            <p className="text-xs font-medium text-slate-500">
-              12 questions in this track • Evaluated on Structure, Tone, and Question Connection
-            </p>
-          ) : (
-            <p className="text-xs text-slate-400">
-              Select an interview track above to begin
-            </p>
-          )}
+          {/* Written Mode */}
+          <button
+            type="button"
+            role="radio"
+            aria-checked={answerMode === "typed"}
+            onClick={() => setAnswerMode("typed")}
+            className={`group relative flex items-start gap-4 rounded-xl border-2 p-4 text-left transition-all duration-200 ${
+              answerMode === "typed"
+                ? "border-forest-700 bg-[#D4E4D9] shadow-sm ring-2 ring-forest-500/20"
+                : "border-sage-300 bg-[#EEF5F0] hover:border-forest-500 hover:bg-[#DCE8E0]"
+            }`}
+          >
+            <div
+              className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-xl transition-all ${
+                answerMode === "typed"
+                  ? "bg-forest-700 text-white shadow-sm shadow-forest-900/20"
+                  : "bg-sage-200 text-darkslate-700 group-hover:bg-sage-300"
+              }`}
+              aria-hidden="true"
+            >
+              ✍️
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-forest-950 text-sm">Written Mode</span>
+                <span
+                  className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                    answerMode === "typed"
+                      ? "bg-forest-700 text-white"
+                      : "bg-sage-200 text-darkslate-600"
+                  }`}
+                >
+                  Essay Style
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-darkslate-600 leading-relaxed">
+                Type structured answers directly. Ideal for crafting depth and concise STAR framework articulation.
+              </p>
+            </div>
+          </button>
         </div>
+      </div>
+
+      {/* ── Step 2: Sample Questions Preview ── */}
+      <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 sm:p-7 shadow-md space-y-4">
+        <div className="flex items-center justify-between border-b border-sage-300/80 pb-3">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-darkslate-600 flex items-center gap-2">
+            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-forest-700 text-[11px] font-bold text-white">2</span>
+            <span>Track Preview & Sample Scenarios</span>
+          </h3>
+          <span className="text-[11px] text-darkslate-500">3 of 12 questions shown</span>
+        </div>
+
+        <div className="space-y-2.5">
+          {activeQuestionsPreview.map((q, idx) => (
+            <div
+              key={q.id || idx}
+              className="flex items-start gap-3 rounded-xl bg-[#DCE7DF] border border-sage-300/80 p-3.5 text-xs text-darkslate-800 shadow-2xs hover:bg-[#D4E3D8] transition-colors"
+            >
+              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-forest-700 text-[10px] font-bold text-white">
+                {idx + 1}
+              </span>
+              <p className="font-medium text-darkslate-900 leading-relaxed">
+                {q.text}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Inline Error */}
+      {showError && (
+        <div className="animate-shake">
+          <ErrorMessage
+            id="category-error"
+            message="Please select an interview category track before starting your practice session."
+          />
+        </div>
+      )}
+
+      {/* ── Start Practice Session Button ── */}
+      <div className="pt-2">
+        <button
+          type="button"
+          onClick={handleStartSession}
+          className="w-full group relative flex items-center justify-center gap-3 rounded-2xl bg-forest-700 hover:bg-forest-600 p-4 text-base font-bold text-white shadow-lg shadow-forest-950/40 transition-all duration-200 hover:shadow-xl hover:scale-[1.01] active:scale-[0.99]"
+        >
+          <span className="text-xl" aria-hidden="true">
+            {answerMode === "mic" ? "🎙️" : "✍️"}
+          </span>
+          <span>
+            Start {answerMode === "mic" ? "Voice" : "Written"} Practice Session (12 Questions)
+          </span>
+          <span className="text-gold-300 group-hover:translate-x-1 transition-transform" aria-hidden="true">
+            →
+          </span>
+        </button>
+        <p className="mt-2 text-center text-xs text-sage-300">
+          Evaluated on Structure & Depth, Tone & Delivery, and Connection to the Question.
+        </p>
       </div>
     </div>
   );
 }
+
+

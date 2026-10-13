@@ -18,7 +18,7 @@ export default function LoadingSpinner() {
       {/* Visible animated ring */}
       <div
         aria-hidden="true"
-        className="h-10 w-10 animate-spin rounded-full border-4 border-gray-300 border-t-blue-600"
+        className="h-10 w-10 animate-spin rounded-full border-4 border-sage-300 border-t-forest-700"
       />
       {/* Visually-hidden text for extra context in older AT */}
       <span className="sr-only">Loading feedback…</span>

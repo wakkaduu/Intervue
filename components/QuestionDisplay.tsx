@@ -21,31 +21,31 @@ export default function QuestionDisplay({
       {/* Top Meta: Question tracker + Category Tag */}
       <div className="flex flex-wrap items-center justify-between gap-2.5">
         <span
-          className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 border border-indigo-200/80"
+          className="inline-flex items-center gap-1.5 rounded-full bg-forest-50 px-3 py-1 text-xs font-bold text-forest-800 border border-forest-200/80"
           aria-label={`Question ${questionNumber} of ${totalQuestions}`}
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 animate-pulse" />
+          <span className="h-1.5 w-1.5 rounded-full bg-forest-700 animate-pulse" />
           <span>
-            Question {questionNumber} <span className="text-indigo-400">/</span> {totalQuestions}
+            Question {questionNumber} <span className="text-forest-400">/</span> {totalQuestions}
           </span>
         </span>
 
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 border border-slate-200/80">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-sage-100 px-3 py-1 text-xs font-medium text-darkslate-700 border border-sage-200/80">
           <span aria-hidden="true">{icon}</span>
           <span>{question.category}</span>
         </span>
       </div>
 
       {/* Main Question Text */}
-      <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 leading-snug">
+      <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-forest-950 leading-snug">
         {question.text}
       </h2>
 
-      {/* Strategic Interview Tip Banner */}
-      <div className="flex items-start gap-2.5 rounded-xl bg-slate-50/90 border border-slate-200/70 p-3.5 text-xs text-slate-600">
+      {/* Strategic Interview Tip Banner (10% Warm Gold Accent) */}
+      <div className="flex items-start gap-2.5 rounded-xl bg-gold-50/90 border border-gold-200/80 p-3.5 text-xs text-gold-950">
         <span className="text-base flex-shrink-0" aria-hidden="true">💡</span>
         <p className="leading-relaxed">
-          <strong className="text-slate-800 font-semibold">Coach Tip:</strong> Lead with your core takeaway, ground your reasoning with a real-world scenario, and emphasize the measurable outcome.
+          <strong className="text-gold-900 font-bold">Coach Tip:</strong> Lead with your core takeaway, ground your reasoning with a real-world scenario, and emphasize the measurable outcome.
         </p>
       </div>
     </div>

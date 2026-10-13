@@ -31,7 +31,7 @@ export default function TranscriptArea({
           value={finalTranscript}
           onChange={(e) => onFallbackChange(e.target.value)}
           placeholder="Type your answer here…"
-          className="w-full min-h-[160px] overflow-y-auto rounded-xl border border-slate-300 bg-white p-4 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 shadow-xs resize-y"
+          className="w-full min-h-[160px] overflow-y-auto rounded-xl border border-sage-300 bg-[#F0F5F1] p-4 text-sm text-darkslate-900 placeholder:text-darkslate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 shadow-xs resize-y"
           aria-label="Type your answer"
         />
       </div>
@@ -45,44 +45,44 @@ export default function TranscriptArea({
       role="region"
       aria-label="Audio transcription"
       aria-live="polite"
-      className="w-full min-h-[180px] rounded-2xl border border-slate-200/90 bg-slate-50/50 p-5 shadow-xs flex flex-col justify-between transition-all"
+      className="w-full min-h-[180px] rounded-2xl border border-sage-300/90 bg-[#D8E6DC]/70 p-5 shadow-xs flex flex-col justify-between transition-all"
     >
       <div>
-        <div className="flex items-center justify-between border-b border-slate-200/70 pb-3 mb-4">
+        <div className="flex items-center justify-between border-b border-sage-300/70 pb-3 mb-4">
           <div className="flex items-center gap-2">
-            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-indigo-50 text-indigo-700 text-xs font-bold">
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-forest-100 text-forest-800 text-xs font-bold">
               🎙️
             </span>
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Whisper Audio Transcription
+            <span className="text-xs font-bold uppercase tracking-wider text-forest-900">
+              Spoken Voice Transcription
             </span>
           </div>
 
           {finalTranscript && (
-            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-              Verified by Whisper
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-forest-800 bg-forest-50 px-2.5 py-1 rounded-full border border-forest-200">
+              <span className="h-1.5 w-1.5 rounded-full bg-forest-700" />
+              Voice Transcribed
             </span>
           )}
         </div>
 
         {finalTranscript ? (
-          <div className="rounded-xl bg-white p-4 border border-slate-200/80 shadow-xs">
-            <p className="text-sm font-normal text-slate-900 leading-relaxed whitespace-pre-wrap">
+          <div className="rounded-xl bg-[#F0F5F1] p-4 border border-sage-300/80 shadow-xs">
+            <p className="text-sm font-normal text-darkslate-900 leading-relaxed whitespace-pre-wrap">
               {finalTranscript}
             </p>
           </div>
         ) : isTranscribing ? (
           <div className="flex flex-col items-center justify-center py-8 text-center space-y-3">
             <div className="flex items-center gap-1.5">
-              <span className="h-3 w-1.5 rounded-full bg-indigo-600 animate-pulse" />
-              <span className="h-6 w-1.5 rounded-full bg-indigo-600 animate-pulse delay-75" />
-              <span className="h-4 w-1.5 rounded-full bg-indigo-600 animate-pulse delay-150" />
-              <span className="h-8 w-1.5 rounded-full bg-indigo-600 animate-pulse delay-100" />
-              <span className="h-5 w-1.5 rounded-full bg-indigo-600 animate-pulse delay-200" />
+              <span className="h-3 w-1.5 rounded-full bg-forest-700 animate-pulse" />
+              <span className="h-6 w-1.5 rounded-full bg-forest-700 animate-pulse delay-75" />
+              <span className="h-4 w-1.5 rounded-full bg-forest-700 animate-pulse delay-150" />
+              <span className="h-8 w-1.5 rounded-full bg-forest-700 animate-pulse delay-100" />
+              <span className="h-5 w-1.5 rounded-full bg-forest-700 animate-pulse delay-200" />
             </div>
-            <p className="text-xs font-semibold text-indigo-700">
-              Whisper is converting your voice audio into high-accuracy text...
+            <p className="text-xs font-semibold text-forest-800">
+              Transcribing your voice audio into high-accuracy text...
             </p>
           </div>
         ) : isRecording ? (
@@ -101,25 +101,25 @@ export default function TranscriptArea({
             </p>
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-8 text-center space-y-2 text-slate-400">
-            <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-lg">
+          <div className="flex flex-col items-center justify-center py-8 text-center space-y-2 text-darkslate-400">
+            <div className="h-10 w-10 rounded-full bg-sage-100 flex items-center justify-center text-darkslate-400 text-lg">
               🎙️
             </div>
-            <p className="text-xs font-medium text-slate-500 max-w-sm">
-              Press <span className="font-bold text-slate-700">&quot;Start Recording&quot;</span> below, articulate your response, and click <span className="font-bold text-slate-700">&quot;Stop Recording&quot;</span> when done.
+            <p className="text-xs font-medium text-darkslate-500 max-w-sm">
+              Press <span className="font-bold text-darkslate-700">&quot;Start Recording&quot;</span> below, articulate your response, and click <span className="font-bold text-darkslate-700">&quot;Stop Recording&quot;</span> when done.
             </p>
           </div>
         )}
 
         {interimTranscript && (
-          <p className="text-xs text-slate-400 italic mt-2">{interimTranscript}</p>
+          <p className="text-xs text-darkslate-400 italic mt-2">{interimTranscript}</p>
         )}
       </div>
 
       {finalTranscript && (
-        <div className="flex items-center justify-between text-xs text-slate-400 pt-3 border-t border-slate-200/70 mt-3">
+        <div className="flex items-center justify-between text-xs text-darkslate-400 pt-3 border-t border-sage-200/70 mt-3">
           <span>{wordCount} {wordCount === 1 ? "word" : "words"} captured</span>
-          <span className="text-[11px] text-slate-400">Ready for AI review</span>
+          <span className="text-[11px] text-darkslate-400">Ready for evaluation</span>
         </div>
       )}
     </div>

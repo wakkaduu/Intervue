@@ -106,10 +106,7 @@ function InterviewPageInner() {
       setReviewError(null);
 
       const results: SessionEntry[] = [];
-      const customGeminiKey =
-        typeof window !== "undefined" ? localStorage.getItem("mock_gemini_key") : null;
       const headers: Record<string, string> = { "Content-Type": "application/json" };
-      if (customGeminiKey) headers["x-gemini-key"] = customGeminiKey;
 
       try {
         for (let i = 0; i < questions.length; i++) {
@@ -249,7 +246,7 @@ function InterviewPageInner() {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center p-4 space-y-3">
         <LoadingSpinner />
-        <p className="text-xs font-medium text-slate-500">Preparing your interview session...</p>
+        <p className="text-xs font-medium text-darkslate-500">Preparing your interview session...</p>
       </div>
     );
   }
@@ -259,22 +256,25 @@ function InterviewPageInner() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* ── Top Bar: Category, Mode & Exit ── */}
-      <div className="flex items-center justify-between text-xs text-slate-600 border-b border-slate-200/80 pb-3">
+      <div className="flex items-center justify-between text-xs text-sage-300 border-b border-forest-700/60 pb-3">
         <div className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 text-sm">
+          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-forest-800 text-emerald-200 text-sm">
             {mode === "mic" ? "🎙️" : "✍️"}
           </span>
-          <span className="font-semibold text-slate-900">
+          <span
+            className="font-semibold text-white truncate max-w-xs sm:max-w-md cursor-default"
+            title={currentQuestion?.category}
+          >
             {currentQuestion?.category || "Practice Track"}
           </span>
-          <span className="text-slate-300">•</span>
-          <span className="text-slate-500">
+          <span className="text-forest-500">•</span>
+          <span className="text-sage-300">
             {mode === "mic" ? "Voice Mode" : "Written Mode"}
           </span>
         </div>
         <Link
           href="/"
-          className="font-medium text-slate-500 hover:text-indigo-600 transition-colors"
+          className="font-medium text-emerald-300 hover:text-white transition-colors"
         >
           Change Track
         </Link>
@@ -282,10 +282,10 @@ function InterviewPageInner() {
 
       {/* ── Visual Question Stepper ── */}
       {!isReviewingAll && totalQuestions > 0 && (
-        <div className="space-y-2 rounded-xl bg-white p-4 border border-slate-200/80 shadow-xs">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+        <div className="space-y-2 rounded-xl bg-[#E2ECE5] p-4 border border-sage-300/80 shadow-md">
+          <div className="flex items-center justify-between text-xs font-semibold text-darkslate-700">
             <span>Question {questionIndex + 1} of {totalQuestions}</span>
-            <span className="text-indigo-600">{Math.round(((questionIndex + 1) / totalQuestions) * 100)}% Completed</span>
+            <span className="text-forest-800 font-bold">{Math.round(((questionIndex + 1) / totalQuestions) * 100)}% Completed</span>
           </div>
           <div
             className="grid gap-1.5 w-full"
@@ -298,10 +298,10 @@ function InterviewPageInner() {
                 key={idx}
                 className={`h-2 rounded-full transition-all duration-300 ${
                   idx < questionIndex || answers[idx]
-                    ? "bg-indigo-600"
+                    ? "bg-forest-700"
                     : idx === questionIndex
-                    ? "bg-indigo-400 ring-2 ring-indigo-300/50"
-                    : "bg-slate-100"
+                    ? "bg-gold-500 ring-2 ring-gold-400/50"
+                    : "bg-[#CFDFD4]"
                 }`}
               />
             ))}
@@ -345,7 +345,7 @@ function InterviewPageInner() {
                   )}&mode=typed`
                 )
               }
-              className="rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 hover:bg-red-50 transition-colors"
+              className="rounded-lg bg-[#F0F5F1] px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 hover:bg-red-50 transition-colors"
             >
               Switch to Written Mode
             </button>
@@ -356,7 +356,7 @@ function InterviewPageInner() {
       {/* ── Question Answering View ── */}
       {!isReviewingAll && currentQuestion && (
         <div className="space-y-6">
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-sm">
+          <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 sm:p-8 shadow-md">
             <QuestionDisplay
               question={currentQuestion}
               questionNumber={questionIndex + 1}
@@ -367,12 +367,12 @@ function InterviewPageInner() {
           <section aria-label="Answer section" className="space-y-4">
             {/* Mode 1: VOICE MODE (Whisper-powered speech-to-text) */}
             {mode === "mic" && (
-              <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <div className="space-y-4 rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 shadow-md">
+                <div className="flex items-center justify-between border-b border-sage-200/80 pb-3">
+                  <span className="text-xs font-bold uppercase tracking-wider text-darkslate-500">
                     Spoken Answer
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-darkslate-400">
                     Press Start Recording, speak your response, then click Stop
                   </span>
                 </div>
@@ -405,7 +405,7 @@ function InterviewPageInner() {
                     onStop={handleStopRecording}
                     onSubmit={handleNextOrFinish}
                     hasTranscript={audioTranscript.trim().length > 0}
-                    submitLabel={isLastQuestion ? "Finish & Review with AI ✨" : "Next Question →"}
+                    submitLabel={isLastQuestion ? "Finish & Review Session ✨" : "Next Question →"}
                     isLastQuestion={isLastQuestion}
                     onPrevious={handlePreviousQuestion}
                     canPrevious={canPrevious}
@@ -416,13 +416,13 @@ function InterviewPageInner() {
 
             {/* Mode 2: WRITTEN MODE (Typed only) */}
             {mode === "typed" && (
-              <div className="space-y-4 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                  <label htmlFor="typed-answer" className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              <div className="space-y-4 rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 shadow-md">
+                <div className="flex items-center justify-between border-b border-sage-300/80 pb-3">
+                  <label htmlFor="typed-answer" className="text-xs font-bold uppercase tracking-wider text-darkslate-600">
                     Written Answer
                   </label>
-                  <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-                    <span className="font-semibold text-indigo-600">STAR Tip:</span>
+                  <div className="flex items-center gap-1.5 text-[11px] bg-gold-50 border border-gold-200/80 px-2.5 py-0.5 rounded-full text-gold-900">
+                    <span className="font-bold text-gold-700">STAR Tip:</span>
                     <span>Situation • Task • Action • Result</span>
                   </div>
                 </div>
@@ -436,10 +436,10 @@ function InterviewPageInner() {
                   }}
                   placeholder="Structure your answer here... Example: At my previous company, we faced a major bottleneck (Situation). My task was to streamline the workflow (Task). I implemented a continuous integration protocol (Action), which reduced cycle time by 40% (Result)."
                   rows={8}
-                  className="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-xs transition-all leading-relaxed"
+                  className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] p-4 text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 shadow-xs transition-all leading-relaxed"
                 />
 
-                <div className="flex items-center justify-between text-xs text-slate-400">
+                <div className="flex items-center justify-between text-xs text-darkslate-500">
                   <span>{typedWordCount} {typedWordCount === 1 ? "word" : "words"}</span>
                   <span>{typedText.length} characters</span>
                 </div>
@@ -457,7 +457,7 @@ function InterviewPageInner() {
                     <button
                       type="button"
                       onClick={handlePreviousQuestion}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-xs hover:bg-slate-50 active:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-xl border border-sage-300 bg-[#F0F5F1] px-5 py-2.5 text-sm font-semibold text-darkslate-700 shadow-xs hover:bg-[#D4E3D8] active:bg-sage-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 transition-colors"
                     >
                       ← Previous Question
                     </button>
@@ -469,13 +469,13 @@ function InterviewPageInner() {
                     type="button"
                     onClick={handleNextOrFinish}
                     disabled={!typedText.trim()}
-                    className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all ${
+                    className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all ${
                       isLastQuestion
-                        ? "bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 shadow-indigo-500/25"
-                        : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20"
+                        ? "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20 ring-2 ring-gold-400/50"
+                        : "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20"
                     }`}
                   >
-                    <span>{isLastQuestion ? "Finish & Review with AI ✨" : "Next Question →"}</span>
+                    <span>{isLastQuestion ? "Finish & Review Session ✨" : "Next Question →"}</span>
                   </button>
                 </div>
               </div>
@@ -489,34 +489,34 @@ function InterviewPageInner() {
         <div
           role="status"
           aria-live="polite"
-          className="rounded-3xl border border-indigo-100 bg-white p-10 shadow-xl text-center space-y-8 animate-fade-in"
+          className="rounded-3xl border border-sage-300 bg-[#E2ECE5] p-10 shadow-2xl text-center space-y-8 animate-fade-in"
         >
-          {/* Animated AI Brain Icon */}
-          <div className="relative mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-600 shadow-xl shadow-indigo-500/30">
-            <span className="text-4xl animate-bounce" aria-hidden="true">
-              🤖
-            </span>
-            <div className="absolute inset-0 rounded-3xl border-4 border-indigo-200 border-t-transparent animate-spin" />
+          {/* Animated Evaluation Icon */}
+          <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-forest-700 via-forest-600 to-forest-800 shadow-xl shadow-forest-900/25">
+            <svg className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <div className="absolute inset-0 rounded-2xl border-4 border-sage-200 border-t-gold-500 animate-spin" />
           </div>
 
           <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-              Intervue AI Coach is Evaluating Your Session
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-forest-950">
+              Evaluating Your Interview Session
             </h2>
-            <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
-              Evaluating your answers across the 3 key pillars: Structure & Depth, Tone & Delivery, and Connection to the Question.
+            <p className="text-sm text-darkslate-500 max-w-md mx-auto leading-relaxed">
+              Generating structured evaluation across the 3 key pillars: Structure & Depth, Tone & Delivery, and Connection to the Question.
             </p>
           </div>
 
           {/* Progress Bar */}
           <div className="max-w-md mx-auto space-y-3">
-            <div className="flex justify-between text-xs font-bold text-slate-700">
+            <div className="flex justify-between text-xs font-bold text-darkslate-700">
               <span>Evaluating Question {reviewProgress.current} of {reviewProgress.total}</span>
-              <span className="text-indigo-600">{Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%</span>
+              <span className="text-forest-800 font-extrabold">{Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%</span>
             </div>
-            <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100 shadow-inner">
+            <div className="h-3 w-full overflow-hidden rounded-full bg-sage-100 shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 transition-all duration-500 ease-out shadow-xs"
+                className="h-full bg-forest-700 transition-all duration-500 ease-out shadow-xs"
                 style={{
                   width: `${Math.round((reviewProgress.current / (reviewProgress.total || 1)) * 100)}%`,
                 }}
@@ -525,7 +525,7 @@ function InterviewPageInner() {
           </div>
 
           {reviewProgress.currentQuestionText && (
-            <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-4 text-xs text-slate-600 max-w-lg mx-auto italic truncate">
+            <div className="rounded-xl bg-sage-50 border border-sage-200/80 p-4 text-xs text-darkslate-600 max-w-lg mx-auto italic truncate">
               &quot;{reviewProgress.currentQuestionText}&quot;
             </div>
           )}
@@ -538,7 +538,7 @@ function InterviewPageInner() {
                 onClick={() => executeReviewAll(answers)}
                 className="rounded-lg bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
               >
-                Retry AI Review
+                Retry Evaluation
               </button>
             </div>
           )}
