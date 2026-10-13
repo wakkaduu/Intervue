@@ -61,10 +61,16 @@ export function validateReviewRequest(body: unknown): ReviewRequest {
     );
   }
 
+  const mode =
+    obj.mode === "mic" || obj.mode === "typed"
+      ? (obj.mode as "mic" | "typed")
+      : undefined;
+
   return {
     question: obj.question,
     answer: obj.answer,
     category: obj.category,
+    ...(mode ? { mode } : {}),
   };
 }
 
@@ -135,10 +141,22 @@ export function validateFeedback(obj: unknown): Feedback {
     );
   }
 
-  return {
+  const feedback: Feedback = {
     score: raw.score,
     strengths: raw.strengths as string[],
     areasForImprovement: raw.areasForImprovement as string[],
     summary: raw.summary,
   };
+
+  if (typeof raw.howTheyAnswered === "string") {
+    feedback.howTheyAnswered = raw.howTheyAnswered;
+  }
+  if (typeof raw.toneAnalysis === "string") {
+    feedback.toneAnalysis = raw.toneAnalysis;
+  }
+  if (typeof raw.questionConnection === "string") {
+    feedback.questionConnection = raw.questionConnection;
+  }
+
+  return feedback;
 }

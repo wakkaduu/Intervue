@@ -60,10 +60,7 @@ export default function SummaryPage() {
       : "text-red-700 bg-red-50 ring-red-200";
 
   return (
-    <main
-      id="main-content"
-      className="min-h-screen bg-gray-50 px-4 py-12 sm:px-6 lg:px-8"
-    >
+    <div className="py-6">
       <div className="mx-auto w-full max-w-3xl">
 
         {/* ── Page header ── */}
@@ -145,6 +142,6 @@ export default function SummaryPage() {
           </button>
         </div>
       </div>
-    </main>
+    </div>
   );
 }

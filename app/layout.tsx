@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import AppHeader from "@/components/AppHeader";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,13 +39,7 @@ export default function RootLayout({
           className="sr-only"
         />
 
-        <header className="w-full border-b border-gray-200 bg-white shadow-sm">
-          <div className="mx-auto flex max-w-5xl items-center px-4 py-4 sm:px-6 lg:px-8">
-            <span className="text-xl font-semibold tracking-tight text-gray-900">
-              Mock Interview Helper
-            </span>
-          </div>
-        </header>
+        <AppHeader />
 
         <main
           id="main-content"

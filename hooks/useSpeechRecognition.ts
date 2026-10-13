@@ -17,7 +17,7 @@ const ERROR_MESSAGES: Record<string, string> = {
   "audio-capture":
     "No microphone was found. Please connect a microphone and try again.",
   network:
-    "A network error occurred during speech recognition. Please check your connection.",
+    "Speech recognition service unreachable (Network error). In Brave, enable 'Use Google services for speech recognition' under brave://settings/extensions. Otherwise, type your answer below or use Google Chrome.",
 };
 
 // SpeechRecognitionResult-shaped object used for the pure accumulation function
@@ -50,7 +50,8 @@ export interface UseSpeechRecognitionReturn {
   retryCount: number;
   autoStopped: boolean;
   error: string | null;
-  start: () => void;
+  fallbackTriggered: boolean;
+  start: () => Promise<void>;
   stop: () => void;
   reset: () => void;
 }
@@ -63,6 +64,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const [retryCount, setRetryCount] = useState(0);
   const [autoStopped, setAutoStopped] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [fallbackTriggered, setFallbackTriggered] = useState(false);
 
   // Refs to avoid stale closures
   const recognitionRef = useRef<SpeechRecognition | null>(null);
@@ -73,7 +75,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   const interimTranscriptRef = useRef("");
   // Track retry count in a ref so onerror can access the latest value
   const retryCountRef = useRef(0);
-  // Track whether we are in fallback mode (>= MAX_RETRIES failures)
+  // Track whether we are in fallback mode (>= MAX_RETRIES failures or permission denied)
   const fallbackTriggeredRef = useRef(false);
 
   // Detect browser support on mount
@@ -153,15 +155,23 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       const code = event.error;
+
+      // "no-speech" is a normal non-fatal event in Chrome when the speaker pauses to think.
+      // Do not abort recording or count against fatal retries.
+      if (code === "no-speech" || code === "aborted") {
+        return;
+      }
+
       const message =
         ERROR_MESSAGES[code] ??
         "An unexpected error occurred during speech recognition.";
 
       setError(message);
 
-      // not-allowed → immediate fallback (no retries)
-      if (code === "not-allowed") {
+      // not-allowed, audio-capture, or network → immediate fallback (permission/hardware/service issue)
+      if (code === "not-allowed" || code === "audio-capture" || code === "network") {
         fallbackTriggeredRef.current = true;
+        setFallbackTriggered(true);
         stopRecognition(true);
         return;
       }
@@ -173,20 +183,34 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
 
       if (newCount >= MAX_RETRIES) {
         fallbackTriggeredRef.current = true;
+        setFallbackTriggered(true);
         stopRecognition(true);
       }
     };
 
     recognition.onend = () => {
       // Auto-restart if recording was not intentionally stopped
-      // (handles Chrome's 60-second continuous recognition limit)
+      // (handles Chrome's continuous recognition cut-off)
       if (!intentionalStopRef.current && !fallbackTriggeredRef.current) {
-        try {
-          recognition.start();
-        } catch {
-          // If restart fails, mark as stopped
-          setIsRecording(false);
-        }
+        setTimeout(() => {
+          if (!intentionalStopRef.current && !fallbackTriggeredRef.current) {
+            try {
+              recognition.start();
+            } catch {
+              try {
+                const fresh = createRecognition();
+                if (fresh) {
+                  recognitionRef.current = fresh;
+                  fresh.start();
+                } else {
+                  setIsRecording(false);
+                }
+              } catch {
+                setIsRecording(false);
+              }
+            }
+          }
+        }, 100);
       } else {
         setIsRecording(false);
       }
@@ -195,16 +219,72 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     return recognition;
   }, [stopRecognition]);
 
-  const start = useCallback(() => {
-    if (!isSupported || fallbackTriggeredRef.current) return;
+  const start = useCallback(async () => {
+    if (!isSupported) {
+      setError("Speech recognition is not supported in this browser. Please type your answer.");
+      fallbackTriggeredRef.current = true;
+      setFallbackTriggered(true);
+      return;
+    }
 
-    // Reset intentional stop flag
+    // Reset flags on user-initiated start
     intentionalStopRef.current = false;
+    fallbackTriggeredRef.current = false;
+    setFallbackTriggered(false);
     setError(null);
     setAutoStopped(false);
 
+    // Stop/abort any active recognition instance first to prevent "recognition has already started"
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        // Ignore abort errors
+      }
+      recognitionRef.current = null;
+    }
+
+    // Pre-flight check: explicitly request microphone permission via getUserMedia
+    // This triggers the browser permission dialog if not yet granted
+    // and verifies that an audio input device is available.
+    if (typeof navigator !== "undefined" && navigator.mediaDevices?.getUserMedia) {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Release audio stream tracks immediately so SpeechRecognition has full exclusive access
+        stream.getTracks().forEach((track) => track.stop());
+      } catch (err: unknown) {
+        const mediaErr = err as { name?: string };
+        if (
+          mediaErr?.name === "NotAllowedError" ||
+          mediaErr?.name === "PermissionDeniedError"
+        ) {
+          setError(ERROR_MESSAGES["not-allowed"]);
+          fallbackTriggeredRef.current = true;
+          setFallbackTriggered(true);
+          setIsRecording(false);
+          return;
+        }
+        if (
+          mediaErr?.name === "NotFoundError" ||
+          mediaErr?.name === "DevicesNotFoundError"
+        ) {
+          setError(ERROR_MESSAGES["audio-capture"]);
+          fallbackTriggeredRef.current = true;
+          setFallbackTriggered(true);
+          setIsRecording(false);
+          return;
+        }
+      }
+    }
+
     const recognition = createRecognition();
-    if (!recognition) return;
+    if (!recognition) {
+      setError("Could not initialize speech recognition. Please type your answer.");
+      fallbackTriggeredRef.current = true;
+      setFallbackTriggered(true);
+      setIsRecording(false);
+      return;
+    }
 
     recognitionRef.current = recognition;
 
@@ -217,8 +297,10 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
         setAutoStopped(true);
         stopRecognition(true);
       }, MAX_RECORDING_MS);
-    } catch {
-      setError("Failed to start speech recognition. Please try again.");
+    } catch (err: unknown) {
+      console.error("Speech recognition start failed:", err);
+      setError("Failed to start speech recognition. Please try again or type your answer.");
+      setIsRecording(false);
     }
   }, [isSupported, createRecognition, stopRecognition]);
 
@@ -227,9 +309,15 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
   }, [stopRecognition]);
 
   const reset = useCallback(() => {
-    // Stop any active recording first
-    if (isRecording) {
-      stopRecognition(true);
+    // Stop any active recognition first
+    if (recognitionRef.current) {
+      intentionalStopRef.current = true;
+      try {
+        recognitionRef.current.abort();
+      } catch {
+        // ignore
+      }
+      recognitionRef.current = null;
     }
 
     clearAutoStopTimer();
@@ -243,8 +331,10 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     setAutoStopped(false);
     setError(null);
     fallbackTriggeredRef.current = false;
+    setFallbackTriggered(false);
     intentionalStopRef.current = false;
-  }, [isRecording, stopRecognition, clearAutoStopTimer]);
+    setIsRecording(false);
+  }, [clearAutoStopTimer]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -253,7 +343,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
       if (recognitionRef.current) {
         intentionalStopRef.current = true;
         try {
-          recognitionRef.current.stop();
+          recognitionRef.current.abort();
         } catch {
           // Ignore cleanup errors
         }
@@ -269,6 +359,7 @@ export function useSpeechRecognition(): UseSpeechRecognitionReturn {
     retryCount,
     autoStopped,
     error,
+    fallbackTriggered,
     start,
     stop,
     reset,

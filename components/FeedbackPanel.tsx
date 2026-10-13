@@ -105,6 +105,41 @@ export default function FeedbackPanel({
         </div>
       </div>
 
+      {/* ── Core Dimensions: How You Answered, Tone & Delivery, Question Connection ── */}
+      {(feedback.howTheyAnswered || feedback.toneAnalysis || feedback.questionConnection) && (
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {feedback.howTheyAnswered && (
+            <div className="rounded-lg border border-blue-200 bg-blue-50/60 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base" aria-hidden="true">📋</span>
+                <h4 className="text-sm font-semibold text-blue-900">How You Answered</h4>
+              </div>
+              <p className="text-xs text-blue-950 leading-relaxed">{feedback.howTheyAnswered}</p>
+            </div>
+          )}
+
+          {feedback.toneAnalysis && (
+            <div className="rounded-lg border border-purple-200 bg-purple-50/60 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base" aria-hidden="true">🎙️</span>
+                <h4 className="text-sm font-semibold text-purple-900">Tone & Delivery</h4>
+              </div>
+              <p className="text-xs text-purple-950 leading-relaxed">{feedback.toneAnalysis}</p>
+            </div>
+          )}
+
+          {feedback.questionConnection && (
+            <div className="rounded-lg border border-emerald-200 bg-emerald-50/60 p-4">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="text-base" aria-hidden="true">🎯</span>
+                <h4 className="text-sm font-semibold text-emerald-900">Question Connection</h4>
+              </div>
+              <p className="text-xs text-emerald-950 leading-relaxed">{feedback.questionConnection}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── 6. Summary — Req 6.4 ── */}
       <div>
         <h4 className="text-sm font-semibold text-gray-700 mb-1">Summary</h4>

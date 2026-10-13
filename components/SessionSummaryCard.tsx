@@ -149,6 +149,30 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
           </section>
         </div>
 
+        {/* Core Dimensions */}
+        {(feedback.howTheyAnswered || feedback.toneAnalysis || feedback.questionConnection) && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 pt-1">
+            {feedback.howTheyAnswered && (
+              <div className="rounded-lg bg-blue-50/70 border border-blue-200 p-3">
+                <span className="text-xs font-bold text-blue-900 block mb-1">📋 How You Answered</span>
+                <p className="text-xs text-blue-950 leading-relaxed">{feedback.howTheyAnswered}</p>
+              </div>
+            )}
+            {feedback.toneAnalysis && (
+              <div className="rounded-lg bg-purple-50/70 border border-purple-200 p-3">
+                <span className="text-xs font-bold text-purple-900 block mb-1">🎙️ Tone & Delivery</span>
+                <p className="text-xs text-purple-950 leading-relaxed">{feedback.toneAnalysis}</p>
+              </div>
+            )}
+            {feedback.questionConnection && (
+              <div className="rounded-lg bg-emerald-50/70 border border-emerald-200 p-3">
+                <span className="text-xs font-bold text-emerald-900 block mb-1">🎯 Question Connection</span>
+                <p className="text-xs text-emerald-950 leading-relaxed">{feedback.questionConnection}</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Summary */}
         <section aria-labelledby={`summary-label-${index}`}>
           <h4

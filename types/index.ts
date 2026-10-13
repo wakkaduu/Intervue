@@ -14,11 +14,16 @@ export interface Question {
   text: string;
 }
 
+export type AnswerMode = "mic" | "typed";
+
 export interface Feedback {
   score: number; // 1–10
   strengths: string[]; // 1–5 items
   areasForImprovement: string[]; // 1–5 items
   summary: string; // ≤100 words
+  howTheyAnswered?: string; // Evaluation of structure, clarity, and completeness
+  toneAnalysis?: string; // Evaluation of tone, confidence, presence, and professionalism
+  questionConnection?: string; // How well they addressed and connected their answer to the question
 }
 
 export interface SessionEntry {
@@ -38,6 +43,7 @@ export interface ReviewRequest {
   question: string;
   answer: string;
   category: Category;
+  mode?: AnswerMode;
 }
 
 export interface ReviewResponse {

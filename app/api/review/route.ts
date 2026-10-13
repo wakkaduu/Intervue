@@ -6,6 +6,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { validateReviewRequest } from "@/lib/validation";
 import { callGemini } from "@/lib/gemini";
 
+// Serverless function execution timeout (seconds)
+export const maxDuration = 30;
+
 const TIMEOUT_MS = 15_000;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -45,8 +48,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
   });
 
+  const clientGeminiKey = request.headers.get("x-gemini-key") || undefined;
+
   try {
-    const feedback = await Promise.race([callGemini(reviewRequest), timeoutPromise]);
+    const feedback = await Promise.race([
+      callGemini(reviewRequest, clientGeminiKey),
+      timeoutPromise,
+    ]);
     return NextResponse.json({ feedback }, { status: 200 });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {

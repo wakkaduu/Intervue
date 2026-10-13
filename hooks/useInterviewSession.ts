@@ -44,6 +44,8 @@ export type SessionAction =
   | { type: "SUBMIT_ANSWER" }
   | { type: "RECEIVE_FEEDBACK"; payload: { feedback: Feedback } }
   | { type: "NEXT_QUESTION" }
+  | { type: "PREV_QUESTION" }
+  | { type: "GO_TO_QUESTION"; payload: { index: number } }
   | { type: "END_SESSION" }
   | { type: "SET_ERROR"; payload: { error: string } }
   | { type: "RETRY_SUBMIT" };
@@ -124,7 +126,6 @@ export function sessionReducer(
     }
 
     case "NEXT_QUESTION": {
-      if (state.phase !== "FEEDBACK_SHOWN") return state;
       const nextIndex = state.questionIndex + 1;
       if (nextIndex >= state.questions.length) {
         return { ...state, phase: "SESSION_ENDED" };
@@ -134,6 +135,29 @@ export function sessionReducer(
         phase: "RECORDING",
         questionIndex: nextIndex,
         currentAnswer: "",
+        error: null,
+      };
+    }
+
+    case "PREV_QUESTION": {
+      const prevIndex = Math.max(0, state.questionIndex - 1);
+      return {
+        ...state,
+        phase: "RECORDING",
+        questionIndex: prevIndex,
+        error: null,
+      };
+    }
+
+    case "GO_TO_QUESTION": {
+      const targetIndex = Math.max(
+        0,
+        Math.min(state.questions.length - 1, action.payload.index)
+      );
+      return {
+        ...state,
+        phase: "RECORDING",
+        questionIndex: targetIndex,
         error: null,
       };
     }
@@ -178,6 +202,8 @@ export function calculateAverageScore(entries: SessionEntry[]): number {
 
 export interface UseInterviewSessionReturn {
   phase: SessionPhase;
+  category: Category | null;
+  questions: Question[];
   currentQuestion: Question | null;
   questionIndex: number;
   totalQuestions: number;
@@ -200,6 +226,8 @@ export function useInterviewSession(): UseInterviewSessionReturn {
 
   return {
     phase: state.phase,
+    category: state.category,
+    questions: state.questions,
     currentQuestion,
     questionIndex: state.questionIndex,
     totalQuestions,
