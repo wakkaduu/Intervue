@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import type { SessionEntry } from "@/types";
 import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
+import { scoreVerdict } from "@/lib/score-verdict";
 
 interface SessionSummaryCardProps {
   /** The session entry containing question, answer, and feedback. */
@@ -77,7 +78,7 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
             / 10
           </span>
           <span className="text-[9px] font-black uppercase tracking-tight mt-1 px-1.5 py-0.5 rounded-full bg-black/5">
-            {score >= 8 ? "Strong Hire" : score >= 6 ? "Borderline" : score >= 4 ? "Below Bar" : "No Hire"}
+            {scoreVerdict(score).label}
           </span>
         </div>
       </div>

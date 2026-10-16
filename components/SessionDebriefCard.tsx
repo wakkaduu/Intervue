@@ -1,6 +1,7 @@
 "use client";
 
 import type { SessionDebrief } from "@/types";
+import Button from "@/components/ui/Button";
 
 interface SessionDebriefCardProps {
   debrief: SessionDebrief;
@@ -54,20 +55,20 @@ export default function SessionDebriefCard({
           debrief.bestQuestionIndex !== debrief.weakestQuestionIndex &&
           onJumpToQuestion && (
             <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() => onJumpToQuestion(debrief.bestQuestionIndex!)}
-                className="min-h-[44px] rounded-lg border border-forest-300 bg-forest-50 px-3 py-2 text-xs font-bold text-forest-900 hover:bg-forest-100"
               >
                 Best answer: Q{debrief.bestQuestionIndex + 1} ↓
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
                 onClick={() => onJumpToQuestion(debrief.weakestQuestionIndex!)}
-                className="min-h-[44px] rounded-lg border border-gold-300 bg-gold-50 px-3 py-2 text-xs font-bold text-gold-900 hover:bg-gold-100"
               >
                 Needs most work: Q{debrief.weakestQuestionIndex + 1} ↓
-              </button>
+              </Button>
             </div>
           )}
 

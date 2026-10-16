@@ -236,6 +236,7 @@ function InterviewPageInner() {
 
         try {
           sessionStorage.setItem("sessionResults", JSON.stringify(results));
+          sessionStorage.setItem("sessionMode", mode);
         } catch {
           // Ignore quota errors
         }

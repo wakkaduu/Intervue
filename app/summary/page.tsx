@@ -9,6 +9,10 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import SessionSummaryCard from "@/components/SessionSummaryCard";
 import SessionDebriefCard from "@/components/SessionDebriefCard";
+import ScoreRing from "@/components/ScoreRing";
+import Button, { buttonClasses } from "@/components/ui/Button";
+import { scoreVerdict } from "@/lib/score-verdict";
+import { shortCategory } from "@/lib/progress-trend";
 import { buildDebriefFallback } from "@/lib/debrief";
 import AuthModal from "@/components/AuthModal";
 import { calculateAverageScore } from "@/hooks/useInterviewSession";
@@ -32,6 +36,14 @@ function loadSessionResults(): SessionEntry[] | null {
   }
 }
 
+function loadSessionMode(): "mic" | "typed" {
+  try {
+    return sessionStorage.getItem("sessionMode") === "mic" ? "mic" : "typed";
+  } catch {
+    return "typed";
+  }
+}
+
 export default function SummaryPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -42,6 +54,7 @@ export default function SummaryPage() {
   const [debrief, setDebrief] = useState<SessionDebrief | null>(null);
   const [debriefLoading, setDebriefLoading] = useState(false);
   const [openCards, setOpenCards] = useState<Set<number>>(new Set());
+  const [sessionMode, setSessionMode] = useState<"mic" | "typed">("typed");
 
   useEffect(() => {
     const results = loadSessionResults();
@@ -50,6 +63,7 @@ export default function SummaryPage() {
       router.replace("/");
       return;
     }
+    setSessionMode(loadSessionMode());
     setEntries(results);
   }, [router]);
 
@@ -119,7 +133,7 @@ export default function SummaryPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             category,
-            mode: "typed",
+            mode: sessionMode,
             averageScore: averageScore || 0,
             entries,
           }),
@@ -135,24 +149,14 @@ export default function SummaryPage() {
         const category = entries[0]?.question?.category || "General";
         saveGuestSession({
           category,
-          mode: "typed",
+          mode: sessionMode,
           averageScore: averageScore || 0,
           entries,
         });
         setGuestSaved(true);
       }
     }
-  }, [session, entries, averageScore, savedToAccount, guestSaved]);
-
-  /** Derive styling for the average score badge. */
-  const avgTheme =
-    averageScore === null
-      ? { badge: "bg-[#E2ECE5] border-sage-300/90 text-darkslate-800", ring: "text-darkslate-400" }
-      : averageScore >= 8
-      ? { badge: "bg-[#E2ECE5] border-sage-300/90 text-forest-950", ring: "text-forest-700" }
-      : averageScore >= 5
-      ? { badge: "bg-[#E2ECE5] border-sage-300/90 text-gold-950", ring: "text-gold-600" }
-      : { badge: "bg-[#E2ECE5] border-sage-300/90 text-rose-950", ring: "text-rose-600" };
+  }, [session, entries, averageScore, savedToAccount, guestSaved, sessionMode]);
 
   // Aggregate session speech delivery metrics (when spoken answers exist)
   const sessionDelivery = useMemo(() => {
@@ -181,184 +185,126 @@ export default function SummaryPage() {
     };
   }, [entries]);
 
+  const verdict = averageScore !== null ? scoreVerdict(averageScore) : null;
+  const category = entries?.[0]?.question?.category;
+
   return (
-    <div className="py-8">
-      <div className="mx-auto w-full max-w-3xl space-y-8">
+    <div className="py-6 sm:py-8">
+      <div className="mx-auto w-full max-w-3xl space-y-6 pb-24 sm:pb-6 animate-fade-up">
 
         {/* ── Page header ── */}
-        <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 rounded-full bg-forest-800/90 border border-emerald-500/30 px-3.5 py-1 text-xs font-bold text-emerald-300">
-            <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>INTERVUE PERFORMANCE REPORT</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-            Interview Session Results
-          </h1>
-          <p className="text-sm sm:text-base text-sage-200 max-w-lg mx-auto">
-            Comprehensive breakdown of your answers evaluated on Structure & Depth, Tone & Delivery, and Connection to the Question.
-          </p>
-        </div>
+        <header className="space-y-1.5 text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-emerald-300">Session complete</p>
+          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Your results</h1>
+          {category && (
+            <p className="text-sm text-sage-200">
+              {shortCategory(category)} · {entries?.length} {entries?.length === 1 ? "question" : "questions"} ·{" "}
+              {sessionMode === "mic" ? "Voice" : "Written"}
+            </p>
+          )}
+        </header>
 
-        {/* ── Average score banner (Req 7.2) or no-answers message (Req 7.3) ── */}
-        {hasEntries ? (
-          <div
-            className={`rounded-3xl border p-6 sm:p-8 text-center shadow-md relative overflow-hidden ${avgTheme.badge}`}
-            aria-label={`Session average score: ${averageScore} out of 10`}
+        {/* ── Score card ── */}
+        {hasEntries && averageScore !== null && verdict ? (
+          <section
+            aria-label="Overall score"
+            className="rounded-3xl border border-sage-300/90 bg-[#E2ECE5] p-5 shadow-lg shadow-forest-950/20 sm:p-7"
           >
-            {/* Ambient decorative glow */}
-            <div className="absolute -top-12 -right-12 h-36 w-36 rounded-full bg-forest-700/10 blur-2xl pointer-events-none" />
-
-            <p className="text-xs font-bold uppercase tracking-widest text-darkslate-500 mb-2">
-              Overall Session Performance
-            </p>
-
-            <div className="flex items-baseline justify-center gap-1">
-              <span className="text-6xl sm:text-7xl font-black tracking-tight" aria-hidden="true">
-                {averageScore}
-              </span>
-              <span className="text-2xl font-bold opacity-60" aria-hidden="true">
-                / 10
-              </span>
-            </div>
-
-            <p className="mt-3 text-xs sm:text-sm font-medium text-darkslate-600">
-              Evaluated across {entries.length} answered{" "}
-              {entries.length === 1 ? "question" : "questions"} by Intervue Performance Coach
-            </p>
-
-            {/* Performance status tag */}
-            <div className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-[#D4E3D8] px-3.5 py-1 text-xs font-bold shadow-xs border border-sage-300">
-              {averageScore !== null && averageScore >= 8 ? (
-                <span className="text-forest-850">Strong Hire — Advanced Readiness</span>
-              ) : averageScore !== null && averageScore >= 6.5 ? (
-                <span className="text-gold-900">Borderline / Lean Hire — Polishing Required</span>
-              ) : averageScore !== null && averageScore >= 4.5 ? (
-                <span className="text-rose-900 font-extrabold">Below Hiring Bar — Substantial Gaps</span>
-              ) : (
-                <span className="text-rose-950 font-black">Strong No Hire — Fundamental Deficits</span>
-              )}
-            </div>
-
-            {/* Delivery Cadence & Filler Word Summary */}
-            {sessionDelivery && (
-              <div className="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-5 border-t border-sage-300/70 text-center">
-                <div className="rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
-                  <span className="block text-lg font-black text-forest-900">
-                    {sessionDelivery.avgWpm} WPM
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
-                    Average Pacing
-                  </span>
+            <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-center sm:gap-8">
+              <ScoreRing score={averageScore} />
+              <div className="min-w-0 flex-1 space-y-3 text-center sm:text-left">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-darkslate-600">Overall</p>
+                  <p className="text-2xl font-extrabold tracking-tight text-forest-950 sm:text-3xl">
+                    {verdict.label}
+                  </p>
+                  {debrief && (
+                    <p className="mt-1 text-sm leading-snug text-darkslate-700">{debrief.headline}</p>
+                  )}
                 </div>
-                <div className="rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
-                  <span className="block text-lg font-black text-forest-900">
-                    {sessionDelivery.totalFillers}
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
-                    Filler Words
-                  </span>
-                </div>
-                <div className="col-span-2 sm:col-span-1 rounded-xl bg-white/70 p-2.5 border border-sage-200/80 shadow-xs">
-                  <span className="block text-lg font-black text-forest-900">
-                    {sessionDelivery.totalDuration}s
-                  </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
-                    Speaking Time
-                  </span>
-                </div>
+
+                {sessionDelivery && (
+                  <dl className="grid grid-cols-3 gap-2 border-t border-sage-300/70 pt-3">
+                    {[
+                      { label: "Pace", value: `${sessionDelivery.avgWpm} wpm` },
+                      { label: "Filler words", value: String(sessionDelivery.totalFillers) },
+                      { label: "Speaking time", value: `${sessionDelivery.totalDuration}s` },
+                    ].map((stat) => (
+                      <div key={stat.label} className="rounded-xl bg-white/60 px-2 py-2 text-center">
+                        <dd className="text-base font-extrabold text-forest-900 tabular-nums">{stat.value}</dd>
+                        <dt className="text-[10px] font-bold uppercase tracking-wider text-darkslate-600">
+                          {stat.label}
+                        </dt>
+                      </div>
+                    ))}
+                  </dl>
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          </section>
         ) : (
           /* Req 7.3 — no answers submitted */
-          <div
-            role="status"
-            className="rounded-2xl border border-sage-300 bg-[#E2ECE5] p-8 text-center shadow-md"
-          >
-            <p className="text-base font-bold text-darkslate-900">
-              No answers were submitted
-            </p>
-            <p className="mt-1 text-xs sm:text-sm text-darkslate-600">
-              Start a new session and complete at least one question to see your comprehensive performance results here.
+          <div role="status" className="rounded-2xl border border-sage-300 bg-[#E2ECE5] p-8 text-center shadow-md">
+            <p className="text-base font-bold text-darkslate-900">No answers were submitted</p>
+            <p className="mt-1 text-sm text-darkslate-600">
+              Start a new session and complete at least one question to see your results here.
             </p>
           </div>
         )}
 
         {/* ── Consolidated debrief across all answers ── */}
         {hasEntries && debrief && (
-          <SessionDebriefCard
-            debrief={debrief}
-            isEnhancing={debriefLoading}
-            onJumpToQuestion={jumpToQuestion}
-          />
+          <SessionDebriefCard debrief={debrief} isEnhancing={debriefLoading} onJumpToQuestion={jumpToQuestion} />
         )}
 
-        {/* ── Account Sync & Persistence Status ── */}
+        {/* ── Save status (compact) ── */}
         {hasEntries && (
-          <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
-            <div className="flex items-start sm:items-center gap-3.5">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-forest-850 text-white shadow-xs border border-forest-700/60">
-                <svg className="h-5 w-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
+          <div className="flex flex-col gap-3 rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <span
+                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-forest-800 text-emerald-300"
+                aria-hidden="true"
+              >
+                ✓
               </span>
-              <div>
-                <p className="text-sm font-extrabold text-forest-950 flex flex-wrap items-center gap-2">
-                  <span>
-                    {session?.user
-                      ? savedToAccount
-                        ? `Saved to profile (${session.user.name})`
-                        : "Synchronizing session to cloud account..."
-                      : "Guest Practice Session Saved Locally"}
-                  </span>
-                  {!session?.user && (
-                    <span className="rounded-full bg-forest-100 border border-forest-300 px-2 py-0.5 text-[10px] font-bold text-forest-800">
-                      Local Device
-                    </span>
-                  )}
-                </p>
-                <p className="text-xs text-darkslate-600 mt-0.5">
+              <div role="status">
+                <p className="text-sm font-bold text-forest-950">
                   {session?.user
-                    ? "Your score and coach breakdown are permanently linked to your profile in Supabase."
-                    : "You can keep practicing freely without an account. When you decide to create an account, sign in to save your complete history."}
+                    ? savedToAccount
+                      ? "Saved to your history"
+                      : "Saving to your account…"
+                    : "Saved on this device"}
+                </p>
+                <p className="text-xs text-darkslate-600">
+                  {session?.user
+                    ? "Track your progress over time on the History page."
+                    : "Sign in to keep your history across devices."}
                 </p>
               </div>
             </div>
-
             {session?.user ? (
-              <Link
-                href="/history"
-                className="w-full sm:w-auto text-center shrink-0 rounded-xl bg-forest-700 hover:bg-forest-800 px-4 py-2.5 text-xs font-bold text-white shadow-xs transition-colors"
-              >
-                View History →
+              <Link href="/history" className={buttonClasses({ variant: "secondary", size: "sm" })}>
+                View history
               </Link>
             ) : (
-              <button
-                type="button"
-                onClick={() => setIsAuthModalOpen(true)}
-                className="w-full sm:w-auto justify-center shrink-0 inline-flex items-center gap-2 rounded-xl bg-forest-750 hover:bg-forest-850 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition-all active:scale-95"
-              >
-                <span>Save to Account</span>
-              </button>
+              <Button variant="primary" size="sm" onClick={() => setIsAuthModalOpen(true)}>
+                Save to account
+              </Button>
             )}
           </div>
         )}
 
-        {/* ── Per-question summary cards (Req 7.1) ── */}
+        {/* ── Per-question reviews (collapsed by default) ── */}
         {hasEntries && (
-          <section aria-label="Answered questions" className="space-y-4">
+          <section aria-label="Answered questions" className="space-y-3">
             <div className="flex items-center justify-between border-b border-forest-700/60 pb-2">
-              <h2 className="text-sm font-bold uppercase tracking-wider text-sage-200">
-                Detailed Question Reviews
-              </h2>
+              <h2 className="text-sm font-bold uppercase tracking-wider text-sage-200">Question reviews</h2>
               <button
                 type="button"
                 onClick={() =>
-                  setOpenCards(
-                    openCards.size === entries.length ? new Set() : new Set(entries.map((_, i) => i))
-                  )
+                  setOpenCards(openCards.size === entries.length ? new Set() : new Set(entries.map((_, i) => i)))
                 }
-                className="min-h-[44px] px-2 text-xs font-bold text-emerald-300 hover:text-white underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+                className="min-h-[44px] rounded-lg px-2 text-xs font-bold text-emerald-300 underline underline-offset-2 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
               >
                 {openCards.size === entries.length ? "Collapse all" : "Expand all"}
               </button>
@@ -367,36 +313,37 @@ export default function SummaryPage() {
             <ol className="space-y-3 list-none p-0">
               {entries.map((entry, i) => {
                 const isOpen = openCards.has(i);
-                const score = entry.feedback.score;
-                const scoreClass =
-                  score >= 8
+                const v = scoreVerdict(entry.feedback.score);
+                const toneClass =
+                  v.tone === "good"
                     ? "bg-forest-50 text-forest-800 border-forest-300"
-                    : score >= 5
+                    : v.tone === "mid"
                     ? "bg-gold-50 text-gold-900 border-gold-300"
                     : "bg-rose-50 text-rose-800 border-rose-300";
                 return (
                   <li key={entry.question.id ?? i} id={`question-review-${i}`} className="scroll-mt-20">
-                    <div className="rounded-2xl border border-sage-300/90 bg-[#E2ECE5] shadow-sm overflow-hidden">
+                    <div className="overflow-hidden rounded-2xl border border-sage-300/90 bg-[#E2ECE5] shadow-sm">
                       <button
                         type="button"
                         onClick={() => toggleCard(i)}
                         aria-expanded={isOpen}
                         aria-controls={`question-panel-${i}`}
-                        className="flex w-full min-h-[64px] items-start gap-3 px-4 py-3 text-left hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-forest-600"
+                        className="flex min-h-[64px] w-full items-start gap-3 px-4 py-3 text-left hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-forest-600"
                       >
                         <span
-                          className={`shrink-0 rounded-lg border px-2.5 py-1 text-center text-sm font-extrabold ${scoreClass}`}
-                          aria-label={`Score ${score} out of 10`}
+                          className={`shrink-0 rounded-lg border px-2.5 py-1 text-center ${toneClass}`}
+                          aria-label={`Score ${entry.feedback.score} out of 10, ${v.label}`}
                         >
-                          {score}/10
+                          <span className="block text-sm font-extrabold leading-none">{entry.feedback.score}/10</span>
+                          <span className="mt-0.5 block text-[9px] font-bold uppercase tracking-tight">{v.label}</span>
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block text-xs font-bold text-darkslate-600">Question {i + 1}</span>
-                          <span className="block text-sm font-semibold text-forest-950 leading-snug">
+                          <span className="block text-sm font-semibold leading-snug text-forest-950">
                             {entry.question.text}
                           </span>
                           {!isOpen && entry.feedback.focusNext && (
-                            <span className="mt-1 block text-xs text-gold-900 leading-snug">
+                            <span className="mt-1 block text-xs leading-snug text-gold-900">
                               <strong>Work on:</strong> {entry.feedback.focusNext}
                             </span>
                           )}
@@ -418,23 +365,35 @@ export default function SummaryPage() {
           </section>
         )}
 
-        {/* ── Navigation / New Session buttons (Req 7.4) ── */}
-        <div className="pt-6 flex flex-wrap items-center justify-center gap-4">
-          <button
-            type="button"
-            onClick={() => router.push("/")}
-            aria-label="Start a new session"
-            className="rounded-xl bg-forest-700 px-8 py-3.5 text-sm font-bold text-white shadow-md shadow-forest-900/20 hover:bg-forest-800 active:bg-forest-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2 transition-all"
-          >
-            Start Another Practice Session
-          </button>
+        <div className="text-center sm:hidden">
+          <Link href="/" className={buttonClasses({ variant: "dark", size: "md" })}>
+            Try a different track
+          </Link>
         </div>
       </div>
 
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
+      {/* ── Next actions: sticky on phones, inline on larger screens ── */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-forest-700/60 bg-[#1C2E23]/95 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
+        <div className="mx-auto flex max-w-3xl flex-col gap-2.5 sm:flex-row sm:justify-center">
+          {category && (
+            <Button
+              variant="accent"
+              size="lg"
+              className="sm:min-w-[260px]"
+              onClick={() =>
+                router.push(`/interview?category=${encodeURIComponent(category)}&mode=${sessionMode}`)
+              }
+            >
+              Practice this track again
+            </Button>
+          )}
+          <Link href="/" className={buttonClasses({ variant: "dark", size: "lg", className: "hidden sm:inline-flex" })}>
+            Try a different track
+          </Link>
+        </div>
+      </div>
+
+      <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
     </div>
   );
 }

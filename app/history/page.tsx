@@ -11,6 +11,8 @@ import {
   syncGuestSessionsToAccount,
 } from "@/lib/guest-storage";
 import AuthModal from "@/components/AuthModal";
+import Button, { buttonClasses } from "@/components/ui/Button";
+import { scoreVerdict } from "@/lib/score-verdict";
 import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
 import ScoreTrendChart from "@/components/ScoreTrendChart";
 import { buildTrendPoints, shortCategory, summarizeTrend, trackOptions } from "@/lib/progress-trend";
@@ -96,19 +98,12 @@ export default function HistoryPage() {
               </p>
             </div>
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link
-                href="/"
-                className="w-full sm:w-auto rounded-xl bg-forest-700 hover:bg-forest-800 px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md transition-all active:scale-95"
-              >
-                Start Practice Session
+              <Link href="/" className={buttonClasses({ variant: "primary", size: "md", className: "w-full sm:w-auto" })}>
+                Start practice session
               </Link>
-              <button
-                type="button"
-                onClick={() => setIsAuthModalOpen(true)}
-                className="w-full sm:w-auto rounded-xl border border-sage-300 bg-[#F0F5F1] px-6 py-2.5 text-xs sm:text-sm font-semibold text-darkslate-700 hover:bg-[#D4E3D8] transition-all"
-              >
-                Sign In
-              </button>
+              <Button variant="secondary" size="md" className="w-full sm:w-auto" onClick={() => setIsAuthModalOpen(true)}>
+                Sign in
+              </Button>
             </div>
           </div>
         </div>
@@ -157,22 +152,9 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
-            {isGuest && (
-              <button
-                type="button"
-                onClick={() => setIsAuthModalOpen(true)}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-500/40 bg-gradient-to-r from-forest-800 to-forest-700 px-4 py-2.5 text-xs sm:text-sm font-bold text-emerald-200 shadow-sm hover:from-forest-700 hover:to-forest-600 hover:text-white transition-all active:scale-95"
-              >
-                <span>Save to Account</span>
-              </button>
-            )}
-
-            <Link
-              href="/"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-forest-700 hover:bg-forest-600 px-5 py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-forest-950/40 transition-all active:scale-95 text-center"
-            >
-              <span>Start Practice Session</span>
+          <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:gap-3">
+            <Link href="/" className={buttonClasses({ variant: "accent", size: "md", className: "w-full sm:w-auto" })}>
+              Start practice session
             </Link>
           </div>
         </div>
@@ -194,17 +176,13 @@ export default function HistoryPage() {
                   </span>
                 </h2>
                 <p className="text-xs text-darkslate-600 mt-0.5">
-                  You can practice freely as a guest. When you decide to create an account, sign in to save your results permanently to Supabase cloud.
+                  Your sessions are saved in this browser only. Create a free account to keep them across devices.
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={() => setIsAuthModalOpen(true)}
-              className="shrink-0 rounded-xl bg-forest-750 hover:bg-forest-850 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all active:scale-95 flex items-center gap-2"
-            >
-              <span>Save Progress to Account</span>
-            </button>
+            <Button variant="primary" size="md" className="shrink-0" onClick={() => setIsAuthModalOpen(true)}>
+              Save progress to account
+            </Button>
           </div>
         )}
 
@@ -383,11 +361,8 @@ export default function HistoryPage() {
                   Complete your first interview practice session and it will automatically be cataloged here with full performance evaluations.
                 </p>
               </div>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 rounded-xl bg-forest-700 hover:bg-forest-800 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all"
-              >
-                Start an Interview Now →
+              <Link href="/" className={buttonClasses({ variant: "primary", size: "md" })}>
+                Start your first interview →
               </Link>
             </div>
           ) : (
@@ -409,51 +384,46 @@ export default function HistoryPage() {
                     className="rounded-2xl border border-sage-300/90 bg-[#E2ECE5] shadow-sm overflow-hidden transition-all"
                   >
                     {/* Header Row */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 sm:p-5">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#D4E3D8] text-xl">
+                    <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#D4E3D8] text-xl" aria-hidden="true">
                           {icon}
                         </span>
                         <div className="min-w-0">
-                          <h3 className="text-sm sm:text-base font-bold text-forest-950 truncate">
-                            {sess.category}
+                          <h3 className="truncate text-sm font-bold text-forest-950 sm:text-base" title={sess.category}>
+                            {shortCategory(sess.category)}
                           </h3>
-                          <div className="flex items-center gap-2 text-xs text-darkslate-500 mt-0.5">
+                          <p className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-darkslate-600">
                             <span>{formattedDate}</span>
-                            <span>•</span>
-                            <span className="inline-flex items-center gap-1">
-                              {sess.mode === "mic" ? (
-                                <svg className="h-3.5 w-3.5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                                </svg>
-                              ) : (
-                                <svg className="h-3.5 w-3.5 text-forest-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                                </svg>
-                              )}
-                              <span>{sess.mode === "mic" ? "Voice Mode" : "Written Mode"}</span>
-                            </span>
-                            <span>•</span>
-                            <span>{sess.questionCount} Questions</span>
-                          </div>
+                            <span aria-hidden="true">·</span>
+                            <span>{sess.mode === "mic" ? "Voice" : "Written"}</span>
+                            <span aria-hidden="true">·</span>
+                            <span>{sess.questionCount} {sess.questionCount === 1 ? "question" : "questions"}</span>
+                          </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                        <div className="flex items-center gap-1.5 rounded-xl bg-[#D4E3D8] border border-sage-300 px-3 py-1.5">
-                          <span className="text-xs font-bold text-darkslate-600">Score:</span>
-                          <span className="text-sm font-extrabold text-forest-900">
+                      <div className="flex items-center justify-between gap-3 sm:justify-end">
+                        <div
+                          className="whitespace-nowrap rounded-xl border border-sage-300 bg-[#D4E3D8] px-3 py-1.5 text-center"
+                          aria-label={`Score ${sess.averageScore} out of 10, ${scoreVerdict(sess.averageScore).label}`}
+                        >
+                          <span className="text-sm font-extrabold tabular-nums text-forest-900">
                             {sess.averageScore} / 10
+                          </span>
+                          <span className="ml-2 hidden text-[11px] font-semibold text-darkslate-600 sm:inline">
+                            {scoreVerdict(sess.averageScore).label}
                           </span>
                         </div>
 
-                        <button
-                          type="button"
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          aria-expanded={isExpanded}
                           onClick={() => setExpandedId(isExpanded ? null : sess.id)}
-                          className="rounded-xl border border-sage-300 bg-[#F0F5F1] px-3 py-1.5 text-xs font-semibold text-darkslate-700 hover:bg-[#D4E3D8] transition-colors"
                         >
-                          {isExpanded ? "Hide Details ▲" : "View Details ▼"}
-                        </button>
+                          {isExpanded ? "Hide details ▲" : "View details ▼"}
+                        </Button>
                       </div>
                     </div>
 

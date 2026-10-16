@@ -16,6 +16,51 @@ interface AuthModalProps {
   onSuccess?: () => void;
 }
 
+import Button from "@/components/ui/Button";
+
+const INPUT_CLASS =
+  "w-full min-h-[44px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2.5 text-base sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/30 transition-all";
+
+/** Password input with a Show/Hide toggle (helps on phones, where typos are common). */
+function PasswordInput({
+  id,
+  value,
+  onChange,
+  autoComplete,
+  placeholder,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  autoComplete: string;
+  placeholder: string;
+}) {
+  const [visible, setVisible] = useState(false);
+  return (
+    <div className="relative">
+      <input
+        id={id}
+        type={visible ? "text" : "password"}
+        required
+        autoComplete={autoComplete}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        className={`${INPUT_CLASS} pr-16`}
+      />
+      <button
+        type="button"
+        onClick={() => setVisible((v) => !v)}
+        aria-pressed={visible}
+        aria-label={visible ? "Hide password" : "Show password"}
+        className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1.5 text-xs font-bold text-forest-800 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
+      >
+        {visible ? "Hide" : "Show"}
+      </button>
+    </div>
+  );
+}
+
 export default function AuthModal({
   isOpen,
   onClose,
@@ -398,7 +443,7 @@ export default function AuthModal({
           type="button"
           onClick={handleClose}
           aria-label="Close dialog"
-          className="absolute right-3.5 top-3.5 sm:right-4 sm:top-4 z-10 rounded-lg p-1.5 text-darkslate-500 hover:bg-[#D4E3D8] hover:text-darkslate-800 transition-colors"
+          className="absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl text-darkslate-500 hover:bg-[#D4E3D8] hover:text-darkslate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
         >
           <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -444,7 +489,7 @@ export default function AuthModal({
               <button
                 type="button"
                 onClick={() => switchMode("signin")}
-                className={`py-1.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
+                className={`min-h-[40px] py-2 text-sm font-bold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 ${
                   mode === "signin"
                     ? "bg-forest-800 text-white shadow-xs"
                     : "text-darkslate-700 hover:text-forest-950 hover:bg-sage-100/60"
@@ -455,7 +500,7 @@ export default function AuthModal({
               <button
                 type="button"
                 onClick={() => switchMode("signup")}
-                className={`py-1.5 text-xs sm:text-sm font-bold rounded-xl transition-all ${
+                className={`min-h-[40px] py-2 text-sm font-bold rounded-xl transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 ${
                   mode === "signup"
                     ? "bg-forest-800 text-white shadow-xs"
                     : "text-darkslate-700 hover:text-forest-950 hover:bg-sage-100/60"
@@ -601,13 +646,16 @@ export default function AuthModal({
           <>
             {/* OAuth and Demo Buttons */}
             <div className="space-y-2.5 mb-5">
-              <button
-                type="button"
+              <Button
+                variant="secondary"
+                size="md"
+                fullWidth
+                className="!bg-white hover:!bg-slate-50"
                 onClick={handleGoogleLogin}
-                disabled={loading || googleLoading}
-                className="w-full flex items-center justify-center gap-2.5 rounded-xl border border-sage-300/90 bg-white hover:bg-slate-50 px-4 py-2.5 text-xs sm:text-sm font-semibold text-darkslate-800 shadow-xs transition-all active:scale-[0.99] disabled:opacity-50"
-              >
-                <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
+                disabled={loading}
+                loading={googleLoading}
+                leftIcon={
+                  <svg className="h-4 w-4 shrink-0" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -625,19 +673,11 @@ export default function AuthModal({
                     d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                   />
                 </svg>
-                <span>
-                  {googleLoading ? "Connecting to Google..." : "Continue with Google"}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleDemoLogin}
-                disabled={loading || googleLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-forest-600/50 bg-forest-800 px-4 py-2.5 text-xs sm:text-sm font-semibold text-emerald-200 shadow-xs hover:bg-forest-750 hover:text-white transition-all active:scale-[0.99] disabled:opacity-50"
+                }
               >
-                <span>Sign in with Demo Account</span>
-              </button>
+                {googleLoading ? "Connecting to Google..." : "Continue with Google"}
+              </Button>
+
             </div>
 
             {/* Divider */}
@@ -668,7 +708,7 @@ export default function AuthModal({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Full name"
-                    className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2 text-xs sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition-all"
+                    className={INPUT_CLASS}
                   />
                 </div>
               )}
@@ -688,7 +728,7 @@ export default function AuthModal({
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email address"
-                  className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2 text-xs sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition-all"
+                  className={INPUT_CLASS}
                 />
               </div>
 
@@ -699,15 +739,12 @@ export default function AuthModal({
                 >
                   Password
                 </label>
-                <input
+                <PasswordInput
                   id="auth-password"
-                  type="password"
-                  required
-                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={setPassword}
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
                   placeholder="Password"
-                  className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2 text-xs sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition-all"
                 />
               </div>
 
@@ -719,36 +756,40 @@ export default function AuthModal({
                   >
                     Confirm Password
                   </label>
-                  <input
+                  <PasswordInput
                     id="auth-confirm"
-                    type="password"
-                    required
-                    autoComplete="new-password"
                     value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onChange={setConfirmPassword}
+                    autoComplete="new-password"
                     placeholder="Confirm password"
-                    className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2 text-xs sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 transition-all"
                   />
                 </div>
               )}
 
-              <button
+              <Button
                 type="submit"
-                disabled={loading || googleLoading}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-forest-800 hover:bg-forest-900 active:bg-forest-950 p-2.5 sm:p-3 text-xs sm:text-sm font-bold text-white shadow-md shadow-forest-950/25 border border-forest-900 transition-all disabled:opacity-50 active:scale-[0.99] cursor-pointer mt-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
+                variant="primary"
+                size="lg"
+                fullWidth
+                className="mt-2"
+                disabled={googleLoading}
+                loading={loading}
+                rightIcon={<span aria-hidden="true">→</span>}
               >
-                <span>
-                  {loading
-                    ? "Authenticating..."
-                    : mode === "signin"
-                    ? "Sign In"
-                    : "Sign Up (Create Account)"}
-                </span>
-                <svg className="h-4 w-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </button>
+                {loading ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
+              </Button>
             </form>
+
+            <div className="mt-3 text-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDemoLogin}
+                disabled={loading || googleLoading}
+              >
+                Just looking? Try the demo account
+              </Button>
+            </div>
 
             {/* Toggle Mode */}
             <div className="mt-5 text-center text-xs text-darkslate-600 border-t border-sage-300/80 pt-4 space-y-2">

@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
 import ErrorMessage from "@/components/ErrorMessage";
+import Button from "@/components/ui/Button";
 import { CATEGORY_GROUPS, getCategoryIcon, getQuestionsByCategory } from "@/lib/questions";
 import { shortCategory } from "@/lib/progress-trend";
 import type { AnswerMode } from "@/types";
@@ -120,14 +121,9 @@ export default function Home() {
               <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-darkslate-600">{trackDetail}</p>
             )}
           </div>
-          <button
-            type="button"
-            onClick={openSidebar}
-            aria-label="Change track. 52 tracks available"
-            className="min-h-[44px] shrink-0 rounded-xl border border-forest-600/80 bg-forest-800 px-3.5 py-2 text-xs font-bold text-emerald-200 transition-all hover:bg-forest-700 hover:text-white active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 focus-visible:ring-offset-2"
-          >
+          <Button variant="secondary" size="sm" onClick={openSidebar} aria-label="Change track. 52 tracks available" className="shrink-0">
             Change
-          </button>
+          </Button>
         </div>
 
         {/* Mode: segmented control */}
@@ -177,15 +173,17 @@ export default function Home() {
 
         {/* Primary action */}
         <div>
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="lg"
+            fullWidth
             onClick={handleStartSession}
-            className="group flex min-h-[56px] w-full items-center justify-center gap-3 rounded-2xl bg-forest-700 p-4 text-base font-bold text-white shadow-lg shadow-forest-950/30 transition-all duration-200 hover:bg-forest-600 hover:shadow-xl active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-500 focus-visible:ring-offset-2"
+            className="group shadow-lg shadow-forest-950/30"
+            leftIcon={answerMode === "mic" ? <MicIcon className="h-5 w-5 text-emerald-300" /> : <PenIcon className="h-5 w-5 text-emerald-300" />}
+            rightIcon={<span className="text-gold-300 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>}
           >
-            {answerMode === "mic" ? <MicIcon className="h-5 w-5 text-emerald-300" /> : <PenIcon className="h-5 w-5 text-emerald-300" />}
-            <span>Start practicing</span>
-            <span className="text-gold-300 transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
-          </button>
+            Start practicing
+          </Button>
           <p className="mt-2.5 text-center text-xs text-darkslate-600">
             {questionCount} questions · about {estimatedMinutes} minutes · feedback on every answer at the end
           </p>

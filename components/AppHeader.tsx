@@ -6,6 +6,7 @@ import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useSidebar } from "@/context/SidebarContext";
 import AuthModal from "@/components/AuthModal";
+import Button, { buttonClasses } from "@/components/ui/Button";
 import {
   syncGuestSessionsToAccount,
   hasUnsyncedGuestSessions,
@@ -50,7 +51,7 @@ export default function AppHeader() {
               type="button"
               onClick={toggleSidebar}
               aria-label="Open interview tracks sidebar"
-              className="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-forest-600/80 bg-forest-800/90 px-2 sm:px-3 py-1.5 text-xs font-bold text-emerald-200 shadow-xs hover:bg-forest-700 hover:border-forest-500 hover:text-white transition-all active:scale-95 shrink-0"
+              className={buttonClasses({ variant: "dark", size: "sm", className: "shrink-0 gap-1.5 !px-2 sm:!px-3" })}
             >
               <svg
                 className="h-4 w-4 text-emerald-300 shrink-0"
@@ -105,14 +106,14 @@ export default function AppHeader() {
             {isInterviewing ? (
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 rounded-lg px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-sage-200 hover:bg-forest-800 hover:text-white transition-colors shrink-0"
+                className={buttonClasses({ variant: "dark", size: "sm", className: "shrink-0" })}
               >
                 <span>← Exit Session</span>
               </Link>
             ) : (
               <Link
                 href="/history"
-                className="hidden md:inline-flex items-center gap-1.5 rounded-xl border border-forest-700/60 bg-forest-900/60 px-3 py-1.5 text-xs font-medium text-sage-200 hover:bg-forest-800 hover:text-white transition-colors shrink-0"
+                className={buttonClasses({ variant: "dark", size: "sm", className: "hidden md:inline-flex shrink-0 gap-1.5" })}
               >
                 <svg className="h-3.5 w-3.5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -233,28 +234,28 @@ export default function AppHeader() {
               </div>
             ) : (
               <div className={`${isInterviewing ? "hidden sm:flex" : "flex"} items-center gap-1.5 sm:gap-2 shrink-0`}>
-                <button
-                  type="button"
+                <Button
+                  variant="dark"
+                  size="sm"
+                  aria-label="Sign in to your account"
                   onClick={() => {
                     setAuthModalMode("signin");
                     setIsAuthModalOpen(true);
                   }}
-                  className="rounded-xl border border-forest-600/80 bg-forest-800/80 px-2 sm:px-3 py-1.5 text-xs font-semibold text-sage-200 hover:bg-forest-700 hover:text-white transition-all active:scale-95 shrink-0"
-                  aria-label="Sign in to your account"
                 >
-                  <span>Sign In</span>
-                </button>
-                <button
-                  type="button"
+                  Sign in
+                </Button>
+                <Button
+                  variant="accent"
+                  size="sm"
+                  aria-label="Sign up for an account"
                   onClick={() => {
                     setAuthModalMode("signup");
                     setIsAuthModalOpen(true);
                   }}
-                  className="rounded-xl border border-emerald-400/90 bg-emerald-400 px-2.5 sm:px-3.5 py-1.5 text-xs font-bold text-emerald-950 shadow-xs hover:bg-emerald-300 hover:border-emerald-300 transition-all active:scale-95 shrink-0"
-                  aria-label="Sign up for an account"
                 >
-                  <span>Sign Up</span>
-                </button>
+                  Sign up
+                </Button>
               </div>
             )}
           </div>
