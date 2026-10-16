@@ -176,26 +176,12 @@ function boundedString(value: unknown, field: string, max: number): string {
   return value;
 }
 
-/**
- * Validates the body of POST /api/history. Never trusts client-supplied
- * aggregates: the average score is recomputed from the entries' feedback.
- */
-export function validateHistoryPayload(body: unknown): ValidatedHistoryPayload {
-  if (body === null || typeof body !== "object") {
-    throw new Error("Request body must be a JSON object.");
-  }
-  const obj = body as Record<string, unknown>;
-
-  if (!validateCategory(obj.category)) {
-    throw new Error("Field 'category' is not a valid category.");
-  }
-  const mode = obj.mode === "mic" ? "mic" : "typed";
-
-  if (!Array.isArray(obj.entries) || obj.entries.length < 1 || obj.entries.length > MAX_HISTORY_ENTRIES) {
+/** Validates a raw array of session entries (1–50), throwing a descriptive Error. */
+export function validateSessionEntries(rawEntries: unknown): SessionEntry[] {
+  if (!Array.isArray(rawEntries) || rawEntries.length < 1 || rawEntries.length > MAX_HISTORY_ENTRIES) {
     throw new Error(`Field 'entries' must contain between 1 and ${MAX_HISTORY_ENTRIES} items.`);
   }
-
-  const entries: SessionEntry[] = obj.entries.map((raw, i) => {
+  return rawEntries.map((raw, i) => {
     if (raw === null || typeof raw !== "object") {
       throw new Error(`Entry ${i + 1} must be an object.`);
     }
@@ -221,6 +207,28 @@ export function validateHistoryPayload(body: unknown): ValidatedHistoryPayload {
     }
     return entry;
   });
+}
+
+/**
+ * Validates the body of POST /api/history. Never trusts client-supplied
+ * aggregates: the average score is recomputed from the entries' feedback.
+ */
+export function validateHistoryPayload(body: unknown): ValidatedHistoryPayload {
+  if (body === null || typeof body !== "object") {
+    throw new Error("Request body must be a JSON object.");
+  }
+  const obj = body as Record<string, unknown>;
+
+  if (!validateCategory(obj.category)) {
+    throw new Error("Field 'category' is not a valid category.");
+  }
+  const mode = obj.mode === "mic" ? "mic" : "typed";
+
+  if (!Array.isArray(obj.entries) || obj.entries.length < 1 || obj.entries.length > MAX_HISTORY_ENTRIES) {
+    throw new Error(`Field 'entries' must contain between 1 and ${MAX_HISTORY_ENTRIES} items.`);
+  }
+
+  const entries = validateSessionEntries(obj.entries);
 
   const averageScore =
     entries.reduce((sum, e) => sum + e.feedback.score, 0) / entries.length;

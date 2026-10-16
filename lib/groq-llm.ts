@@ -44,3 +44,22 @@ export async function requestGroq(
   }
   throw lastError;
 }
+
+/** Runs an arbitrary prompt through the Groq chat model in JSON mode; throws on failure. */
+export async function requestGroqJson(prompt: string, apiKey: string): Promise<unknown> {
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      temperature: 0.3,
+      response_format: { type: "json_object" },
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+  if (!res.ok) throw new Error(`Groq returned HTTP ${res.status}`);
+  const data = (await res.json()) as { choices?: { message?: { content?: string } }[] };
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) throw new Error("Groq returned an empty response");
+  return JSON.parse(content);
+}

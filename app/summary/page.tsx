@@ -8,11 +8,13 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import SessionSummaryCard from "@/components/SessionSummaryCard";
+import SessionDebriefCard from "@/components/SessionDebriefCard";
+import { buildDebriefFallback } from "@/lib/debrief";
 import AuthModal from "@/components/AuthModal";
 import { calculateAverageScore } from "@/hooks/useInterviewSession";
 import { saveGuestSession, syncGuestSessionsToAccount } from "@/lib/guest-storage";
 import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
-import type { SessionEntry } from "@/types";
+import type { SessionDebrief, SessionEntry } from "@/types";
 
 /**
  * Reads and parses `SessionEntry[]` from sessionStorage.
@@ -37,6 +39,8 @@ export default function SummaryPage() {
   const [savedToAccount, setSavedToAccount] = useState(false);
   const [guestSaved, setGuestSaved] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [debrief, setDebrief] = useState<SessionDebrief | null>(null);
+  const [debriefLoading, setDebriefLoading] = useState(false);
 
   useEffect(() => {
     const results = loadSessionResults();
@@ -47,6 +51,47 @@ export default function SummaryPage() {
     }
     setEntries(results);
   }, [router]);
+
+  // Consolidated debrief: show the local one immediately, then replace with the AI one
+  useEffect(() => {
+    if (!entries || entries.length === 0) return;
+    setDebrief(buildDebriefFallback(entries));
+    setDebriefLoading(true);
+
+    const controller = new AbortController();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    try {
+      const gk = localStorage.getItem("mock_gemini_key");
+      const qk = localStorage.getItem("mock_groq_key");
+      if (gk) headers["x-gemini-key"] = gk;
+      if (qk) headers["x-groq-key"] = qk;
+    } catch {
+      // storage unavailable — server keys are used
+    }
+
+    fetch("/api/review/summary", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ entries }),
+      signal: controller.signal,
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data?.debrief) setDebrief(data.debrief as SessionDebrief);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!controller.signal.aborted) setDebriefLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [entries]);
+
+  const jumpToQuestion = (index: number) => {
+    document
+      .getElementById(`question-review-${index}`)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   const hasEntries = entries && entries.length > 0;
   const averageScore = hasEntries ? calculateAverageScore(entries) : null;
@@ -226,6 +271,15 @@ export default function SummaryPage() {
           </div>
         )}
 
+        {/* ── Consolidated debrief across all answers ── */}
+        {hasEntries && debrief && (
+          <SessionDebriefCard
+            debrief={debrief}
+            isEnhancing={debriefLoading}
+            onJumpToQuestion={jumpToQuestion}
+          />
+        )}
+
         {/* ── Account Sync & Persistence Status ── */}
         {hasEntries && (
           <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
@@ -291,7 +345,7 @@ export default function SummaryPage() {
 
             <ol className="space-y-6 list-none p-0">
               {entries.map((entry, i) => (
-                <li key={entry.question.id ?? i}>
+                <li key={entry.question.id ?? i} id={`question-review-${i}`} className="scroll-mt-20">
                   <SessionSummaryCard entry={entry} index={i + 1} />
                 </li>
               ))}

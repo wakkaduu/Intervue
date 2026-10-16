@@ -113,3 +113,15 @@ export interface ReviewResponse {
 export interface ReviewErrorResponse {
   error: string;
 }
+
+// Consolidated end-of-session debrief (POST /api/review/summary)
+export interface SessionDebrief {
+  headline: string; // one-line overall verdict
+  summary: string; // ≤ 90 words
+  recurringStrengths: string[]; // 1–3 patterns across answers
+  priorityFixes: string[]; // 1–3 patterns to fix first
+  nextSteps: string[]; // 2–4 concrete practice actions
+  bestQuestionIndex?: number; // 0-based
+  weakestQuestionIndex?: number; // 0-based
+  source?: "ai" | "basic";
+}
