@@ -111,6 +111,7 @@ export async function POST(req: Request) {
       ip,
       details: message,
     });
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[resend-confirmation]", err);
+    return NextResponse.json({ error: "Failed to resend confirmation code." }, { status: 500 });
   }
 }

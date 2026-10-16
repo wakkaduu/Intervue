@@ -141,6 +141,13 @@ export async function POST(req: Request) {
       ip,
       details: message,
     });
-    return NextResponse.json({ error: message }, { status: 500 });
+    if (message.includes("already exists")) {
+      return NextResponse.json(
+        { error: "An account with this email address already exists." },
+        { status: 409 }
+      );
+    }
+    console.error("[register]", err);
+    return NextResponse.json({ error: "Failed to create account." }, { status: 500 });
   }
 }

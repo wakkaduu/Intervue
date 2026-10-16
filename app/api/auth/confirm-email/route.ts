@@ -90,6 +90,7 @@ export async function POST(req: Request) {
       ip,
       details: message,
     });
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[confirm-email]", err);
+    return NextResponse.json({ error: "Failed to verify confirmation code." }, { status: 500 });
   }
 }

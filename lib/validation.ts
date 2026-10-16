@@ -1,7 +1,7 @@
 // Input validation helpers for Intervue
 // Requirements: 1.4, 5.8
 
-import type { Category, Feedback, ReviewRequest } from "@/types/index";
+import type { Category, Feedback, ReviewRequest, SessionEntry } from "@/types/index";
 import { CATEGORIES } from "@/lib/questions";
 
 const VALID_CATEGORIES: Category[] = CATEGORIES;
@@ -154,4 +154,73 @@ export function validateFeedback(obj: unknown): Feedback {
   }
 
   return feedback;
+}
+
+export interface ValidatedHistoryPayload {
+  category: Category;
+  mode: "mic" | "typed";
+  averageScore: number;
+  entries: SessionEntry[];
+}
+
+const MAX_HISTORY_ENTRIES = 50;
+const MAX_TEXT_LENGTH = 10_000;
+
+function boundedString(value: unknown, field: string, max: number): string {
+  if (typeof value !== "string" || value.trim().length === 0 || value.length > max) {
+    throw new Error(`Field '${field}' must be a non-empty string of at most ${max} characters.`);
+  }
+  return value;
+}
+
+/**
+ * Validates the body of POST /api/history. Never trusts client-supplied
+ * aggregates: the average score is recomputed from the entries' feedback.
+ */
+export function validateHistoryPayload(body: unknown): ValidatedHistoryPayload {
+  if (body === null || typeof body !== "object") {
+    throw new Error("Request body must be a JSON object.");
+  }
+  const obj = body as Record<string, unknown>;
+
+  if (!validateCategory(obj.category)) {
+    throw new Error("Field 'category' is not a valid category.");
+  }
+  const mode = obj.mode === "mic" ? "mic" : "typed";
+
+  if (!Array.isArray(obj.entries) || obj.entries.length < 1 || obj.entries.length > MAX_HISTORY_ENTRIES) {
+    throw new Error(`Field 'entries' must contain between 1 and ${MAX_HISTORY_ENTRIES} items.`);
+  }
+
+  const entries: SessionEntry[] = obj.entries.map((raw, i) => {
+    if (raw === null || typeof raw !== "object") {
+      throw new Error(`Entry ${i + 1} must be an object.`);
+    }
+    const e = raw as Record<string, unknown>;
+    const q = e.question as Record<string, unknown> | null;
+    if (q === null || typeof q !== "object") {
+      throw new Error(`Entry ${i + 1} is missing 'question'.`);
+    }
+    if (!validateCategory(q.category)) {
+      throw new Error(`Entry ${i + 1} has an invalid question category.`);
+    }
+    const entry: SessionEntry = {
+      question: {
+        id: boundedString(q.id, "question.id", 100),
+        category: q.category,
+        text: boundedString(q.text, "question.text", 2_000),
+      },
+      answer: boundedString(e.answer, "answer", MAX_TEXT_LENGTH),
+      feedback: validateFeedback(e.feedback),
+    };
+    if (typeof e.durationSeconds === "number" && Number.isFinite(e.durationSeconds) && e.durationSeconds >= 0) {
+      entry.durationSeconds = Math.min(Math.round(e.durationSeconds), 6 * 60 * 60);
+    }
+    return entry;
+  });
+
+  const averageScore =
+    entries.reduce((sum, e) => sum + e.feedback.score, 0) / entries.length;
+
+  return { category: obj.category, mode, averageScore, entries };
 }

@@ -5,7 +5,7 @@ import {
   saveUserInterviewSession,
   calculateUserAnalytics,
 } from "@/lib/db";
-import type { Category, SessionEntry } from "@/types";
+import { validateHistoryPayload } from "@/lib/validation";
 
 export async function GET() {
   try {
@@ -26,8 +26,8 @@ export async function GET() {
       analytics,
     });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to load history.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[api/history GET]", err);
+    return NextResponse.json({ error: "Failed to load history." }, { status: 500 });
   }
 }
 
@@ -41,33 +41,31 @@ export async function POST(req: Request) {
       );
     }
 
-    const body = await req.json();
-    const { category, mode, averageScore, entries } = body as {
-      category: Category;
-      mode: "mic" | "typed";
-      averageScore: number;
-      entries: SessionEntry[];
-    };
-
-    if (!category || !Array.isArray(entries) || entries.length === 0) {
-      return NextResponse.json(
-        { error: "Invalid session data provided." },
-        { status: 400 }
-      );
+    let validated;
+    try {
+      validated = validateHistoryPayload(await req.json());
+    } catch (validationErr) {
+      const message =
+        validationErr instanceof SyntaxError
+          ? "Request body must be valid JSON."
+          : validationErr instanceof Error
+            ? validationErr.message
+            : "Invalid session data provided.";
+      return NextResponse.json({ error: message }, { status: 400 });
     }
 
     const saved = await saveUserInterviewSession({
       userId: session.user.id || session.user.email,
       userEmail: session.user.email,
-      category,
-      mode: mode || "typed",
-      averageScore: typeof averageScore === "number" ? averageScore : 0,
-      entries,
+      category: validated.category,
+      mode: validated.mode,
+      averageScore: validated.averageScore,
+      entries: validated.entries,
     });
 
     return NextResponse.json({ success: true, session: saved }, { status: 201 });
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Failed to save session.";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[api/history POST]", err);
+    return NextResponse.json({ error: "Failed to save session." }, { status: 500 });
   }
 }

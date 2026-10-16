@@ -182,7 +182,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       { status: 502 }
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : "Audio transcription error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[api/transcribe]", err);
+    return NextResponse.json({ error: "Audio transcription error" }, { status: 500 });
   }
 }

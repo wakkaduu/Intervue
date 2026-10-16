@@ -431,7 +431,7 @@ function InterviewPageInner() {
                 )}
 
                 {/* Voice controls with duration & Whisper transcribing states */}
-                <div className="pt-2">
+                <div className="sticky bottom-0 z-20 -mx-6 -mb-6 rounded-b-2xl border-t border-sage-300/80 bg-[#E2ECE5]/95 px-6 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur sm:static sm:mx-0 sm:mb-0 sm:border-0 sm:bg-transparent sm:p-0 sm:pt-2 sm:backdrop-blur-none">
                   <RecordingControls
                     isRecording={isRecording}
                     isSupported={isAudioSupported}
