@@ -146,6 +146,10 @@ function InterviewPageInner() {
               answer: ans,
               category: q.category,
               mode,
+              priorFocus: results
+                .map((r) => r.feedback.focusNext || r.feedback.areasForImprovement[0])
+                .filter(Boolean)
+                .slice(-4),
             }),
           });
 

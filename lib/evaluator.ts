@@ -4,6 +4,17 @@ import type { Feedback, ReviewRequest } from "@/types/index";
 import { evaluateAnswerFallback, requestGemini } from "@/lib/gemini";
 import { requestGroq } from "@/lib/groq-llm";
 
+/** Per-provider time budget, so one slow model cannot starve the next provider in the chain. */
+export const PROVIDER_TIMEOUT_MS = 12_000;
+
+export function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const timeout = new Promise<never>((_, reject) => {
+    timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 export interface EvaluatorKeys {
   geminiKey?: string;
   groqKey?: string;
@@ -22,7 +33,7 @@ export async function evaluateAnswer(
 
   for (const provider of providers) {
     try {
-      return { ...(await provider.run()), source: "ai" };
+      return { ...(await withTimeout(provider.run(), PROVIDER_TIMEOUT_MS, provider.name)), source: "ai" };
     } catch (err) {
       console.warn(`[evaluator] ${provider.name} failed, trying next provider:`, err);
     }

@@ -82,6 +82,9 @@ export interface Feedback {
   howTheyAnswered?: string; // Evaluation of structure, clarity, and completeness
   toneAnalysis?: string; // Evaluation of tone, confidence, presence, and professionalism
   questionConnection?: string; // How well they addressed and connected their answer to the question
+  focusNext?: string; // the ONE thing to fix first, specific to this answer
+  strongerVersion?: string; // rewrite of the candidate's weakest moment, as a strong candidate would say it
+  followUpQuestion?: string; // what a real interviewer would ask next to probe the weakest claim
   source?: "ai" | "basic"; // "basic" = built-in keyword grader (no AI provider was available)
 }
 
@@ -104,6 +107,8 @@ export interface ReviewRequest {
   answer: string;
   category: Category;
   mode?: AnswerMode;
+  /** Focus points already given on earlier questions this session (so feedback is not repeated). */
+  priorFocus?: string[];
 }
 
 export interface ReviewResponse {

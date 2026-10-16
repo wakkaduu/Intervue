@@ -3,7 +3,7 @@ import type { Feedback, ReviewRequest } from "@/types/index";
 import { validateFeedback } from "@/lib/validation";
 import { buildPrompt } from "@/lib/gemini";
 
-const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.3-70b-versatile";
+const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 
 /**
  * Evaluates an answer with a Groq-hosted chat model (OpenAI-compatible API).
@@ -24,7 +24,7 @@ export async function requestGroq(
         },
         body: JSON.stringify({
           model: GROQ_MODEL,
-          temperature: 0.2,
+          temperature: 0.4,
           response_format: { type: "json_object" },
           messages: [{ role: "user", content: buildPrompt(request) }],
         }),

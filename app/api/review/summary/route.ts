@@ -6,7 +6,7 @@ import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 
 export const maxDuration = 30;
 
-const TIMEOUT_MS = 20_000;
+const TIMEOUT_MS = 28_000;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const limit = checkApiRateLimit("review", getClientIp(request.headers));

@@ -61,11 +61,19 @@ export function validateReviewRequest(body: unknown): ReviewRequest {
       ? (obj.mode as "mic" | "typed")
       : undefined;
 
+  const priorFocus = Array.isArray(obj.priorFocus)
+    ? obj.priorFocus
+        .filter((f): f is string => typeof f === "string" && f.trim().length > 0)
+        .map((f) => f.slice(0, 300))
+        .slice(0, 6)
+    : [];
+
   return {
     question: obj.question,
     answer: obj.answer,
     category: obj.category,
     ...(mode ? { mode } : {}),
+    ...(priorFocus.length ? { priorFocus } : {}),
   };
 }
 
@@ -151,6 +159,12 @@ export function validateFeedback(obj: unknown): Feedback {
   }
   if (typeof raw.questionConnection === "string") {
     feedback.questionConnection = raw.questionConnection;
+  }
+  for (const key of ["focusNext", "strongerVersion", "followUpQuestion"] as const) {
+    const v = raw[key];
+    if (typeof v === "string" && v.trim() !== "" && v.length <= 2000) {
+      feedback[key] = v.trim();
+    }
   }
   if (raw.source === "ai" || raw.source === "basic") {
     feedback.source = raw.source;

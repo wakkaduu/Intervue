@@ -2,7 +2,7 @@
 // Requirements: 1.4, 5.2, 5.8
 
 import { describe, it, expect } from "vitest";
-import { validateAnswer, validateCategory, validateFeedback } from "@/lib/validation";
+import { validateAnswer, validateCategory, validateFeedback, validateReviewRequest } from "@/lib/validation";
 import type { Feedback } from "@/types/index";
 
 // Helper to build a valid Feedback object
@@ -301,5 +301,33 @@ describe("validateCategory", () => {
     it("rejects an object", () => {
       expect(validateCategory({ category: "Behavioral" })).toBe(false);
     });
+  });
+});
+
+describe("coaching fields and prior focus", () => {
+  it("keeps focusNext / strongerVersion / followUpQuestion when valid", () => {
+    const fb = validateFeedback({
+      score: 6,
+      strengths: ["a"],
+      areasForImprovement: ["b"],
+      summary: "ok",
+      focusNext: "Open with the decision you made.",
+      strongerVersion: "I chose X because [your number].",
+      followUpQuestion: "What would you do differently?",
+    });
+    expect(fb.focusNext).toMatch(/decision/);
+    expect(fb.strongerVersion).toBeDefined();
+    expect(fb.followUpQuestion).toBeDefined();
+  });
+
+  it("sanitises priorFocus in review requests", () => {
+    const req = validateReviewRequest({
+      question: "q",
+      answer: "a",
+      category: "Behavioral",
+      priorFocus: ["x".repeat(500), 5, "", "keep"],
+    });
+    expect(req.priorFocus).toHaveLength(2);
+    expect(req.priorFocus![0]).toHaveLength(300);
   });
 });

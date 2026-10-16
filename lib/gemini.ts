@@ -7,7 +7,7 @@ import { GoogleGenerativeAI, SchemaType, type ObjectSchema } from "@google/gener
 import type { Feedback, ReviewRequest } from "@/types/index";
 import { validateFeedback } from "@/lib/validation";
 
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
 
 /** JSON schema enforced by Gemini's structured-output mode (mirrors validateFeedback). */
 const FEEDBACK_SCHEMA: ObjectSchema = {
@@ -19,51 +19,63 @@ const FEEDBACK_SCHEMA: ObjectSchema = {
     howTheyAnswered: { type: SchemaType.STRING },
     toneAnalysis: { type: SchemaType.STRING },
     questionConnection: { type: SchemaType.STRING },
-    summary: { type: SchemaType.STRING, description: "Max 95 words" },
+    focusNext: { type: SchemaType.STRING },
+    strongerVersion: { type: SchemaType.STRING },
+    followUpQuestion: { type: SchemaType.STRING },
+    summary: { type: SchemaType.STRING, description: "Max 80 words" },
   },
-  required: ["score", "strengths", "areasForImprovement", "howTheyAnswered", "toneAnalysis", "questionConnection", "summary"],
+  required: ["score", "strengths", "areasForImprovement", "howTheyAnswered", "toneAnalysis", "questionConnection", "summary", "focusNext", "strongerVersion", "followUpQuestion"],
 };
 
 /**
- * Builds the prompt string for the Gemini API from a ReviewRequest.
- * Enforces an uncompromising, strict, bar-raiser evaluation standard.
- * Strictly avoids sugar-coating or participation praise.
+ * Builds the prompt for AI evaluation. The aim is a review that sounds like a real
+ * interviewer who wants this candidate to succeed: specific to THIS answer, quoting
+ * what was actually said, with one clear priority and a concrete better version.
  */
 export function buildPrompt(request: ReviewRequest): string {
-  return `You are an exacting, senior hiring committee bar-raiser evaluating a candidate's answer to an interview question.
-CRITICAL MANDATE: AVOID SUGAR-COATING. DO NOT FLATTER OR LIE TO THE CANDIDATE.
-Be candid, demanding, and uncompromisingly rigorous. Your critique must mirror the high standards of top-tier hiring managers (Google, Meta, Tier-1 investment banks, top medical/graduate programs). Giving empty praise or inflated scores hurts candidates by leaving them unprepared for real competitive interviews.
+  const prior = request.priorFocus?.length
+    ? `
+What you have ALREADY told this candidate on earlier questions in this session:
+${request.priorFocus.map((f) => `- ${f}`).join("\n")}
+Do not repeat those points. If this answer makes the same mistake again, acknowledge it in one short sentence ("Same pattern as before: ...") and then spend your effort on something NEW you noticed in this answer.
+`
+    : "";
 
-Candidate Context:
-- Category / Role: ${request.category}
-- Question: ${request.question}
-- Candidate's Answer: ${request.answer}
-${request.mode ? `- Delivery Mode: ${request.mode === "mic" ? "Spoken (Recorded via Microphone)" : "Written (Typed in Editor)"}` : ""}
+  return `You are an experienced interviewer running a mock interview for: ${request.category}.
+You want this candidate to get the job, so you are honest, direct and specific. You are not a scoring machine and you are not a motivational poster. Imagine you are sitting across the table and have just heard the answer; say what a great coach would say, in plain spoken English, speaking to the candidate as "you".
 
-Strict Scoring Rubric (Integer 1-10):
-- 1 to 3 (Strong No Hire / Unacceptable): Very brief (< 30 words), evasive, incoherent, irrelevant, or fails to answer the question.
-- 4 to 5 (No Hire / Substandard): High-level generalities, buzzwords without substance, no measurable results, no STAR structure, ambiguous personal ownership ("we" instead of "I"), or timid/hedging tone.
-- 6 to 7 (Borderline / Weak Hire): Baseline competent answer that addresses the question, but lacks deep technical nuance, trade-offs, or quantified metrics.
-- 8 to 9 (Strong Hire / Advanced): Crisp STAR structure, clear personal contribution, quantifiable metrics/outcomes, clear technical trade-offs or leadership presence, high conviction.
-- 10 (Bar-Raiser / World-Class): Exceptional, executive-level precision, comprehensive trade-off analysis, definitive metrics, pristine delivery.
+The question you asked: ${request.question}
+The candidate's answer${request.mode === "mic" ? " (spoken, transcribed automatically, so ignore punctuation and transcription glitches)" : " (typed)"}:
+"""
+${request.answer}
+"""
+${prior}
+RULES THAT MAKE THE FEEDBACK USEFUL
+1. Everything must be specific to THIS answer. Quote or closely paraphrase at least two things the candidate actually said, and point at them ("When you said '...', ..."). If a comment could be pasted onto a different answer unchanged, delete it.
+2. Banned stock advice: "lacks depth", "be more specific", "add more detail", "provide examples", "use the STAR method", "quantify your impact", "showcase", "demonstrate". If you mean one of these, say exactly WHAT is missing instead (for example: which number you wanted to hear, which decision you could not follow, what you did versus what the team did).
+3. Do not invent facts about the candidate. If you rewrite something, use only what they said, and put clearly marked placeholders like [your number] where a fact is missing.
+4. Pick the ONE thing that would improve this answer the most and make it "focusNext". Everything else stays short.
+5. Vary your wording. Do not open with the same phrases every time.
 
-Strict Evaluation Pillars:
-1. "howTheyAnswered": Ruthlessly critique structural organization, depth, and method. Did they use STAR (Situation, Task, Action, Result)? Did they explain specific mechanisms or hand-wave?
-2. "toneAnalysis": Candid critique of professional poise. Call out hedging ("I guess", "kind of", "maybe", "I think"), passive language, filler words, or collective hiding ("we" instead of personal "I" ownership).
-3. "questionConnection": Audit directness. Did they directly answer the specific scenario asked, or ramble and skirt around the question?
-4. "strengths": List 1 to 3 GENUINE, earned strengths only. If the response was weak, state only what minimal factual concepts they acknowledged without flattering praise.
-5. "areasForImprovement": List 1 to 4 BLUNT, actionable critiques detailing what was missing (e.g. "Missing quantifiable metrics: no data, percentages, or KPIs provided", "Vague personal ownership: relied on 'we' without detailing personal contributions", "Failed to address the resolution step").
-6. "summary": Concise executive hiring verdict (under 95 words). Must start with a clear, un-sugar-coated assessment (e.g., "Below hiring bar:...", "Borderline response:...", "Hire-ready answer:..."). Never use empty praise like "Great attempt!" or "Solid answer!" unless score is 8+.
+Scoring (integer 1-10), be honest and consistent:
+- 1-3: fails to answer, evasive, incoherent, or only a sentence or two.
+- 4-5: on topic but generic, buzzwords, no concrete example, unclear personal role.
+- 6-7: competent and answers the question, but missing a decision, trade-off, result or specific detail that a stronger candidate would include.
+- 8-9: clear, concrete, owns their role, shows reasoning and a result.
+- 10: exceptional; could be used as a model answer.
 
-Respond with a JSON object matching this exact schema:
+Return a JSON object with exactly these fields:
 {
   "score": <integer 1-10>,
-  "strengths": [<1-4 concise strings>],
-  "areasForImprovement": [<1-4 concise strings>],
-  "howTheyAnswered": <string, 1-2 concise sentences>,
-  "toneAnalysis": <string, 1-2 concise sentences>,
-  "questionConnection": <string, 1-2 concise sentences>,
-  "summary": <string, max 95 words unvarnished hiring verdict>
+  "summary": <string, max 80 words. Your spoken reaction as the interviewer: your honest overall impression, what landed, and what stopped it from being a better answer. First person ("I"), talking to "you".>,
+  "strengths": [<1-3 strings. Each names exactly what worked and quotes or points at it. If almost nothing worked, say the one true thing.>],
+  "areasForImprovement": [<1-3 strings. Each is a specific problem in this answer plus the concrete fix, not a generic tip.>],
+  "focusNext": <string, one or two sentences: the single most valuable thing to change, and how>,
+  "strongerVersion": <string, max 70 words. Rewrite the candidate's weakest one to three sentences the way a strong candidate would say them, using only their facts plus [placeholders].>,
+  "followUpQuestion": <string, the one follow-up question you would ask next to probe the weakest or vaguest claim in the answer>,
+  "howTheyAnswered": <string, 1-2 sentences on how the answer was built: order, clarity, where it lost the listener>,
+  "toneAnalysis": <string, 1-2 sentences on how the candidate came across (confidence, hedging, ownership), pointing at actual phrases>,
+  "questionConnection": <string, 1-2 sentences: did the answer address what you actually asked, and where did it drift>
 }`;
 }
 
@@ -307,7 +319,7 @@ export async function requestGemini(
           generationConfig: {
             responseMimeType: "application/json",
             responseSchema: FEEDBACK_SCHEMA,
-            temperature: 0.2,
+            temperature: 0.4,
           },
         });
         const responseText = result.response.text();

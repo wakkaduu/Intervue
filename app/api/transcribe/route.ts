@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 
 const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-flash-lite-latest";
 
 /** Picks a filename extension matching the real container (iOS Safari records MP4/AAC, not WebM). */
 function audioFileName(type: string): string {

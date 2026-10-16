@@ -258,6 +258,36 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
           </div>
         )}
 
+        {/* Interviewer coaching: one priority, a better version, and the likely follow-up */}
+        {(feedback.focusNext || feedback.strongerVersion || feedback.followUpQuestion) && (
+          <div className="space-y-3">
+            {feedback.focusNext && (
+              <div className="rounded-xl border-l-4 border-gold-500 bg-gold-50/70 p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-gold-900 block mb-1">
+                  Work on this first
+                </span>
+                <p className="text-sm text-gold-950 leading-relaxed">{feedback.focusNext}</p>
+              </div>
+            )}
+            {feedback.strongerVersion && (
+              <div className="rounded-xl border border-forest-200 bg-forest-50/70 p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-forest-800 block mb-1">
+                  Try saying it like this
+                </span>
+                <p className="text-sm text-forest-950 leading-relaxed italic">“{feedback.strongerVersion}”</p>
+              </div>
+            )}
+            {feedback.followUpQuestion && (
+              <div className="rounded-xl border border-sage-300 bg-sage-100/70 p-4">
+                <span className="text-xs font-bold uppercase tracking-wider text-darkslate-700 block mb-1">
+                  A real interviewer would ask next
+                </span>
+                <p className="text-sm text-darkslate-900 leading-relaxed">{feedback.followUpQuestion}</p>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Summary Coach Recommendation */}
         <section
           aria-labelledby={`summary-label-${index}`}
@@ -270,7 +300,7 @@ export default function SessionSummaryCard({ entry, index }: SessionSummaryCardP
             <svg className="h-4 w-4 text-gold-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
             </svg>
-            <span>Evaluation Recommendation</span>
+            <span>Interviewer&apos;s Take</span>
           </h4>
           <p className="text-xs sm:text-sm text-sage-100 leading-relaxed font-normal">{summary}</p>
         </section>

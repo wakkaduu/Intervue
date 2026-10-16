@@ -10,7 +10,7 @@ import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 // Serverless function execution timeout (seconds)
 export const maxDuration = 30;
 
-const TIMEOUT_MS = 15_000;
+const TIMEOUT_MS = 28_000; // overall budget; each AI provider also has its own shorter timeout
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const limit = checkApiRateLimit("review", getClientIp(request.headers));

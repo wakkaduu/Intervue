@@ -24,7 +24,8 @@ Gaps noted: ${e.feedback.areasForImprovement.join("; ")}`;
     .join("\n\n");
 
   return `You are a senior hiring-committee bar-raiser writing the FINAL DEBRIEF for a mock interview session.
-Each answer was already reviewed individually. Do not repeat the per-question reviews. Instead find the PATTERNS across answers and tell the candidate what to do next. Be candid and specific; no flattery.
+Each answer was already reviewed individually. Do not repeat the per-question reviews. Instead, speak to the candidate directly ("you") like a coach who wants them to improve, and find the PATTERNS across answers.
+Rules: every point must reference specific questions (Q1, Q3...) and what the candidate actually said or did there. Banned stock advice: "be more specific", "add more detail", "use the STAR method", "quantify your impact", "provide examples". Say exactly what to change instead. Next steps must be concrete drills (for example "redo Q3 out loud in 90 seconds, opening with the decision you made"), not general tips. Do not invent facts.
 
 Category: ${entries[0].question.category}
 Average score: ${avg.toFixed(1)}/10 across ${entries.length} answers

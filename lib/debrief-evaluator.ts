@@ -5,7 +5,7 @@ import type { SessionDebrief, SessionEntry } from "@/types/index";
 import { buildDebriefFallback, buildDebriefPrompt, validateDebrief } from "@/lib/debrief";
 import { requestGeminiJson } from "@/lib/gemini";
 import { requestGroqJson } from "@/lib/groq-llm";
-import type { EvaluatorKeys } from "@/lib/evaluator";
+import { withTimeout, PROVIDER_TIMEOUT_MS, type EvaluatorKeys } from "@/lib/evaluator";
 
 const strings = { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } } as const;
 
@@ -36,7 +36,7 @@ export async function generateDebrief(
 
   for (const provider of providers) {
     try {
-      const debrief = validateDebrief(await provider.run());
+      const debrief = validateDebrief(await withTimeout(provider.run(), PROVIDER_TIMEOUT_MS, provider.name));
       // Keep the locally computed best/weakest indexes: they are exact, not model-guessed.
       return {
         ...debrief,
