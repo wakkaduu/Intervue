@@ -21,6 +21,12 @@ import LiveDeliveryHUD from "@/components/LiveDeliveryHUD";
 import MicCheck from "@/components/MicCheck";
 import { clearDraft, countDraftAnswers, loadDraft, saveDraft, type SessionDraft } from "@/lib/session-draft";
 
+function formatElapsed(totalSeconds: number): string {
+  const m = Math.floor(totalSeconds / 60);
+  const sec = totalSeconds % 60;
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
 // ---------------------------------------------------------------------------
 // Inner component — uses useSearchParams (must be inside <Suspense>)
 // ---------------------------------------------------------------------------
@@ -84,6 +90,10 @@ function InterviewPageInner() {
   const [pendingDraft, setPendingDraft] = useState<SessionDraft | null>(null);
   const [hasStarted, setHasStarted] = useState(mode === "typed");
 
+  // "Draft saved" indicator and per-question elapsed timer
+  const [savedAt, setSavedAt] = useState<number | null>(null);
+  const [questionSeconds, setQuestionSeconds] = useState(0);
+
   // Validation error for empty-answer submission
   const [answerValidationError, setAnswerValidationError] = useState<string | null>(null);
 
@@ -117,9 +127,18 @@ function InterviewPageInner() {
         durations,
         questionIndex,
       });
+      if (current || Object.keys(answers).length > 0) setSavedAt(Date.now());
     }, 600);
     return () => clearTimeout(timer);
   }, [phase, pendingDraft, isReviewingAll, hasStarted, currentQuestion, mode, typedText, audioTranscript, answers, durations, questionIndex]);
+
+  // Gentle elapsed timer per question (resets on each new question)
+  useEffect(() => {
+    setQuestionSeconds(0);
+    if (phase === "IDLE" || pendingDraft || isReviewingAll || !hasStarted) return;
+    const id = setInterval(() => setQuestionSeconds((sec) => sec + 1), 1000);
+    return () => clearInterval(id);
+  }, [questionIndex, phase, pendingDraft, isReviewingAll, hasStarted]);
 
   const resumeDraft = useCallback(() => {
     if (!pendingDraft) return;
@@ -525,7 +544,7 @@ function InterviewPageInner() {
 
       {/* ── Question Answering View ── */}
       {!isReviewingAll && currentQuestion && (
-        <div className="space-y-6">
+        <div key={questionIndex} className="space-y-6 animate-fade-up">
           <div className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 sm:p-8 shadow-md">
             <QuestionDisplay
               question={currentQuestion}
@@ -542,7 +561,8 @@ function InterviewPageInner() {
                   <span className="text-xs font-bold uppercase tracking-wider text-darkslate-500">
                     Spoken Answer
                   </span>
-                  <span className="text-xs text-darkslate-400">
+                  <span className="text-xs text-darkslate-500">
+                    <span aria-hidden="true">⏱ {formatElapsed(questionSeconds)} · </span>
                     Aim for 1–2 minutes. Press Start, speak, then Stop.
                   </span>
                 </div>
@@ -600,7 +620,8 @@ function InterviewPageInner() {
                   <label htmlFor="typed-answer" className="text-xs font-bold uppercase tracking-wider text-darkslate-600">
                     Written Answer
                   </label>
-                  <div className="flex items-center gap-1.5 text-[11px] bg-gold-50 border border-gold-200/80 px-2.5 py-0.5 rounded-full text-gold-900">
+                  <span className="text-xs text-darkslate-500" aria-hidden="true">⏱ {formatElapsed(questionSeconds)}</span>
+                  <div className="hidden sm:flex items-center gap-1.5 text-[11px] bg-gold-50 border border-gold-200/80 px-2.5 py-0.5 rounded-full text-gold-900">
                     <span className="font-bold text-gold-700">STAR Tip:</span>
                     <span>Situation • Task • Action • Result</span>
                   </div>
@@ -613,14 +634,23 @@ function InterviewPageInner() {
                     setTypedText(e.target.value);
                     if (e.target.value.trim()) setAnswerValidationError(null);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && (e.ctrlKey || e.metaKey) && typedText.trim()) {
+                      e.preventDefault();
+                      handleNextOrFinish();
+                    }
+                  }}
                   placeholder="Structure your answer here... Example: At my previous company, we faced a major bottleneck (Situation). My task was to streamline the workflow (Task). I implemented a continuous integration protocol (Action), which reduced cycle time by 40% (Result)."
                   rows={8}
                   className="w-full rounded-xl border border-sage-300 bg-[#F0F5F1] p-4 text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/20 shadow-xs transition-all leading-relaxed"
                 />
 
-                <div className="flex items-center justify-between text-xs text-darkslate-500">
+                <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-darkslate-500">
                   <span>{typedWordCount} {typedWordCount === 1 ? "word" : "words"}</span>
-                  <span>{typedText.length} characters</span>
+                  <span role="status" className="text-forest-700">
+                    {savedAt ? "✓ Draft saved" : ""}
+                  </span>
+                  <span className="hidden sm:inline">Ctrl + Enter to continue</span>
                 </div>
 
                 {/* Validation error */}

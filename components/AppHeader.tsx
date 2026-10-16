@@ -232,7 +232,7 @@ export default function AppHeader() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className={`${isInterviewing ? "hidden sm:flex" : "flex"} items-center gap-1.5 sm:gap-2 shrink-0`}>
                 <button
                   type="button"
                   onClick={() => {

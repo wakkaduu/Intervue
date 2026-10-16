@@ -40,3 +40,35 @@ body {
 .animate-pulse-subtle {
   animation: pulse-subtle 2.5s ease-in-out infinite;
 }
+
+/* Entrance / feedback animations (previously referenced but never defined) */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.animate-fade-in { animation: fade-in 0.2s ease-out both; }
+.animate-fade-up { animation: fade-up 0.35s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.animate-shake { animation: shake 0.4s ease-in-out; }
+
+/* Respect users who ask for less motion (decorative motion only; spinners keep spinning) */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-fade-up,
+  .animate-shake,
+  .animate-ping,
+  .animate-pulse,
+  .animate-pulse-subtle {
+    animation: none !important;
+  }
+  html { scroll-behavior: auto !important; }
+}

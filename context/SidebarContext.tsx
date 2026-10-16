@@ -21,6 +21,26 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<Category>(allCategories[0]);
 
+  // Remember the last practised track across visits
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("intervue_last_category");
+      if (saved && (allCategories as string[]).includes(saved)) {
+        setSelectedCategory(saved as Category);
+      }
+    } catch {
+      // storage unavailable
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("intervue_last_category", selectedCategory);
+    } catch {
+      // storage unavailable
+    }
+  }, [selectedCategory]);
+
   const openSidebar = () => setIsSidebarOpen(true);
   const closeSidebar = () => setIsSidebarOpen(false);
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
