@@ -12,6 +12,8 @@ import {
 } from "@/lib/guest-storage";
 import AuthModal from "@/components/AuthModal";
 import { analyzeSpeechDelivery } from "@/lib/speech-metrics";
+import ScoreTrendChart from "@/components/ScoreTrendChart";
+import { buildTrendPoints, shortCategory, summarizeTrend, trackOptions } from "@/lib/progress-trend";
 
 export default function HistoryPage() {
   const { data: session, status } = useSession();
@@ -21,6 +23,7 @@ export default function HistoryPage() {
   const [isGuest, setIsGuest] = useState(false);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [trendTrack, setTrendTrack] = useState<string>("all");
 
   useEffect(() => {
     if (status === "authenticated") {
@@ -118,6 +121,11 @@ export default function HistoryPage() {
       </div>
     );
   }
+
+  const tracks = trackOptions(sessions);
+  const activeTrack = trendTrack !== "all" && tracks.some((t) => t.category === trendTrack) ? trendTrack : null;
+  const trendPoints = buildTrendPoints(sessions, activeTrack);
+  const trend = summarizeTrend(trendPoints);
 
   return (
     <div className="py-6 sm:py-10">
@@ -244,6 +252,70 @@ export default function HistoryPage() {
               </span>
             </div>
           </div>
+        )}
+
+        {/* Progress trend */}
+        {sessions.length > 0 && (
+          <section aria-labelledby="progress-heading" className="rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-5 shadow-sm space-y-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h2 id="progress-heading" className="text-base font-extrabold text-forest-950">
+                  Your progress
+                </h2>
+                <p className="text-xs text-darkslate-600">Average score per practice session (out of 10)</p>
+              </div>
+              {tracks.length > 1 && (
+                <div>
+                  <label htmlFor="trend-track" className="sr-only">
+                    Show progress for
+                  </label>
+                  <select
+                    id="trend-track"
+                    value={activeTrack ?? "all"}
+                    onChange={(e) => setTrendTrack(e.target.value)}
+                    className="min-h-[44px] w-full max-w-full rounded-lg border border-sage-300 bg-[#F0F5F1] px-3 py-2 text-xs font-semibold text-darkslate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 sm:w-64"
+                  >
+                    <option value="all">All tracks ({sessions.length})</option>
+                    {tracks.map((t) => (
+                      <option key={t.category} value={t.category}>
+                        {shortCategory(t.category)} ({t.count})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            {trend && trend.count >= 2 && (
+              <p className="text-sm font-semibold text-darkslate-900" aria-live="polite">
+                <span aria-hidden="true">
+                  {trend.direction === "up" ? "↑ " : trend.direction === "down" ? "↓ " : "→ "}
+                </span>
+                {trend.direction === "flat"
+                  ? `Holding steady at ${trend.latest.toFixed(1)}`
+                  : `${trend.direction === "up" ? "Up" : "Down"} ${Math.abs(trend.delta ?? 0).toFixed(1)} points`}
+                <span className="font-normal text-darkslate-600"> {trend.deltaLabel} · best {trend.best.toFixed(1)}</span>
+              </p>
+            )}
+
+            {trend && trend.count >= 2 ? (
+              <ScoreTrendChart points={trendPoints} />
+            ) : trend ? (
+              <div className="rounded-xl bg-[#F0F5F1] border border-sage-300/70 p-5 text-center">
+                <p className="text-5xl font-black tracking-tight text-forest-900">
+                  {trend.latest.toFixed(1)}
+                  <span className="text-xl font-bold text-darkslate-500"> / 10</span>
+                </p>
+                <p className="mt-2 text-sm text-darkslate-700">
+                  Complete one more {activeTrack ? "session in this track" : "session"} and your trend line appears here.
+                </p>
+              </div>
+            ) : (
+              <p className="rounded-xl bg-[#F0F5F1] border border-sage-300/70 p-5 text-center text-sm text-darkslate-700">
+                No sessions in this track yet.
+              </p>
+            )}
+          </section>
         )}
 
         {/* Strengths & Improvement Insights */}
