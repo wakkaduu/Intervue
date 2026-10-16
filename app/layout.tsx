@@ -21,6 +21,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  appleWebApp: { capable: true, title: "Intervue", statusBarStyle: "black-translucent" },
+  icons: { apple: "/apple-touch-icon.png" },
   title: "Intervue — Mock Interview Preparation Platform",
   description:
     "Master any job, academic, or professional interview with real-time voice and written evaluation across 52 specialized tracks.",

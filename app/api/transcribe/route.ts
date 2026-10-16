@@ -6,6 +6,17 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 
 const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+/** Picks a filename extension matching the real container (iOS Safari records MP4/AAC, not WebM). */
+function audioFileName(type: string): string {
+  const base = (type || "").split(";")[0].toLowerCase();
+  if (base.includes("mp4") || base.includes("m4a") || base.includes("aac")) return "interview-answer.m4a";
+  if (base.includes("ogg")) return "interview-answer.ogg";
+  if (base.includes("wav")) return "interview-answer.wav";
+  if (base.includes("mpeg") || base.includes("mp3")) return "interview-answer.mp3";
+  return "interview-answer.webm";
+}
 
 export const maxDuration = 30;
 
@@ -60,7 +71,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (groqKey) {
       try {
         const groqFormData = new FormData();
-        groqFormData.append("file", file, "interview-answer.webm");
+        groqFormData.append("file", file, audioFileName(file.type));
         groqFormData.append("model", "whisper-large-v3");
         groqFormData.append("temperature", "0");
         groqFormData.append("response_format", "json");
@@ -94,7 +105,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     if (openaiKey) {
       try {
         const openaiFormData = new FormData();
-        openaiFormData.append("file", file, "interview-answer.webm");
+        openaiFormData.append("file", file, audioFileName(file.type));
         openaiFormData.append("model", "whisper-1");
         openaiFormData.append("response_format", "json");
 
@@ -131,7 +142,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const mimeType = (file.type || "audio/webm").split(";")[0];
 
         const genAI = new GoogleGenerativeAI(geminiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
         const result = await model.generateContent({
           contents: [

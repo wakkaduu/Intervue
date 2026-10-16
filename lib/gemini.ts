@@ -3,11 +3,26 @@
 // IMPORTANT: This file must only be imported from server-side code (Route Handlers, Server Components).
 // Never add "use client" to this file.
 
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, SchemaType, type ObjectSchema } from "@google/generative-ai";
 import type { Feedback, ReviewRequest } from "@/types/index";
 import { validateFeedback } from "@/lib/validation";
 
-const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-1.5-flash";
+const MODEL_NAME = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+/** JSON schema enforced by Gemini's structured-output mode (mirrors validateFeedback). */
+const FEEDBACK_SCHEMA: ObjectSchema = {
+  type: SchemaType.OBJECT,
+  properties: {
+    score: { type: SchemaType.INTEGER, description: "Integer 1-10" },
+    strengths: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+    areasForImprovement: { type: SchemaType.ARRAY, items: { type: SchemaType.STRING } },
+    howTheyAnswered: { type: SchemaType.STRING },
+    toneAnalysis: { type: SchemaType.STRING },
+    questionConnection: { type: SchemaType.STRING },
+    summary: { type: SchemaType.STRING, description: "Max 95 words" },
+  },
+  required: ["score", "strengths", "areasForImprovement", "howTheyAnswered", "toneAnalysis", "questionConnection", "summary"],
+};
 
 /**
  * Builds the prompt string for the Gemini API from a ReviewRequest.
@@ -288,28 +303,33 @@ export async function callGemini(
   try {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
-
     const prompt = buildPrompt(request);
 
-    const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
-      generationConfig: {
-        responseMimeType: "application/json",
-      },
-    });
-
-    const responseText = result.response.text();
-
-    let parsed: unknown;
-    try {
-      parsed = JSON.parse(responseText);
-    } catch {
-      throw new Error(
-        `Gemini returned non-JSON response: ${responseText.slice(0, 200)}`
-      );
+    // One retry: structured output occasionally violates a constraint (e.g. summary > 100 words)
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const result = await model.generateContent({
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            responseSchema: FEEDBACK_SCHEMA,
+            temperature: 0.2,
+          },
+        });
+        const responseText = result.response.text();
+        let parsed: unknown;
+        try {
+          parsed = JSON.parse(responseText);
+        } catch {
+          throw new Error(`Gemini returned non-JSON response: ${responseText.slice(0, 200)}`);
+        }
+        return validateFeedback(parsed);
+      } catch (attemptErr) {
+        lastError = attemptErr;
+      }
     }
-
-    return validateFeedback(parsed);
+    throw lastError;
   } catch (err: unknown) {
     // If external Gemini API call failed (e.g. invalid key or network error),
     // fallback gracefully to built-in evaluation so users are never interrupted

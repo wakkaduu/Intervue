@@ -56,7 +56,11 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
     }
   }, []);
 
+  const wakeLockRef = useRef<WakeLockSentinel | null>(null);
+
   const stopTracks = useCallback(() => {
+    wakeLockRef.current?.release().catch(() => {});
+    wakeLockRef.current = null;
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
@@ -122,6 +126,14 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
         }
       };
 
+      // Keep the screen awake on phones while recording (best-effort)
+      try {
+        const nav = navigator as Navigator & { wakeLock?: { request: (t: "screen") => Promise<WakeLockSentinel> } };
+        wakeLockRef.current = (await nav.wakeLock?.request("screen")) ?? null;
+      } catch {
+        wakeLockRef.current = null;
+      }
+
       recorder.start(500); // 500ms time slices
       setIsRecording(true);
       setRecordingDuration(0);
@@ -183,7 +195,9 @@ export function useAudioRecorder(): UseAudioRecorderReturn {
         setIsTranscribing(true);
         try {
           const formData = new FormData();
-          formData.append("file", blob, "answer.webm");
+          const baseType = (blob.type || "audio/webm").split(";")[0];
+          const ext = baseType.includes("mp4") ? "m4a" : baseType.includes("ogg") ? "ogg" : baseType.includes("wav") ? "wav" : "webm";
+          formData.append("file", blob, `answer.${ext}`);
 
           const customGeminiKey =
             typeof window !== "undefined" ? localStorage.getItem("mock_gemini_key") : null;
