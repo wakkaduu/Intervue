@@ -1,10 +1,10 @@
-// POST /api/review — Server-side Gemini proxy
+// POST /api/review — Server-side AI evaluation proxy (Gemini → Groq → built-in grader)
 // Requirements: 5.1, 5.2, 5.5, 5.7
 // IMPORTANT: GEMINI_API_KEY is only accessed server-side and is never returned to the client.
 
 import { NextRequest, NextResponse } from "next/server";
 import { validateReviewRequest } from "@/lib/validation";
-import { callGemini } from "@/lib/gemini";
+import { evaluateAnswer } from "@/lib/evaluator";
 import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 
 // Serverless function execution timeout (seconds)
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // Call Gemini with a 15-second timeout (Req 5.5)
-  // AbortController races against callGemini so the handler returns 504 if Gemini is too slow.
+  // AbortController races against evaluateAnswer so the handler returns 504 if Gemini is too slow.
   const controller = new AbortController();
   const timeoutPromise = new Promise<never>((_, reject) => {
     const id = setTimeout(() => {
@@ -58,10 +58,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   });
 
   const clientGeminiKey = request.headers.get("x-gemini-key") || undefined;
+  const clientGroqKey = request.headers.get("x-groq-key") || undefined;
 
   try {
     const feedback = await Promise.race([
-      callGemini(reviewRequest, clientGeminiKey),
+      evaluateAnswer(reviewRequest, { geminiKey: clientGeminiKey, groqKey: clientGroqKey }),
       timeoutPromise,
     ]);
     return NextResponse.json({ feedback }, { status: 200 });

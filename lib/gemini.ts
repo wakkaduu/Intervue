@@ -29,7 +29,7 @@ const FEEDBACK_SCHEMA: ObjectSchema = {
  * Enforces an uncompromising, strict, bar-raiser evaluation standard.
  * Strictly avoids sugar-coating or participation praise.
  */
-function buildPrompt(request: ReviewRequest): string {
+export function buildPrompt(request: ReviewRequest): string {
   return `You are an exacting, senior hiring committee bar-raiser evaluating a candidate's answer to an interview question.
 CRITICAL MANDATE: AVOID SUGAR-COATING. DO NOT FLATTER OR LIE TO THE CANDIDATE.
 Be candid, demanding, and uncompromisingly rigorous. Your critique must mirror the high standards of top-tier hiring managers (Google, Meta, Tier-1 investment banks, top medical/graduate programs). Giving empty praise or inflated scores hurts candidates by leaving them unprepared for real competitive interviews.
@@ -286,21 +286,14 @@ export function evaluateAnswerFallback(request: ReviewRequest): Feedback {
 }
 
 /**
- * Calls Gemini API if GEMINI_API_KEY is configured; otherwise seamlessly
- * uses the built-in AI evaluation engine.
+ * Evaluates an answer with Gemini. Throws on any failure; the caller
+ * (lib/evaluator.ts) decides which provider to try next.
  */
-export async function callGemini(
+export async function requestGemini(
   request: ReviewRequest,
-  clientKey?: string
+  apiKey: string
 ): Promise<Feedback> {
-  const apiKey = clientKey || process.env.GEMINI_API_KEY;
-
-  // Seamless built-in evaluation when no API key is provided
-  if (!apiKey) {
-    return evaluateAnswerFallback(request);
-  }
-
-  try {
+  {
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: MODEL_NAME });
     const prompt = buildPrompt(request);
@@ -330,10 +323,5 @@ export async function callGemini(
       }
     }
     throw lastError;
-  } catch (err: unknown) {
-    // If external Gemini API call failed (e.g. invalid key or network error),
-    // fallback gracefully to built-in evaluation so users are never interrupted
-    console.warn("External Gemini API call failed, using built-in coach:", err);
-    return evaluateAnswerFallback(request);
   }
 }

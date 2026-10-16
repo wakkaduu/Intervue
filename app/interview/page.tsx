@@ -118,6 +118,14 @@ function InterviewPageInner() {
 
       const results: SessionEntry[] = [];
       const headers: Record<string, string> = { "Content-Type": "application/json" };
+      try {
+        const gk = localStorage.getItem("mock_gemini_key");
+        const qk = localStorage.getItem("mock_groq_key");
+        if (gk) headers["x-gemini-key"] = gk;
+        if (qk) headers["x-groq-key"] = qk;
+      } catch {
+        // storage unavailable (private mode) — use server keys
+      }
 
       try {
         for (let i = 0; i < questions.length; i++) {

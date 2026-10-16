@@ -152,6 +152,9 @@ export function validateFeedback(obj: unknown): Feedback {
   if (typeof raw.questionConnection === "string") {
     feedback.questionConnection = raw.questionConnection;
   }
+  if (raw.source === "ai" || raw.source === "basic") {
+    feedback.source = raw.source;
+  }
 
   return feedback;
 }

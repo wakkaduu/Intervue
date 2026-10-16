@@ -38,6 +38,15 @@ export default function FeedbackPanel({
 
   return (
     <div className="w-full space-y-6">
+      {feedback.source === "basic" && (
+        <p
+          role="note"
+          className="rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-medium text-amber-950"
+        >
+          Basic feedback: the AI evaluator was unavailable, so this review uses a built-in
+          keyword-based grader. Try again later for a full AI review.
+        </p>
+      )}
       {/* ── 1. Score — Req 6.1: first element, font size ≥1.5× body (text-3xl = 1.875rem vs 1rem body) ── */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">

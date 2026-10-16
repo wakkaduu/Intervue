@@ -82,6 +82,7 @@ export interface Feedback {
   howTheyAnswered?: string; // Evaluation of structure, clarity, and completeness
   toneAnalysis?: string; // Evaluation of tone, confidence, presence, and professionalism
   questionConnection?: string; // How well they addressed and connected their answer to the question
+  source?: "ai" | "basic"; // "basic" = built-in keyword grader (no AI provider was available)
 }
 
 export interface SessionEntry {
