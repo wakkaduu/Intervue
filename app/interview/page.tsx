@@ -3,7 +3,7 @@
 // Interview session screen on Intervue Platform
 // Requirements: 1.2, 1.3, 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 3.4, 5.1, 5.3, 5.4, 5.5, 5.8
 
-import { Suspense, useEffect, useCallback, useState } from "react";
+import { Suspense, useEffect, useCallback, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -18,6 +18,8 @@ import RecordingControls from "@/components/RecordingControls";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import QueueLoadingAnimation from "@/components/QueueLoadingAnimation";
 import LiveDeliveryHUD from "@/components/LiveDeliveryHUD";
+import MicCheck from "@/components/MicCheck";
+import { clearDraft, countDraftAnswers, loadDraft, saveDraft, type SessionDraft } from "@/lib/session-draft";
 
 // ---------------------------------------------------------------------------
 // Inner component — uses useSearchParams (must be inside <Suspense>)
@@ -75,6 +77,13 @@ function InterviewPageInner() {
   }>({ current: 0, total: 0, currentQuestionText: "" });
   const [reviewError, setReviewError] = useState<string | null>(null);
 
+  // Reviews already completed (kept across retries so one failure doesn't discard the rest)
+  const completedRef = useRef<SessionEntry[]>([]);
+
+  // Unfinished-session draft found on load, and whether the user has pressed Start (voice mode)
+  const [pendingDraft, setPendingDraft] = useState<SessionDraft | null>(null);
+  const [hasStarted, setHasStarted] = useState(mode === "typed");
+
   // Validation error for empty-answer submission
   const [answerValidationError, setAnswerValidationError] = useState<string | null>(null);
 
@@ -90,7 +99,44 @@ function InterviewPageInner() {
     }
 
     dispatch({ type: "START_SESSION", payload: { category: categoryParam as Category } });
+    setPendingDraft(loadDraft(categoryParam as string, mode));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Autosave answers (debounced) so a refresh or interruption doesn't lose them
+  useEffect(() => {
+    if (phase === "IDLE" || pendingDraft || isReviewingAll || !hasStarted) return;
+    const category = currentQuestion?.category;
+    if (!category) return;
+    const timer = setTimeout(() => {
+      const current = (mode === "typed" ? typedText : audioTranscript).trim();
+      saveDraft({
+        category,
+        mode,
+        answers: current ? { ...answers, [questionIndex]: current } : answers,
+        durations,
+        questionIndex,
+      });
+    }, 600);
+    return () => clearTimeout(timer);
+  }, [phase, pendingDraft, isReviewingAll, hasStarted, currentQuestion, mode, typedText, audioTranscript, answers, durations, questionIndex]);
+
+  const resumeDraft = useCallback(() => {
+    if (!pendingDraft) return;
+    const idx = Math.min(pendingDraft.questionIndex, Math.max(0, questions.length - 1));
+    setAnswers(pendingDraft.answers);
+    setDurations(pendingDraft.durations);
+    dispatch({ type: "GO_TO_QUESTION", payload: { index: idx } });
+    const text = pendingDraft.answers[idx] || "";
+    if (mode === "typed") setTypedText(text);
+    else setTranscript(text);
+    setHasStarted(true);
+    setPendingDraft(null);
+  }, [pendingDraft, questions.length, dispatch, mode, setTranscript]);
+
+  const discardDraft = useCallback(() => {
+    clearDraft();
+    setPendingDraft(null);
   }, []);
 
   // Current effective answer for active question
@@ -116,7 +162,7 @@ function InterviewPageInner() {
       setIsReviewingAll(true);
       setReviewError(null);
 
-      const results: SessionEntry[] = [];
+      const results = completedRef.current;
       const headers: Record<string, string> = { "Content-Type": "application/json" };
       try {
         const gk = localStorage.getItem("mock_gemini_key");
@@ -128,7 +174,7 @@ function InterviewPageInner() {
       }
 
       try {
-        for (let i = 0; i < questions.length; i++) {
+        for (let i = results.length; i < questions.length; i++) {
           const q = questions[i];
           const ans = finalAnswers[i] || "";
 
@@ -174,6 +220,8 @@ function InterviewPageInner() {
         } catch {
           // Ignore quota errors
         }
+        clearDraft();
+        completedRef.current = [];
         router.push("/summary");
       } catch (err: unknown) {
         console.error("AI review all error:", err);
@@ -272,6 +320,86 @@ function InterviewPageInner() {
       setTranscript(prevAnswer);
     }
   }, [questionIndex, effectiveAnswer, answers, mode, dispatch, resetRecording, setTranscript]);
+
+  // Unfinished session found: offer to resume
+  if (phase !== "IDLE" && pendingDraft) {
+    const answered = countDraftAnswers(pendingDraft);
+    const minutes = Math.max(1, Math.round((Date.now() - pendingDraft.savedAt) / 60000));
+    return (
+      <div className="mx-auto max-w-xl rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 shadow-md space-y-4">
+        <h1 className="text-xl font-extrabold text-forest-950">Pick up where you left off?</h1>
+        <p className="text-sm text-darkslate-700">
+          You have an unfinished session in this track: {answered} of {totalQuestions} answers saved,
+          about {minutes} {minutes === 1 ? "minute" : "minutes"} ago.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            onClick={resumeDraft}
+            autoFocus
+            className="min-h-[48px] rounded-xl bg-forest-700 px-6 py-3 text-sm font-bold text-white hover:bg-forest-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
+          >
+            Resume session
+          </button>
+          <button
+            type="button"
+            onClick={discardDraft}
+            className="min-h-[48px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-6 py-3 text-sm font-semibold text-darkslate-700 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
+          >
+            Start fresh
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Voice mode setup: how it works + optional mic check before the first question
+  if (phase !== "IDLE" && mode === "mic" && !hasStarted) {
+    return (
+      <div className="mx-auto max-w-xl rounded-2xl border border-sage-300/80 bg-[#E2ECE5] p-6 shadow-md space-y-5">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-darkslate-600">Voice interview</p>
+          <h1 className="mt-1 text-xl font-extrabold text-forest-950">
+            {totalQuestions} questions · about {Math.max(5, totalQuestions * 2)} minutes
+          </h1>
+          <p className="mt-1 text-sm text-darkslate-700">{currentQuestion?.category}</p>
+        </div>
+        <ul className="space-y-2 text-sm text-darkslate-800">
+          <li className="flex gap-2"><span aria-hidden="true">🎤</span><span>Answer each question out loud, like a real interview. Aim for 1–2 minutes each.</span></li>
+          <li className="flex gap-2"><span aria-hidden="true">📝</span><span>You can edit the transcript before moving on, and go back to earlier questions.</span></li>
+          <li className="flex gap-2"><span aria-hidden="true">🧠</span><span>Feedback comes at the end, for all answers together.</span></li>
+        </ul>
+        {isAudioSupported ? (
+          <MicCheck />
+        ) : (
+          <p role="alert" className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs font-medium text-red-800">
+            This browser can&apos;t record audio. Use Written Mode instead.
+          </p>
+        )}
+        <div className="flex flex-col sm:flex-row gap-3">
+          {isAudioSupported && (
+            <button
+              type="button"
+              onClick={() => setHasStarted(true)}
+              autoFocus
+              className="min-h-[48px] rounded-xl bg-forest-700 px-6 py-3 text-sm font-bold text-white hover:bg-forest-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
+            >
+              Start interview
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() =>
+              router.push(`/interview?category=${encodeURIComponent(currentQuestion?.category || "Behavioral")}&mode=typed`)
+            }
+            className="min-h-[48px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-6 py-3 text-sm font-semibold text-darkslate-700 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
+          >
+            Use Written Mode instead
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // While session hasn't started yet
   if (phase === "IDLE") {
@@ -415,7 +543,7 @@ function InterviewPageInner() {
                     Spoken Answer
                   </span>
                   <span className="text-xs text-darkslate-400">
-                    Press Start Recording, speak your response, then click Stop
+                    Aim for 1–2 minutes. Press Start, speak, then Stop.
                   </span>
                 </div>
 
@@ -558,7 +686,20 @@ function InterviewPageInner() {
                 onClick={() => executeReviewAll(answers)}
                 className="rounded-xl bg-red-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
               >
-                Retry Evaluation
+                {completedRef.current.length > 0
+                  ? `Retry (${completedRef.current.length} of ${totalQuestions} already reviewed)`
+                  : "Retry Evaluation"}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  completedRef.current = [];
+                  setReviewError(null);
+                  setIsReviewingAll(false);
+                }}
+                className="ml-2 rounded-xl border border-red-300 bg-white px-5 py-2.5 text-xs font-bold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 transition-colors"
+              >
+                Back to my answers
               </button>
             </div>
           )}

@@ -41,6 +41,7 @@ export default function SummaryPage() {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [debrief, setDebrief] = useState<SessionDebrief | null>(null);
   const [debriefLoading, setDebriefLoading] = useState(false);
+  const [openCards, setOpenCards] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     const results = loadSessionResults();
@@ -87,10 +88,22 @@ export default function SummaryPage() {
     return () => controller.abort();
   }, [entries]);
 
+  const toggleCard = (index: number) =>
+    setOpenCards((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+
   const jumpToQuestion = (index: number) => {
-    document
-      .getElementById(`question-review-${index}`)
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setOpenCards((prev) => new Set(prev).add(index));
+    // wait for the card to expand before scrolling to it
+    setTimeout(() => {
+      document
+        .getElementById(`question-review-${index}`)
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   };
 
   const hasEntries = entries && entries.length > 0;
@@ -338,17 +351,69 @@ export default function SummaryPage() {
               <h2 className="text-sm font-bold uppercase tracking-wider text-sage-200">
                 Detailed Question Reviews
               </h2>
-              <span className="text-xs text-sage-300">
-                {entries.length} {entries.length === 1 ? "card" : "cards"}
-              </span>
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenCards(
+                    openCards.size === entries.length ? new Set() : new Set(entries.map((_, i) => i))
+                  )
+                }
+                className="min-h-[44px] px-2 text-xs font-bold text-emerald-300 hover:text-white underline underline-offset-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300"
+              >
+                {openCards.size === entries.length ? "Collapse all" : "Expand all"}
+              </button>
             </div>
 
-            <ol className="space-y-6 list-none p-0">
-              {entries.map((entry, i) => (
-                <li key={entry.question.id ?? i} id={`question-review-${i}`} className="scroll-mt-20">
-                  <SessionSummaryCard entry={entry} index={i + 1} />
-                </li>
-              ))}
+            <ol className="space-y-3 list-none p-0">
+              {entries.map((entry, i) => {
+                const isOpen = openCards.has(i);
+                const score = entry.feedback.score;
+                const scoreClass =
+                  score >= 8
+                    ? "bg-forest-50 text-forest-800 border-forest-300"
+                    : score >= 5
+                    ? "bg-gold-50 text-gold-900 border-gold-300"
+                    : "bg-rose-50 text-rose-800 border-rose-300";
+                return (
+                  <li key={entry.question.id ?? i} id={`question-review-${i}`} className="scroll-mt-20">
+                    <div className="rounded-2xl border border-sage-300/90 bg-[#E2ECE5] shadow-sm overflow-hidden">
+                      <button
+                        type="button"
+                        onClick={() => toggleCard(i)}
+                        aria-expanded={isOpen}
+                        aria-controls={`question-panel-${i}`}
+                        className="flex w-full min-h-[64px] items-start gap-3 px-4 py-3 text-left hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-forest-600"
+                      >
+                        <span
+                          className={`shrink-0 rounded-lg border px-2.5 py-1 text-center text-sm font-extrabold ${scoreClass}`}
+                          aria-label={`Score ${score} out of 10`}
+                        >
+                          {score}/10
+                        </span>
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-xs font-bold text-darkslate-600">Question {i + 1}</span>
+                          <span className="block text-sm font-semibold text-forest-950 leading-snug">
+                            {entry.question.text}
+                          </span>
+                          {!isOpen && entry.feedback.focusNext && (
+                            <span className="mt-1 block text-xs text-gold-900 leading-snug">
+                              <strong>Work on:</strong> {entry.feedback.focusNext}
+                            </span>
+                          )}
+                        </span>
+                        <span className="shrink-0 pt-1 text-xs font-bold text-forest-800" aria-hidden="true">
+                          {isOpen ? "Hide ▲" : "Full review ▼"}
+                        </span>
+                      </button>
+                    </div>
+                    {isOpen && (
+                      <div id={`question-panel-${i}`} className="mt-3">
+                        <SessionSummaryCard entry={entry} index={i + 1} />
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
             </ol>
           </section>
         )}
