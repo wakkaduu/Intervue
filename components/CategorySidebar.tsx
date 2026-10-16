@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useSidebar } from "@/context/SidebarContext";
 import { getCategories, CATEGORY_GROUPS, getCategoryIcon } from "@/lib/questions";
 import type { Category } from "@/types";
+import { IconButton } from "@/components/ui/Button";
 
 const allCategories = getCategories();
 
@@ -165,13 +166,7 @@ export default function CategorySidebar() {
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={closeSidebar}
-            aria-label="Close tracks sidebar"
-            title="Close sidebar (Esc)"
-            className="rounded-xl p-2 text-darkslate-600 hover:bg-sage-200 hover:text-darkslate-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
-          >
+          <IconButton label="Close tracks sidebar" title="Close sidebar (Esc)" onClick={closeSidebar}>
             <svg
               className="h-5 w-5"
               fill="none"
@@ -182,7 +177,7 @@ export default function CategorySidebar() {
             >
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </IconButton>
         </div>
 
         {/* Filter Controls (Search + Domain Pills) */}

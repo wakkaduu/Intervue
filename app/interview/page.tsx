@@ -20,6 +20,7 @@ import QueueLoadingAnimation from "@/components/QueueLoadingAnimation";
 import LiveDeliveryHUD from "@/components/LiveDeliveryHUD";
 import MicCheck from "@/components/MicCheck";
 import { clearDraft, countDraftAnswers, loadDraft, saveDraft, type SessionDraft } from "@/lib/session-draft";
+import Button from "@/components/ui/Button";
 
 function formatElapsed(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -353,21 +354,12 @@ function InterviewPageInner() {
           about {minutes} {minutes === 1 ? "minute" : "minutes"} ago.
         </p>
         <div className="flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
-            onClick={resumeDraft}
-            autoFocus
-            className="min-h-[48px] rounded-xl bg-forest-700 px-6 py-3 text-sm font-bold text-white hover:bg-forest-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
-          >
+          <Button variant="primary" size="lg" autoFocus onClick={resumeDraft}>
             Resume session
-          </button>
-          <button
-            type="button"
-            onClick={discardDraft}
-            className="min-h-[48px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-6 py-3 text-sm font-semibold text-darkslate-700 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
-          >
+          </Button>
+          <Button variant="secondary" size="lg" onClick={discardDraft}>
             Start fresh
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -398,24 +390,19 @@ function InterviewPageInner() {
         )}
         <div className="flex flex-col sm:flex-row gap-3">
           {isAudioSupported && (
-            <button
-              type="button"
-              onClick={() => setHasStarted(true)}
-              autoFocus
-              className="min-h-[48px] rounded-xl bg-forest-700 px-6 py-3 text-sm font-bold text-white hover:bg-forest-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
-            >
+            <Button variant="primary" size="lg" autoFocus onClick={() => setHasStarted(true)}>
               Start interview
-            </button>
+            </Button>
           )}
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="lg"
             onClick={() =>
               router.push(`/interview?category=${encodeURIComponent(currentQuestion?.category || "Behavioral")}&mode=typed`)
             }
-            className="min-h-[48px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-6 py-3 text-sm font-semibold text-darkslate-700 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
           >
             Use Written Mode instead
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -516,18 +503,19 @@ function InterviewPageInner() {
             </div>
           </div>
           <div className="flex items-center gap-2 pt-1 border-t border-red-200/60">
-            <button
-              type="button"
+            <Button
+              variant="danger"
+              size="sm"
               onClick={() => {
                 setAnswerValidationError(null);
                 startRecording();
               }}
-              className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors shadow-xs"
             >
-              Try Recording Again
-            </button>
-            <button
-              type="button"
+              Try recording again
+            </Button>
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={() =>
                 router.push(
                   `/interview?category=${encodeURIComponent(
@@ -535,10 +523,9 @@ function InterviewPageInner() {
                   )}&mode=typed`
                 )
               }
-              className="rounded-lg bg-[#F0F5F1] px-3 py-1.5 text-xs font-semibold text-red-700 border border-red-300 hover:bg-red-50 transition-colors"
             >
-              Switch to Written Mode
-            </button>
+              Switch to written mode
+            </Button>
           </div>
         </div>
       )}
@@ -664,29 +651,22 @@ function InterviewPageInner() {
                 {/* Navigation buttons */}
                 <div className="pt-2 flex items-center justify-between">
                   {canPrevious ? (
-                    <button
-                      type="button"
-                      onClick={handlePreviousQuestion}
-                      className="inline-flex items-center gap-1.5 rounded-xl border border-sage-300 bg-[#F0F5F1] px-5 py-2.5 text-sm font-semibold text-darkslate-700 shadow-xs hover:bg-[#D4E3D8] active:bg-sage-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 transition-colors"
-                    >
-                      ← Previous Question
-                    </button>
+                    <Button variant="secondary" size="md" onClick={handlePreviousQuestion}>
+                      ← Previous question
+                    </Button>
                   ) : (
                     <div />
                   )}
 
-                  <button
-                    type="button"
+                  <Button
+                    variant="primary"
+                    size="md"
+                    className={isLastQuestion ? "ring-2 ring-gold-400/50" : ""}
                     onClick={handleNextOrFinish}
                     disabled={!typedText.trim()}
-                    className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all ${
-                      isLastQuestion
-                        ? "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20 ring-2 ring-gold-400/50"
-                        : "bg-forest-700 hover:bg-forest-800 shadow-forest-900/20"
-                    }`}
                   >
-                    <span>{isLastQuestion ? "Finish & Review Session" : "Next Question →"}</span>
-                  </button>
+                    {isLastQuestion ? "Finish & review session" : "Next question →"}
+                  </Button>
                 </div>
               </div>
             )}
@@ -712,26 +692,24 @@ function InterviewPageInner() {
                 </svg>
                 <span>{reviewError}</span>
               </div>
-              <button
-                type="button"
-                onClick={() => executeReviewAll(answers)}
-                className="rounded-xl bg-red-600 px-5 py-2.5 text-xs font-bold text-white hover:bg-red-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 shadow-xs transition-colors"
-              >
-                {completedRef.current.length > 0
-                  ? `Retry (${completedRef.current.length} of ${totalQuestions} already reviewed)`
-                  : "Retry Evaluation"}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  completedRef.current = [];
-                  setReviewError(null);
-                  setIsReviewingAll(false);
-                }}
-                className="ml-2 rounded-xl border border-red-300 bg-white px-5 py-2.5 text-xs font-bold text-red-700 hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 transition-colors"
-              >
-                Back to my answers
-              </button>
+              <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                <Button variant="danger" size="md" onClick={() => executeReviewAll(answers)}>
+                  {completedRef.current.length > 0
+                    ? `Retry (${completedRef.current.length} of ${totalQuestions} already reviewed)`
+                    : "Retry evaluation"}
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="md"
+                  onClick={() => {
+                    completedRef.current = [];
+                    setReviewError(null);
+                    setIsReviewingAll(false);
+                  }}
+                >
+                  Back to my answers
+                </Button>
+              </div>
             </div>
           )}
         </div>

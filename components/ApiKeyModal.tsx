@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Button, { IconButton } from "@/components/ui/Button";
 
 interface ApiKeyModalProps {
   isOpen: boolean;
@@ -72,14 +73,9 @@ export default function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProp
               API Configuration
             </h2>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label="Close API settings modal"
-            className="rounded-lg p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
-          >
-            ✕
-          </button>
+          <IconButton label="Close API settings" onClick={onClose}>
+            <span aria-hidden="true">✕</span>
+          </IconButton>
         </div>
 
         <p className="mt-3 text-sm text-darkslate-600">
@@ -155,29 +151,17 @@ export default function ApiKeyModal({ isOpen, onClose, onSave }: ApiKeyModalProp
         </div>
 
         <div className="mt-6 flex items-center justify-between border-t border-sage-200 pt-4">
-          <button
-            type="button"
-            onClick={handleClear}
-            className="text-xs text-darkslate-500 hover:text-red-600 transition-colors"
-          >
-            Clear Stored Keys
-          </button>
+          <Button variant="ghost" size="sm" className="!text-darkslate-600 hover:!text-red-700" onClick={handleClear}>
+            Clear stored keys
+          </Button>
 
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-md bg-sage-100 px-3 py-1.5 text-xs font-semibold text-darkslate-700 hover:bg-sage-200 transition-colors"
-            >
+            <Button variant="secondary" size="sm" onClick={onClose}>
               Cancel
-            </button>
-            <button
-              type="button"
-              onClick={handleSave}
-              className="rounded-md bg-forest-700 px-4 py-1.5 text-xs font-semibold text-white hover:bg-forest-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 shadow-sm transition-colors"
-            >
-              Save Keys
-            </button>
+            </Button>
+            <Button variant="primary" size="sm" onClick={handleSave}>
+              Save keys
+            </Button>
           </div>
         </div>
       </div>

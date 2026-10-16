@@ -16,50 +16,8 @@ interface AuthModalProps {
   onSuccess?: () => void;
 }
 
-import Button from "@/components/ui/Button";
-
-const INPUT_CLASS =
-  "w-full min-h-[44px] rounded-xl border border-sage-300 bg-[#F0F5F1] px-3.5 py-2.5 text-base sm:text-sm text-darkslate-900 placeholder:text-darkslate-400 focus:bg-[#E8F0EA] focus:border-forest-600 focus:outline-none focus:ring-2 focus:ring-forest-500/30 transition-all";
-
-/** Password input with a Show/Hide toggle (helps on phones, where typos are common). */
-function PasswordInput({
-  id,
-  value,
-  onChange,
-  autoComplete,
-  placeholder,
-}: {
-  id: string;
-  value: string;
-  onChange: (v: string) => void;
-  autoComplete: string;
-  placeholder: string;
-}) {
-  const [visible, setVisible] = useState(false);
-  return (
-    <div className="relative">
-      <input
-        id={id}
-        type={visible ? "text" : "password"}
-        required
-        autoComplete={autoComplete}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`${INPUT_CLASS} pr-16`}
-      />
-      <button
-        type="button"
-        onClick={() => setVisible((v) => !v)}
-        aria-pressed={visible}
-        aria-label={visible ? "Hide password" : "Show password"}
-        className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-lg px-2.5 py-1.5 text-xs font-bold text-forest-800 hover:bg-[#D4E3D8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
-      >
-        {visible ? "Hide" : "Show"}
-      </button>
-    </div>
-  );
-}
+import Button, { IconButton } from "@/components/ui/Button";
+import PasswordInput, { INPUT_CLASS } from "@/components/ui/PasswordInput";
 
 export default function AuthModal({
   isOpen,
@@ -439,16 +397,15 @@ export default function AuthModal({
     >
       <div className="relative w-full max-w-md my-auto rounded-2xl sm:rounded-3xl border border-sage-300 bg-[#E2ECE5] p-5 sm:p-7 shadow-2xl max-h-[calc(100dvh-1.5rem)] sm:max-h-[calc(100dvh-2.5rem)] flex flex-col">
         {/* Close Button */}
-        <button
-          type="button"
+        <IconButton
+          label="Close dialog"
           onClick={handleClose}
-          aria-label="Close dialog"
-          className="absolute right-2 top-2 sm:right-3 sm:top-3 z-10 flex h-10 w-10 items-center justify-center rounded-xl text-darkslate-500 hover:bg-[#D4E3D8] hover:text-darkslate-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
+          className="absolute right-2 top-2 z-10 sm:right-3 sm:top-3"
         >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
-        </button>
+        </IconButton>
 
         {/* Modal Upper Panel: Header & Mode Switcher Tabs (Always visible & pinned) */}
         <div className="shrink-0 mb-3 sm:mb-4">
@@ -584,47 +541,37 @@ export default function AuthModal({
                 </p>
               </div>
 
-              <button
+              <Button
                 type="submit"
-                disabled={loading || confirmationCode.length !== 6}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-forest-800 hover:bg-forest-900 active:bg-forest-950 p-2.5 sm:p-3 text-xs sm:text-sm font-bold text-white shadow-md shadow-forest-950/25 border border-forest-900 transition-all disabled:opacity-50 active:scale-[0.99] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600 focus-visible:ring-offset-2"
+                variant="primary"
+                size="lg"
+                fullWidth
+                disabled={confirmationCode.length !== 6}
+                loading={loading}
+                rightIcon={<span aria-hidden="true">✓</span>}
               >
-                <span>{loading ? "Verifying..." : "Confirm Email & Continue"}</span>
-                <svg className="h-4 w-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-              </button>
+                {loading ? "Verifying…" : "Confirm email & continue"}
+              </Button>
             </form>
 
             {/* Resend Code Section */}
             <div className="flex items-center justify-between text-xs text-darkslate-600 pt-1 border-t border-sage-300/60">
               <span>Didn&apos;t receive code?</span>
-              <button
-                type="button"
+              <Button
+                variant="ghost"
+                size="sm"
                 disabled={resendCooldown > 0 || resending}
                 onClick={handleResendCode}
-                className="font-bold text-forest-850 hover:text-forest-950 underline underline-offset-2 decoration-forest-600 hover:decoration-forest-850 disabled:opacity-50 disabled:no-underline transition-colors"
               >
-                {resendCooldown > 0
-                  ? `Resend in ${resendCooldown}s`
-                  : resending
-                  ? "Sending..."
-                  : "Resend Code"}
-              </button>
+                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : resending ? "Sending…" : "Resend code"}
+              </Button>
             </div>
 
             {/* Skip for Now: User can access freely without lock-out */}
             <div className="pt-2 border-t border-sage-300/80">
-              <button
-                type="button"
-                onClick={handleSkipConfirmation}
-                className="w-full flex items-center justify-center gap-2 rounded-xl border border-sage-300/90 bg-white hover:bg-slate-50 px-4 py-2 text-xs font-semibold text-darkslate-700 shadow-xs transition-all active:scale-[0.99]"
-              >
-                <span>Skip for now &amp; start practicing</span>
-                <svg className="h-3.5 w-3.5 text-darkslate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
-              </button>
+              <Button variant="secondary" size="md" fullWidth onClick={handleSkipConfirmation} rightIcon={<span aria-hidden="true">→</span>}>
+                Skip for now &amp; start practicing
+              </Button>
               <p className="mt-1 text-center text-[10px] text-darkslate-500">
                 You can verify your email anytime in your account settings.
               </p>
@@ -632,13 +579,9 @@ export default function AuthModal({
 
             {/* Back to sign in / re-enter details */}
             <div className="text-center pt-1">
-              <button
-                type="button"
-                onClick={() => switchMode("signin")}
-                className="text-xs font-medium text-darkslate-600 hover:text-forest-850 transition-colors"
-              >
-                ← Back to Sign In
-              </button>
+              <Button variant="ghost" size="sm" onClick={() => switchMode("signin")}>
+                ← Back to sign in
+              </Button>
             </div>
           </div>
         ) : (

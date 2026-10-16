@@ -128,7 +128,7 @@ export default function AppHeader() {
                 <button
                   type="button"
                   onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                  className="flex items-center gap-1.5 sm:gap-2 rounded-xl border border-forest-600/80 bg-forest-800/90 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-white shadow-xs hover:bg-forest-700 transition-all shrink-0"
+                  className={buttonClasses({ variant: "dark", size: "sm", className: "shrink-0 gap-1.5 sm:gap-2 !text-white" })}
                   aria-expanded={isUserMenuOpen}
                   aria-label="User account menu"
                 >

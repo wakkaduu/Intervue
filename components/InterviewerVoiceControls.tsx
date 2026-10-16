@@ -12,6 +12,7 @@ import {
   setInterviewerSpeed,
   isSpeechSynthesisSupported,
 } from "@/lib/speech-synthesis";
+import Button, { IconButton } from "@/components/ui/Button";
 
 interface InterviewerVoiceControlsProps {
   /** The question text to read aloud */
@@ -195,14 +196,13 @@ export default function InterviewerVoiceControls({
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
         {/* Play / Pause Button */}
         {!isMuted && (
-          <button
-            type="button"
+          <Button
+            variant="primary"
+            size="sm"
             onClick={togglePlayPause}
             aria-label={isPlaying && !isPaused ? "Pause voice" : "Listen to question"}
-            title={isPlaying && !isPaused ? "Pause voice" : "Listen to question"}
-            className="flex items-center gap-1 rounded-lg border border-forest-600/60 bg-forest-800 px-2.5 py-1 text-[11px] font-bold text-emerald-200 hover:bg-forest-700 hover:text-white transition-all active:scale-95 shadow-xs"
-          >
-            {isPlaying && !isPaused ? (
+            className="gap-1.5"
+          >            {isPlaying && !isPaused ? (
               <>
                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
@@ -217,60 +217,53 @@ export default function InterviewerVoiceControls({
                 <span>{isPaused ? "Resume" : "Listen"}</span>
               </>
             )}
-          </button>
+          </Button>
         )}
 
         {/* Replay Button */}
         {!isMuted && (
-          <button
-            type="button"
-            onClick={handleReplay}
-            aria-label="Replay question from beginning"
-            title="Replay from start"
-            className="rounded-lg p-1 text-forest-900 hover:bg-sage-200 hover:text-forest-950 transition-colors"
-          >
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <IconButton label="Replay question from beginning" title="Replay from start" size="sm" onClick={handleReplay}>
+            <svg className="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-          </button>
+          </IconButton>
         )}
 
         {/* Speed Selector Pill */}
         {!isMuted && (
-          <button
-            type="button"
+          <Button
+            variant="secondary"
+            size="sm"
+            className="!min-w-[44px] !px-2"
             onClick={cycleSpeed}
             aria-label={`Current playback speed ${speed}x. Click to change.`}
             title="Adjust voice speed"
-            className="rounded-lg border border-sage-300 bg-white/70 px-2 py-0.5 text-[10px] font-bold text-forest-900 hover:bg-white transition-colors"
           >
             {speed}x
-          </button>
+          </Button>
         )}
 
         {/* Mute Toggle Button */}
-        <button
-          type="button"
-          onClick={handleToggleMute}
-          aria-label={isMuted ? "Unmute AI Interviewer" : "Mute AI Interviewer"}
+        <IconButton
+          label={isMuted ? "Unmute AI Interviewer" : "Mute AI Interviewer"}
           title={isMuted ? "Unmute interviewer voice" : "Mute interviewer voice"}
-          className={`rounded-lg p-1 transition-colors ${
-            isMuted
-              ? "bg-amber-100 text-amber-900 border border-amber-300"
-              : "text-forest-900 hover:bg-sage-200"
-          }`}
+          size="sm"
+          active={isMuted}
+          aria-pressed={isMuted}
+          onClick={handleToggleMute}
         >
           {isMuted ? (
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
           ) : (
-            <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <svg className="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
             </svg>
           )}
-        </button>
+        
+        </IconButton>
       </div>
     </div>
   );

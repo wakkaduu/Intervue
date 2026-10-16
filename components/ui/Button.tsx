@@ -108,3 +108,50 @@ export default function Button({
     </button>
   );
 }
+
+const ICON_SIZES = {
+  sm: "h-9 w-9 max-sm:h-10 max-sm:w-10 rounded-lg",
+  md: "h-11 w-11 rounded-xl",
+} as const;
+
+interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  /** Required accessible name: icon-only buttons have no visible text. */
+  label: string;
+  variant?: "ghost" | "dark";
+  size?: keyof typeof ICON_SIZES;
+  /** Highlights the button when it represents an "on" state (also set aria-pressed). */
+  active?: boolean;
+}
+
+/** Square icon-only button (close, replay, mute...) with the same states and focus ring as Button. */
+export function IconButton({
+  label,
+  variant = "ghost",
+  size = "md",
+  active = false,
+  className = "",
+  children,
+  type = "button",
+  ...rest
+}: IconButtonProps) {
+  return (
+    <button
+      type={type}
+      aria-label={label}
+      title={rest.title ?? label}
+      className={[
+        BASE,
+        "!gap-0 shrink-0",
+        variant === "dark" ? VARIANTS.dark : "text-darkslate-600 hover:bg-forest-900/10 hover:text-darkslate-900 focus-visible:ring-forest-600 ring-offset-sage-100",
+        active ? "!bg-amber-100 !text-amber-900 border border-amber-300" : "",
+        ICON_SIZES[size],
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+}

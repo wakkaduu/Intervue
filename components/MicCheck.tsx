@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Button from "@/components/ui/Button";
 
 type CheckState = "idle" | "testing" | "ok" | "denied" | "error";
 
@@ -71,13 +72,13 @@ export default function MicCheck() {
           <p className="text-sm font-bold text-forest-950">Check your microphone</p>
           <p className="text-xs text-darkslate-600">Optional, takes about 5 seconds.</p>
         </div>
-        <button
-          type="button"
+        <Button
+          variant="secondary"
+          size="sm"
           onClick={state === "testing" || state === "ok" ? () => { stop(); setState("idle"); setLevel(0); } : start}
-          className="min-h-[44px] rounded-lg border border-forest-600 bg-white px-4 py-2 text-xs font-bold text-forest-800 hover:bg-forest-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600"
         >
           {state === "testing" || state === "ok" ? "Stop test" : "Test microphone"}
-        </button>
+        </Button>
       </div>
 
       {(state === "testing" || state === "ok") && (

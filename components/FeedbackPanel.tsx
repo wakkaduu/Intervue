@@ -1,6 +1,7 @@
 "use client";
 
 import { Feedback, Question } from "@/types";
+import Button from "@/components/ui/Button";
 
 interface FeedbackPanelProps {
   question: Question;
@@ -203,28 +204,12 @@ export default function FeedbackPanel({
 
       {/* ── 7. Navigation controls — Req 6.6, 8.3 ── */}
       <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
-        <button
-          type="button"
-          onClick={onEndSession}
-          aria-label="End session and view summary"
-          className="rounded-xl border border-sage-300 bg-[#F0F5F1] px-5 py-2.5 text-sm font-semibold
-                     text-darkslate-700 hover:bg-[#D4E3D8]
-                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600
-                     focus-visible:ring-offset-2 transition-colors"
-        >
-          End Session
-        </button>
-        <button
-          type="button"
-          onClick={onNext}
-          aria-label="Proceed to next question"
-          className="rounded-xl bg-forest-700 px-5 py-2.5 text-sm font-semibold text-white
-                     hover:bg-forest-800
-                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest-600
-                     focus-visible:ring-offset-2 shadow-forest-900/20"
-        >
-          Next Question
-        </button>
+        <Button variant="secondary" size="md" onClick={onEndSession} aria-label="End session and view summary">
+          End session
+        </Button>
+        <Button variant="primary" size="md" onClick={onNext} aria-label="Proceed to next question">
+          Next question
+        </Button>
       </div>
     </div>
   );

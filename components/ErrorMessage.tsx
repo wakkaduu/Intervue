@@ -1,5 +1,7 @@
 "use client";
 
+import Button from "@/components/ui/Button";
+
 interface ErrorMessageProps {
   /** The error text to display. */
   message: string;
@@ -33,17 +35,9 @@ export default function ErrorMessage({ message, onRetry, id }: ErrorMessageProps
       <p className="text-sm font-medium">{message}</p>
 
       {onRetry && (
-        <button
-          type="button"
-          onClick={onRetry}
-          aria-label="Resubmit your answer"
-          className="self-start rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white
-                     hover:bg-red-700
-                     focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-600
-                     focus-visible:ring-offset-2"
-        >
-          Resubmit
-        </button>
+        <Button variant="danger" size="sm" className="self-start" onClick={onRetry} aria-label="Resubmit your answer">
+          Try again
+        </Button>
       )}
     </div>
   );
