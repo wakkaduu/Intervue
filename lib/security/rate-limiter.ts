@@ -136,3 +136,22 @@ export function checkConfirmationResendRateLimit(ip: string, email: string): Rat
   return checkRateLimit(emailBuckets, `resend_${email.toLowerCase().trim()}`, 1, 60 * 1000);
 }
 
+
+/**
+ * Rate limit for AI-backed API routes (review / transcribe), per client IP.
+ */
+export function checkApiRateLimit(
+  route: "review" | "transcribe",
+  ip: string
+): RateLimitResult {
+  const max = route === "review" ? 20 : 10;
+  return checkRateLimit(ipBuckets, `api_${route}_${ip}`, max, 60 * 1000);
+}
+
+/**
+ * Best-effort client IP from proxy headers.
+ */
+export function getClientIp(headers: Headers): string {
+  const forwarded = headers.get("x-forwarded-for");
+  return (forwarded ? forwarded.split(",")[0].trim() : headers.get("x-real-ip")) || "127.0.0.1";
+}

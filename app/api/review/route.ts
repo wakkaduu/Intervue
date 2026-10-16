@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { validateReviewRequest } from "@/lib/validation";
 import { callGemini } from "@/lib/gemini";
+import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
 
 // Serverless function execution timeout (seconds)
 export const maxDuration = 30;
@@ -12,6 +13,14 @@ export const maxDuration = 30;
 const TIMEOUT_MS = 15_000;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const limit = checkApiRateLimit("review", getClientIp(request.headers));
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+    );
+  }
+
   // Parse request body
   let body: unknown;
   try {

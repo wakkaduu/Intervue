@@ -6,7 +6,7 @@ import type { ReviewRequest } from "@/types";
 describe("evaluateAnswerFallback (Bar-Raiser Strict Evaluation)", () => {
   it("strictly grades an extremely brief response (<= 25 words) as Strong No Hire", () => {
     const request: ReviewRequest = {
-      category: "Full-Stack Software Engineering (React, Node.js, System Architecture)",
+      category: "Full-Stack Engineer (End-to-end architecture, cross-stack integration, system trade-offs)",
       question: "Explain database indexing and how it improves query performance.",
       answer: "I worked with databases before and used indexes.",
     };
@@ -23,7 +23,7 @@ describe("evaluateAnswerFallback (Bar-Raiser Strict Evaluation)", () => {
 
   it("penalizes hedging language and ambiguous 'we' ownership", () => {
     const request: ReviewRequest = {
-      category: "Full-Stack Software Engineering (React, Node.js, System Architecture)",
+      category: "Full-Stack Engineer (End-to-end architecture, cross-stack integration, system trade-offs)",
       question: "Describe a time you resolved a major production outage.",
       answer:
         "Well, we had a server issue and I guess we sort of restarted the service, and maybe our team fixed it.",
@@ -52,7 +52,7 @@ describe("evaluateAnswerFallback (Bar-Raiser Strict Evaluation)", () => {
 
   it("rewards a disciplined STAR response with verified metrics and assertive ownership", () => {
     const request: ReviewRequest = {
-      category: "Full-Stack Software Engineering (React, Node.js, System Architecture)",
+      category: "Full-Stack Engineer (End-to-end architecture, cross-stack integration, system trade-offs)",
       question: "Tell me about a time you optimized a slow database query in production.",
       answer:
         "In my previous role as lead backend engineer, the situation was that our checkout query was timing out during peak traffic. The task was to reduce latency under 200ms within two days. The action I decided was to run EXPLAIN ANALYZE, discovering a missing compound B-tree index on user_id and created_at. I implemented composite indexing and connection pooling. The result was a 75% reduction in query latency, dropping from 850ms to 110ms, handling 15,000 requests per minute with zero downtime.",

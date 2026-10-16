@@ -6,6 +6,11 @@ import { verifyUserCredentials, getUserByEmail, createUser } from "@/lib/db";
 import { checkLoginRateLimit, recordLoginSuccess } from "@/lib/security/rate-limiter";
 import { logSecurityEvent } from "@/lib/security/logger";
 
+const authSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+if (!authSecret && process.env.NODE_ENV === "production") {
+  throw new Error("AUTH_SECRET must be set in production.");
+}
+
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
@@ -173,5 +178,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return session;
     },
   },
-  secret: process.env.AUTH_SECRET || "fallback-intervue-dev-secret-key-32chars!",
+  secret: authSecret || "dev-only-insecure-secret-do-not-use-in-prod",
 });

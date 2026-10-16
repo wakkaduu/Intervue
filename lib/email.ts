@@ -85,14 +85,23 @@ export async function sendConfirmationEmail(
     }
   }
 
-  // Fallback to local development simulation
+  // Never simulate delivery in production: the user would never get a code.
+  if (process.env.NODE_ENV === "production") {
+    return {
+      success: false,
+      provider: "resend",
+      error: "Email delivery failed.",
+    };
+  }
+
+  // Local development simulation (code is only logged outside production)
   logSecurityEvent({
     event: "EMAIL_CONFIRMATION_SENT",
     email,
-    details: `Simulated in development/test. Code: ${code}`,
+    details: "Simulated in development/test.",
   });
 
-  if (process.env.NODE_ENV !== "test") {
+  if (process.env.NODE_ENV === "development") {
     console.info(`\n======================================================`);
     console.info(`📨 [INTERVUE EMAIL CONFIRMATION]`);
     console.info(`Recipient: ${email} (${name})`);

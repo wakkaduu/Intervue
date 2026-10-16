@@ -81,11 +81,17 @@ export async function POST(req: Request) {
     );
 
     // Send confirmation email
-    await sendConfirmationEmail({
+    const sent = await sendConfirmationEmail({
       email: user.email,
       name: user.name,
       code: confirmationCode,
     });
+    if (!sent.success) {
+      return NextResponse.json(
+        { error: "We could not send the confirmation email. Please try again shortly." },
+        { status: 502 }
+      );
+    }
 
     logSecurityEvent({
       event: "EMAIL_CONFIRMATION_RESENT",

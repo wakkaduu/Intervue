@@ -104,11 +104,20 @@ export async function POST(req: Request) {
     });
 
     // Send confirmation email (or dev simulation)
-    await sendConfirmationEmail({
+    const emailResult2 = await sendConfirmationEmail({
       email: user.email,
       name: user.name,
       code: confirmationCode,
     });
+    if (!emailResult2.success) {
+      return NextResponse.json(
+        {
+          error:
+            "Account created, but we could not send the confirmation email. Please use 'Resend code' shortly.",
+        },
+        { status: 502 }
+      );
+    }
 
     return NextResponse.json(
       {

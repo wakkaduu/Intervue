@@ -3,10 +3,26 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { checkApiRateLimit, getClientIp } from "@/lib/security/rate-limiter";
+
+const MAX_AUDIO_BYTES = 10 * 1024 * 1024;
 
 export const maxDuration = 30;
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const limit = checkApiRateLimit("transcribe", getClientIp(request.headers));
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfterSeconds) } }
+    );
+  }
+
+  const declaredLength = Number(request.headers.get("content-length") || 0);
+  if (declaredLength > MAX_AUDIO_BYTES + 1024 * 1024) {
+    return NextResponse.json({ error: "Audio file is too large (max 10 MB)." }, { status: 413 });
+  }
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
@@ -16,6 +32,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         { error: "Audio file is required in 'file' form field." },
         { status: 400 }
       );
+    }
+
+    if (file.size > MAX_AUDIO_BYTES) {
+      return NextResponse.json({ error: "Audio file is too large (max 10 MB)." }, { status: 413 });
+    }
+    if (file.type && !file.type.startsWith("audio/") && !file.type.startsWith("video/webm")) {
+      return NextResponse.json({ error: "Unsupported file type." }, { status: 415 });
     }
 
     const groqKey = request.headers.get("x-groq-key") || process.env.GROQ_API_KEY;
