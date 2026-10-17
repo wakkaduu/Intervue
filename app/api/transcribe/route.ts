@@ -35,7 +35,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   try {
-    const formData = await request.formData();
+    let formData: FormData;
+    try {
+      formData = await request.formData();
+    } catch {
+      // Not a multipart body: the client's mistake, not a server failure.
+      return NextResponse.json(
+        { error: "Request must be multipart/form-data with the audio in a 'file' field." },
+        { status: 400 }
+      );
+    }
     const file = formData.get("file");
 
     if (!file || !(file instanceof Blob)) {

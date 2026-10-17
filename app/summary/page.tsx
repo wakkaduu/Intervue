@@ -13,6 +13,7 @@ import ScoreRing from "@/components/ScoreRing";
 import Button, { buttonClasses } from "@/components/ui/Button";
 import { scoreVerdict } from "@/lib/score-verdict";
 import { shortCategory } from "@/lib/progress-trend";
+import { markSaved, resultsKey, wasSaved } from "@/lib/session-save";
 import { buildDebriefFallback } from "@/lib/debrief";
 import AuthModal from "@/components/AuthModal";
 import { calculateAverageScore } from "@/hooks/useInterviewSession";
@@ -46,7 +47,7 @@ function loadSessionMode(): "mic" | "typed" {
 
 export default function SummaryPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status: authStatus } = useSession();
   const [entries, setEntries] = useState<SessionEntry[] | null>(null);
   const [savedToAccount, setSavedToAccount] = useState(false);
   const [guestSaved, setGuestSaved] = useState(false);
@@ -123,40 +124,41 @@ export default function SummaryPage() {
   const hasEntries = entries && entries.length > 0;
   const averageScore = hasEntries ? calculateAverageScore(entries) : null;
 
-  // Auto-save to authenticated account or local guest storage
+  // Auto-save to the signed-in account or to local guest storage, once per finished session
   useEffect(() => {
-    if (entries && entries.length > 0) {
-      if (session?.user && !savedToAccount) {
-        const category = entries[0]?.question?.category || "General";
-        fetch("/api/history", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            category,
-            mode: sessionMode,
-            averageScore: averageScore || 0,
-            entries,
-          }),
-        })
-          .then((r) => {
-            if (r.ok) {
-              setSavedToAccount(true);
-              syncGuestSessionsToAccount();
-            }
-          })
-          .catch(() => {});
-      } else if (!session?.user && !guestSaved) {
-        const category = entries[0]?.question?.category || "General";
-        saveGuestSession({
-          category,
-          mode: sessionMode,
-          averageScore: averageScore || 0,
-          entries,
-        });
-        setGuestSaved(true);
+    if (!entries || entries.length === 0) return;
+    if (authStatus === "loading") return; // wait to know whether the user is signed in
+    const key = resultsKey(entries);
+    const category = entries[0]?.question?.category || "General";
+
+    if (session?.user) {
+      if (savedToAccount) return;
+      if (wasSaved("account", key)) {
+        setSavedToAccount(true);
+        return;
       }
+      fetch("/api/history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category, mode: sessionMode, averageScore: averageScore || 0, entries }),
+      })
+        .then((r) => {
+          if (r.ok) {
+            markSaved("account", key);
+            setSavedToAccount(true);
+            syncGuestSessionsToAccount();
+          }
+        })
+        .catch(() => {});
+    } else {
+      if (guestSaved) return;
+      if (!wasSaved("guest", key)) {
+        saveGuestSession({ category, mode: sessionMode, averageScore: averageScore || 0, entries });
+        markSaved("guest", key);
+      }
+      setGuestSaved(true);
     }
-  }, [session, entries, averageScore, savedToAccount, guestSaved, sessionMode]);
+  }, [session, authStatus, entries, averageScore, savedToAccount, guestSaved, sessionMode]);
 
   // Aggregate session speech delivery metrics (when spoken answers exist)
   const sessionDelivery = useMemo(() => {

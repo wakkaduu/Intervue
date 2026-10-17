@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useInterviewSession } from "@/hooks/useInterviewSession";
 import { useAudioRecorder } from "@/hooks/useAudioRecorder";
 import { validateCategory } from "@/lib/validation";
+import { shortCategory } from "@/lib/progress-trend";
 import type { AnswerMode, Category, Feedback, SessionEntry } from "@/types";
 
 import QuestionDisplay from "@/components/QuestionDisplay";
@@ -238,6 +239,7 @@ function InterviewPageInner() {
         try {
           sessionStorage.setItem("sessionResults", JSON.stringify(results));
           sessionStorage.setItem("sessionMode", mode);
+          sessionStorage.setItem("sessionResultsId", String(Date.now()));
         } catch {
           // Ignore quota errors
         }
@@ -423,9 +425,9 @@ function InterviewPageInner() {
   return (
     <div className="mx-auto max-w-3xl space-y-6">
       {/* ── Top Bar: Category, Mode & Exit ── */}
-      <div className="flex items-center justify-between text-xs text-sage-300 border-b border-forest-700/60 pb-3">
-        <div className="flex items-center gap-2">
-          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-forest-800 text-emerald-200" aria-hidden="true">
+      <div className="flex items-center justify-between gap-3 text-xs text-sage-300 border-b border-forest-700/60 pb-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-forest-800 text-emerald-200" aria-hidden="true">
             {mode === "mic" ? (
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -437,19 +439,19 @@ function InterviewPageInner() {
             )}
           </span>
           <span
-            className="font-semibold text-white truncate max-w-xs sm:max-w-md cursor-default"
+            className="min-w-0 truncate font-semibold text-white cursor-default"
             title={currentQuestion?.category}
           >
-            {currentQuestion?.category || "Practice Track"}
+            {currentQuestion?.category ? shortCategory(currentQuestion.category) : "Practice Track"}
           </span>
-          <span className="text-forest-500">•</span>
-          <span className="text-sage-300">
+          <span className="shrink-0 text-forest-500" aria-hidden="true">•</span>
+          <span className="shrink-0 whitespace-nowrap text-sage-300">
             {mode === "mic" ? "Voice Mode" : "Written Mode"}
           </span>
         </div>
         <Link
           href="/"
-          className="font-medium text-emerald-300 hover:text-white transition-colors"
+          className="shrink-0 whitespace-nowrap font-medium text-emerald-300 hover:text-white transition-colors"
         >
           Change Track
         </Link>
