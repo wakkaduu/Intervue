@@ -11,6 +11,7 @@ import {
   getInterviewerSpeed,
   setInterviewerSpeed,
   isSpeechSynthesisSupported,
+  getAvailableVoices,
 } from "@/lib/speech-synthesis";
 import Button, { IconButton } from "@/components/ui/Button";
 
@@ -32,7 +33,9 @@ export default function InterviewerVoiceControls({
   const [isPaused, setIsPaused] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [speed, setSpeed] = useState(1.0);
-  const [supported, setSupported] = useState(false);
+  // null until we have checked the browser (avoids flashing a "not supported" message on first paint)
+  const [supported, setSupported] = useState<boolean | null>(null);
+  const [noVoices, setNoVoices] = useState(false);
 
   const prevTextRef = useRef<string>("");
 
@@ -46,17 +49,33 @@ export default function InterviewerVoiceControls({
     }
   }, []);
 
+  // Some systems have no speech voices installed; speaking then fails silently, so say so.
+  useEffect(() => {
+    if (!supported) return;
+    const synth = window.speechSynthesis;
+    const check = () => setNoVoices(getAvailableVoices().length === 0);
+    synth.addEventListener?.("voiceschanged", check);
+    const timer = setTimeout(check, 1500);
+    check();
+    return () => {
+      clearTimeout(timer);
+      synth.removeEventListener?.("voiceschanged", check);
+    };
+  }, [supported]);
+
   // Handle speaking the provided text
   const handleSpeak = useCallback(
-    (customSpeed?: number) => {
+    (customSpeed?: number, manual = false) => {
       if (!text || !supported) return;
-      if (getInterviewerMuted()) return;
+      // Muting only stops automatic reading; pressing Listen/Replay always speaks.
+      if (!manual && getInterviewerMuted()) return;
 
       setIsPaused(false);
       setIsPlaying(true);
 
       speakText(text, {
         rate: customSpeed ?? speed,
+        ignoreMute: manual,
         onStart: () => {
           setIsPlaying(true);
           setIsPaused(false);
@@ -100,7 +119,19 @@ export default function InterviewerVoiceControls({
     };
   }, []);
 
-  if (!supported) return null;
+  if (supported === null) return null;
+
+  if (!supported) {
+    return (
+      <p
+        role="note"
+        className="rounded-xl border border-sage-300/90 bg-[#D4E3D8]/90 px-3.5 py-2.5 text-xs text-darkslate-700"
+      >
+        Spoken questions aren&apos;t available in this browser. Read the question above, or try Chrome,
+        Edge or Safari.
+      </p>
+    );
+  }
 
   function togglePlayPause() {
     if (isPlaying && !isPaused) {
@@ -110,13 +141,13 @@ export default function InterviewerVoiceControls({
       resumeSpeaking();
       setIsPaused(false);
     } else {
-      handleSpeak();
+      handleSpeak(undefined, true);
     }
   }
 
   function handleReplay() {
     stopSpeaking();
-    handleSpeak();
+    handleSpeak(undefined, true);
   }
 
   function handleToggleMute() {
@@ -141,7 +172,7 @@ export default function InterviewerVoiceControls({
 
     if (isPlaying) {
       stopSpeaking();
-      handleSpeak(nextSpeed);
+      handleSpeak(nextSpeed, true);
     }
   }
 
@@ -171,8 +202,10 @@ export default function InterviewerVoiceControls({
             AI Interviewer:
           </span>
 
-          {isMuted ? (
-            <span className="text-[11px] font-medium text-darkslate-500">Muted</span>
+          {noVoices ? (
+            <span className="text-[11px] font-medium text-amber-800">No voice installed on this device</span>
+          ) : isMuted && !isPlaying ? (
+            <span className="text-[11px] font-medium text-darkslate-500">Auto-read off</span>
           ) : isPlaying && !isPaused ? (
             <div className="flex items-center gap-1.5" aria-label="Speaking question">
               <span className="text-[11px] font-semibold text-emerald-800">Speaking...</span>
@@ -195,14 +228,14 @@ export default function InterviewerVoiceControls({
       {/* Right side: Quick Audio Controls */}
       <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
         {/* Play / Pause Button */}
-        {!isMuted && (
-          <Button
+        <Button
             variant="primary"
             size="sm"
             onClick={togglePlayPause}
             aria-label={isPlaying && !isPaused ? "Pause voice" : "Listen to question"}
             className="gap-1.5"
-          >            {isPlaying && !isPaused ? (
+          >
+            {isPlaying && !isPaused ? (
               <>
                 <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
@@ -218,20 +251,16 @@ export default function InterviewerVoiceControls({
               </>
             )}
           </Button>
-        )}
 
         {/* Replay Button */}
-        {!isMuted && (
-          <IconButton label="Replay question from beginning" title="Replay from start" size="sm" onClick={handleReplay}>
+        <IconButton label="Replay question from beginning" title="Replay from start" size="sm" onClick={handleReplay}>
             <svg className="h-4 w-4" aria-hidden="true" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
           </IconButton>
-        )}
 
         {/* Speed Selector Pill */}
-        {!isMuted && (
-          <Button
+        <Button
             variant="secondary"
             size="sm"
             className="!min-w-[44px] !px-2"
@@ -241,12 +270,11 @@ export default function InterviewerVoiceControls({
           >
             {speed}x
           </Button>
-        )}
 
         {/* Mute Toggle Button */}
         <IconButton
-          label={isMuted ? "Unmute AI Interviewer" : "Mute AI Interviewer"}
-          title={isMuted ? "Unmute interviewer voice" : "Mute interviewer voice"}
+          label={isMuted ? "Turn on automatic reading of questions" : "Turn off automatic reading of questions"}
+          title={isMuted ? "Auto-read is off. Click to turn on" : "Auto-read is on. Click to turn off"}
           size="sm"
           active={isMuted}
           aria-pressed={isMuted}

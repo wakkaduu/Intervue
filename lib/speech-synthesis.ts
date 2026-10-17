@@ -11,6 +11,8 @@ export interface SpeakOptions {
   rate?: number;
   pitch?: number;
   voiceName?: string;
+  /** True for an explicit user action (Listen/Replay): speak even when auto-read is muted. */
+  ignoreMute?: boolean;
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (error: unknown) => void;
@@ -142,7 +144,7 @@ export function speakText(text: string, options: SpeakOptions = {}): void {
     return;
   }
 
-  if (getInterviewerMuted()) {
+  if (!options.ignoreMute && getInterviewerMuted()) {
     options.onEnd?.();
     return;
   }
