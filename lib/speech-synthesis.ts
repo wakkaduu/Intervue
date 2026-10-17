@@ -78,25 +78,35 @@ export function getAvailableVoices(): SpeechSynthesisVoice[] {
   return cachedVoices;
 }
 
-/** Find the most natural English interviewer voice */
+/**
+ * Find the most natural English interviewer voice.
+ * Order: a named high-quality voice, then a plain US English voice, then a plain UK English
+ * voice, then the system default English voice, then any English voice. "Plain" skips
+ * espeak-style variants such as "English+Adam", which Linux can expose by the thousand.
+ */
 export function selectBestEnglishVoice(): SpeechSynthesisVoice | null {
   const voices = getAvailableVoices();
   if (voices.length === 0) return null;
 
-  // Filter for English voices
-  const enVoices = voices.filter((v) => v.lang.startsWith("en"));
+  const enVoices = voices.filter((v) => /^en([-_]|$)/i.test(v.lang));
   if (enVoices.length === 0) return voices[0] || null;
+
+  const plain = enVoices.filter((v) => !v.name.includes("+"));
+  const pool = plain.length > 0 ? plain : enVoices;
 
   // Prioritize high-quality neural / natural voices
   const priorityKeywords = ["natural", "neural", "google", "samantha", "daniel", "arthur", "oliver"];
   for (const kw of priorityKeywords) {
-    const match = enVoices.find((v) => v.name.toLowerCase().includes(kw));
+    const match = pool.find((v) => v.name.toLowerCase().includes(kw));
     if (match) return match;
   }
 
-  // Fallback to default English voice
-  const defaultEn = enVoices.find((v) => v.default);
-  return defaultEn || enVoices[0];
+  return (
+    pool.find((v) => /^en[-_]US$/i.test(v.lang)) ||
+    pool.find((v) => /^en[-_]GB$/i.test(v.lang)) ||
+    pool.find((v) => v.default) ||
+    pool[0]
+  );
 }
 
 /** Stop any currently active speech playback */
