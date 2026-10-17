@@ -1,0 +1,12 @@
+[
+  {"id":"s1-hook","text":"You know your stuff. But the first time you say your answers out loud is in the real interview. That's when nerves, ums, and rambling take over."},
+  {"id":"s2-brand","text":"Meet Intervue. An A I coach that listens to how you actually answer, and coaches you like it's real."},
+  {"id":"s3-tracks","text":"Fifty two tracks. Six hundred twenty four questions. Job interviews, medical school, law, M B A, visas, even startup pitch day."},
+  {"id":"s4-voice","text":"An interviewer asks each question out loud, like a real panel. Prefer typing? Switch to written mode any time."},
+  {"id":"s5-answer","text":"Answer in your own words. Intervue transcribes you live, so you see exactly what the interviewer hears."},
+  {"id":"s6-hud","text":"While you talk, a live panel tracks your pace and flags filler words the moment they slip out."},
+  {"id":"s7-feedback","text":"Then get a score, and feedback that quotes what you actually said. Your weakest moment is rewritten the way a strong candidate would say it. And you get the follow up a real interviewer would ask next."},
+  {"id":"s8-debrief","text":"After the session, a debrief finds patterns across all your answers, with concrete drills. Like, redo question three out loud in ninety seconds. No generic advice."},
+  {"id":"s9-progress","text":"Every session is saved, so you can watch your scores climb. Practice as a guest, or sign in to keep your history."},
+  {"id":"s10-outro","text":"Practice until it's easy. Intervue. Walk in ready."}
+]
